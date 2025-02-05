@@ -1,0 +1,10 @@
+/.idea
+/node_modules
+/dist
+.env
+
+/assets/*
+/files/*
+!/files/.gitkeep
+/public/qrcodes/*
+!/public/qrcodes/.gitkeep

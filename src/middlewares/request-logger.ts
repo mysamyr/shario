@@ -7,6 +7,6 @@ export default async (context: Context, next: Next): Promise<void> => {
   console.log(
     `${context.request.method} ${
       decodeURIComponent(context.request.url.pathname)
-    } - ${rt}`,
+    } - ${rt} - ${context.response.status}`,
   );
 };

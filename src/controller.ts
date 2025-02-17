@@ -28,7 +28,14 @@ export async function saveFile(req: Request, _res: Response): Promise<void> {
   for (const pair of reqBody.entries()) {
     const val: FormDataEntryValue = pair[1];
     if (val instanceof File) {
-      const newFileName: string = join(Deno.cwd(), 'files', val.name);
+      const extension = val.name.split('.').at(-1);
+      const newFileName: string = join(
+        // @ts-ignore-next-line
+        import.meta.dirname,
+        '..',
+        'files',
+        crypto.randomUUID() + `.${extension}`,
+      );
       if (isFileExists(newFileName)) {
         throw new httpErrors.BadRequest('File name already exists');
       }
@@ -41,7 +48,8 @@ export async function saveFile(req: Request, _res: Response): Promise<void> {
 }
 
 export async function deleteFile(filename: string): Promise<void> {
-  const filePath: string = join(Deno.cwd(), 'files', filename);
+  // @ts-ignore-next-line
+  const filePath: string = join(import.meta.dirname, '..', 'files', filename);
   if (!isFileExists(filePath)) {
     throw new httpErrors.BadRequest("File doesn't exists");
   }

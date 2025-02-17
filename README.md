@@ -23,4 +23,5 @@ from deno.
 
 ## TODOs
 
-- add textarea input for sharing
+- add 'copy from textarea' button
+- add possibility to rename files as they are now `{ID}.ext`

@@ -9,11 +9,17 @@ export function isFileExists(filePath: string): boolean {
 }
 
 export function readFile(name: string): Uint8Array {
-  return Deno.readFileSync(join(Deno.cwd(), 'files', name));
+  return Deno.readFileSync(
+    // @ts-ignore-next-line
+    join(import.meta.dirname, '..', '..', 'files', name),
+  );
 }
 
 export function getFiles(): string[] {
-  const entries = Deno.readDirSync(join(Deno.cwd(), 'files'));
+  const entries = Deno.readDirSync(
+    // @ts-ignore-next-line
+    join(import.meta.dirname, '..', '..', 'files'),
+  );
   const files: string[] = [];
   for (const entry of entries) {
     if (entry.isFile && entry.name !== '.gitkeep') {
@@ -27,7 +33,10 @@ export function generateQRCodes(): void {
   const addresses: string[] = getAddresses();
   for (const ip of addresses) {
     const filePath: string = join(
-      Deno.cwd(),
+      // @ts-ignore-next-line
+      import.meta.dirname,
+      '..',
+      '..',
       'public',
       'qrcodes',
       `${ip}_${PORT}.png`,

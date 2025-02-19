@@ -107,3 +107,32 @@ a {
 .delete:hover {
   color: #c13737;
 }
+
+/*SNACKBAR*/
+.snackbar-container {
+  position: fixed;
+  bottom: 5%;
+  right: 5%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--green);
+  color: var(--white);
+  padding: 4px;
+  border-radius: 4px;
+  overflow: hidden;
+  animation: 300ms ease-out forwards slide-up;
+  z-index: 10;
+}
+
+.snackbar-label {
+  padding: 12px 8px;
+}
+
+.snackbar-dismiss {
+  color: var(--red);
+  font-weight: bold;
+  margin: 0 8px;
+  cursor: pointer;
+  padding: 8px;
+}

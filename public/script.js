@@ -1,5 +1,81 @@
 let text = '';
 
+const Div = props => {
+  const div = document.createElement('div');
+  if (!props) return div;
+  if (props.className)
+    div.classList.add(...props.className.split(' ').filter(Boolean));
+  if (props.text) div.innerHTML = props.text;
+  if (props.id) div.id = props.id;
+  if (props.onClick) div.addEventListener('click', props.onClick);
+
+  return div;
+};
+
+class Snackbar {
+  constructor() {
+    this.timer = null;
+    this.component = null;
+    this.messages = [];
+    this.TIME_TO_HIDE = 3 * 1000;
+  }
+
+  _startTimer() {
+    this.timer = setTimeout(() => this._closeHandler(), this.TIME_TO_HIDE);
+  }
+
+  _clearTimer() {
+    clearTimeout(this.timer);
+    this.timer = null;
+  }
+
+  _showMessage(msg) {
+    const component = Div({
+      className: 'snackbar-container',
+    });
+    component.append(
+      Div({
+        className: 'snackbar-label',
+        text: msg,
+      }),
+      Div({
+        className: 'snackbar-dismiss',
+        text: '&times;',
+        onClick: this._closeHandler,
+      })
+    );
+
+    component.addEventListener('mouseleave', () => this._startTimer());
+    component.addEventListener('mouseenter', () => this._clearTimer());
+    component.addEventListener('touchend', () => this._startTimer());
+    component.addEventListener('touchstart', () => this._clearTimer());
+
+    this._startTimer();
+    document.body.appendChild(component);
+    this.component = component;
+  }
+
+  _closeHandler() {
+    this.messages.shift();
+    this.component.remove();
+    this.component = null;
+    this._clearTimer();
+
+    if (this.messages.length) {
+      this._showMessage(this.messages[0]);
+    }
+  }
+
+  displayMsg(msg) {
+    this.messages.push(msg);
+    if (!this.component) {
+      this._showMessage(msg);
+    }
+  }
+}
+
+const snackbar = new Snackbar();
+
 function getLocationContainer(location, port) {
   const container = document.createElement('div');
   container.classList.add('location');
@@ -31,17 +107,7 @@ function renderFiles(files) {
     const deleteLink = document.createElement('a');
     deleteLink.classList.add('delete', 'btn');
     deleteLink.innerHTML = 'x';
-    deleteLink.addEventListener('click', async (e) => {
-      e.preventDefault();
-      const res = await fetch(`/${file}`, {
-        method: 'DELETE',
-      });
-      if (!res.ok) {
-        const { status, message } = await res.json();
-        alert(`Got an Error with status ${status} and message ${message}`);
-      }
-      updateHeader();
-    });
+    deleteLink.addEventListener('click', (e) => handleDeleteFile(e, file));
     buttonsContainer.append(downloadLink, deleteLink);
     container.append(fileLink, buttonsContainer);
     filesContainer.appendChild(container);
@@ -83,13 +149,14 @@ async function uploadFile(file) {
       body: formData,
     });
     if (res.ok) {
-      alert('File uploaded');
+      snackbar.displayMsg('File uploaded successfully.');
     } else {
       const { status, message } = await res.json();
-      alert(`Got an Error with status ${status} and message ${message}`);
+      snackbar.displayMsg(`Error with status ${status} and message ${message}`);
     }
   } catch (error) {
     console.error(error);
+    snackbar.displayMsg('Error while uploading file.');
   }
 
   updateHeader();
@@ -106,12 +173,26 @@ async function uploadText(value) {
     });
     if (!res.ok) {
       const { status, message } = await res.json();
-      alert(`Got an Error with status ${status} and message ${message}`);
+      snackbar.displayMsg(`Got an Error with status ${status} and message ${message}`);
     }
   } catch (error) {
     console.error(error);
   }
 
+  updateHeader();
+}
+
+async function handleDeleteFile(e, file) {
+  e.preventDefault();
+  const res = await fetch(`/${file}`, {
+    method: 'DELETE',
+  });
+  if (!res.ok) {
+    const { status, message } = await res.json();
+    snackbar.displayMsg(`Error with status ${status} and message ${message}`);
+  } else {
+    snackbar.displayMsg('File deleted');
+  }
   updateHeader();
 }
 

@@ -1,31 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
-    <title>Deno LAN File Sharing App</title>
-    <link rel="stylesheet" type="text/css" href="main.css">
-  </head>
-  <body>
-    <div class="container">
-      <h1>LAN File Sharing</h1>
-      <div id="locations"></div>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+  <title>Deno LAN File Sharing App</title>
+  <link rel="stylesheet" type="text/css" href="main.css">
+</head>
+<body>
+<h1>LAN File Sharing</h1>
+<div id="locations"></div>
 
-      <h2>Upload file:</h2>
+<div class="container">
+  <h2>Upload file:</h2>
+  <label for="file-upload" class="file-upload-label">Select File</label>
+  <input id="file-upload" type="file"/>
+</div>
 
-      <label for="file-upload" class="file-upload-label">Select File</label>
-      <input id="file-upload" type="file" />
+<div class="container">
+  <div class="row">
+    <h2>Shared text:</h2>
+    <p id="copy-text">&#128203;</p>
+  </div>
+  <textarea></textarea>
+</div>
 
-      <h2>Shared text:</h2>
-      <textarea cols="3"></textarea>
+<div class="container">
+  <h2>Files:</h2>
+  <div id="files"></div>
+</div>
 
-      <h2>Files:</h2>
-
-      <div id="files"></div>
-    </div>
-    <script src="script.js"></script>
-  </body>
+<script src="script.js"></script>
+</body>
 </html>

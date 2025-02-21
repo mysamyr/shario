@@ -11,6 +11,20 @@ const Div = props => {
 
   return div;
 };
+const Link = props => {
+  const a = document.createElement('a');
+  if (!props) return a;
+  if (props.className)
+    a.classList.add(...props.className.split(' ').filter(Boolean));
+  if (props.text) a.innerHTML = props.text;
+  if (props.id) a.id = props.id;
+  if (props.href) a.href = props.href;
+  if (props.target) a.target = props.target;
+  if (props.download) a.download = props.download;
+  if (props.onClick) a.addEventListener('click', props.onClick);
+
+  return a;
+};
 
 class Snackbar {
   constructor() {
@@ -41,7 +55,7 @@ class Snackbar {
       Div({
         className: 'snackbar-dismiss',
         text: '&times;',
-        onClick: this._closeHandler,
+        onClick: () => this._closeHandler(),
       })
     );
 
@@ -77,8 +91,9 @@ class Snackbar {
 const snackbar = new Snackbar();
 
 function getLocationContainer(location, port) {
-  const container = document.createElement('div');
-  container.classList.add('location');
+  const container = Div({
+    className: 'location',
+  });
   const qr = document.createElement('img');
   qr.src = `/qrcodes/${location}_${port}.png`;
   const ip = document.createElement('p');
@@ -90,24 +105,30 @@ function getLocationContainer(location, port) {
 function renderFiles(files) {
   const filesContainer = document.getElementById('files');
   files.forEach((file) => {
-    const container = document.createElement('div');
+    const container = Div({
+      className: 'file',
+    });
     container.classList.add('file');
-    const fileLink = document.createElement('a');
-    fileLink.classList.add('file-link');
-    fileLink.href = `/files/${file}`;
-    fileLink.target = '_blank';
-    fileLink.innerText = file;
-    const buttonsContainer = document.createElement('div');
-    buttonsContainer.classList.add('buttons');
-    const downloadLink = document.createElement('a');
-    downloadLink.classList.add('btn');
-    downloadLink.href = `/files/${file}`;
-    downloadLink.download = file;
-    downloadLink.innerHTML = '&#8681;';
-    const deleteLink = document.createElement('a');
-    deleteLink.classList.add('delete', 'btn');
-    deleteLink.innerHTML = 'x';
-    deleteLink.addEventListener('click', (e) => handleDeleteFile(e, file));
+    const fileLink = Link({
+      className: 'file-link',
+      href: `/files/${file}`,
+      target: '_blank',
+      text: file,
+    });
+    const buttonsContainer = Div({
+      className: 'buttons',
+    });
+    const downloadLink = Link({
+      className: 'btn',
+      href: `/files/${file}`,
+      download: file,
+      text: '&#8681;',
+    });
+    const deleteLink = Link({
+      className: 'delete btn',
+      text: 'x',
+      onClick: (e) => handleDeleteFile(e, file)
+    });
     buttonsContainer.append(downloadLink, deleteLink);
     container.append(fileLink, buttonsContainer);
     filesContainer.appendChild(container);
@@ -151,7 +172,7 @@ async function uploadFile(file) {
     if (res.ok) {
       snackbar.displayMsg('File uploaded successfully.');
     } else {
-      const { status, message } = await res.json();
+      const {status, message} = await res.json();
       snackbar.displayMsg(`Error with status ${status} and message ${message}`);
     }
   } catch (error) {
@@ -172,7 +193,7 @@ async function uploadText(value) {
       body: formData,
     });
     if (!res.ok) {
-      const { status, message } = await res.json();
+      const {status, message} = await res.json();
       snackbar.displayMsg(`Got an Error with status ${status} and message ${message}`);
     }
   } catch (error) {
@@ -188,7 +209,7 @@ async function handleDeleteFile(e, file) {
     method: 'DELETE',
   });
   if (!res.ok) {
-    const { status, message } = await res.json();
+    const {status, message} = await res.json();
     snackbar.displayMsg(`Error with status ${status} and message ${message}`);
   } else {
     snackbar.displayMsg('File deleted');
@@ -216,11 +237,14 @@ async function handleUploadByPaste(e) {
     await uploadFile(clipboardData.files[0]);
   } else {
     const pastedData = clipboardData.getData('text');
-    if (text === pastedData) {
-      return;
-    }
-    await uploadText(pastedData);
+    if (text !== pastedData) await uploadText(pastedData);
   }
+}
+
+async function handleCopyText() {
+  const element = document.querySelector('textarea');
+
+  await navigator.clipboard.writeText(element.value);
 }
 
 function initTextarea() {
@@ -233,15 +257,18 @@ function initTextarea() {
   });
 
   element.addEventListener('focusout', async function (e) {
-    if (text !== e.target.value) {
-      await uploadText(e.target.value);
-    }
+    if (text !== e.target.value) await uploadText(e.target.value);
   });
 }
 
 document.getElementById('file-upload').addEventListener(
   'change',
   handleUploadBySelect,
+);
+
+document.getElementById('copy-text').addEventListener(
+  'click',
+  handleCopyText,
 );
 
 globalThis.addEventListener('paste', handleUploadByPaste);

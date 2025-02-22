@@ -54,6 +54,9 @@ body {
 input[type='file'] {
   display: none;
 }
+input[type='text'] {
+  width: 100%;
+}
 .file-upload-label {
   background-color: var(--green);
   color: #fff;
@@ -121,7 +124,20 @@ a {
 .delete:hover {
   color: #c13737;
 }
-
+/*DIALOG*/
+dialog:modal {
+  margin: auto;
+  max-width: 80%;
+  color: var(--black);
+  background-color: var(--white);
+}
+dialog::backdrop {
+  background-color: hsla(0, 0%, 0%, 0.5);
+}
+.modal-container {
+  gap: 20px;
+  padding: 16px;
+}
 /*SNACKBAR*/
 .snackbar-container {
   position: fixed;
@@ -138,11 +154,9 @@ a {
   animation: 300ms ease-out forwards slide-up;
   z-index: 10;
 }
-
 .snackbar-label {
   padding: 12px 8px;
 }
-
 .snackbar-dismiss {
   color: var(--red);
   font-weight: bold;

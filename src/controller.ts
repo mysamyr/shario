@@ -28,13 +28,12 @@ export async function saveFile(req: Request, _res: Response): Promise<void> {
   for (const pair of reqBody.entries()) {
     const val: FormDataEntryValue = pair[1];
     if (val instanceof File) {
-      const extension = val.name.split('.').at(-1);
       const newFileName: string = join(
         // @ts-ignore-next-line
         import.meta.dirname,
         '..',
         'files',
-        crypto.randomUUID() + `.${extension}`,
+        val.name,
       );
       if (isFileExists(newFileName)) {
         throw new httpErrors.BadRequest('File name already exists');

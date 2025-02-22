@@ -88,6 +88,38 @@ class Snackbar {
   }
 }
 
+class Modal {
+  constructor() {
+    this.dialog = document.querySelector('dialog');
+    this.dialog.addEventListener('close', e => {
+      e.target.innerHTML = '';
+    });
+    this.dialog.addEventListener('click', e => {
+      const dialogDimensions = this.dialog.getBoundingClientRect();
+      if (
+        e.clientX < dialogDimensions.left ||
+        e.clientX > dialogDimensions.right ||
+        e.clientY < dialogDimensions.top ||
+        e.clientY > dialogDimensions.bottom
+      ) {
+        this.dialog.close();
+      }
+    });
+  }
+
+  showModal(modal) {
+    this.dialog.innerText = '';
+    this.dialog.appendChild(modal);
+    this.dialog.showModal();
+  };
+
+  hideModal() {
+    this.dialog.innerText = '';
+    this.dialog.close();
+  };
+}
+
+const modal = new Modal();
 const snackbar = new Snackbar();
 
 function getLocationContainer(location, port) {
@@ -99,6 +131,36 @@ function getLocationContainer(location, port) {
   const ip = document.createElement('p');
   ip.innerText = `${location}:${port}`;
   container.append(qr, ip);
+  return container;
+}
+
+function uploadFileModal(filename, onSubmit) {
+  const container = Div({
+    className: 'container modal-container',
+  });
+
+  const header = document.createElement('h2');
+  header.innerText = "Uploaded file's name:";
+
+  const buttons = Div({
+    className: 'buttons',
+  });
+  const input = document.createElement('input');
+  input.type = 'text';
+  input.value = filename;
+  buttons.append(
+    Div({
+      className: 'btn',
+      text: 'Upload',
+      onClick: () => onSubmit(input.value),
+    }),
+    Div({
+      className: 'btn',
+      text: 'Cancel',
+      onClick: () => modal.hideModal(),
+    })
+  );
+  container.append(header, input, buttons)
   return container;
 }
 
@@ -171,16 +233,28 @@ async function uploadFile(file) {
     });
     if (res.ok) {
       snackbar.displayMsg('File uploaded successfully.');
+      modal.hideModal();
+      updateHeader();
     } else {
       const {status, message} = await res.json();
-      snackbar.displayMsg(`Error with status ${status} and message ${message}`);
+      console.warn(`Error with status ${status} and message ${message}`)
+      snackbar.displayMsg(message);
     }
   } catch (error) {
     console.error(error);
     snackbar.displayMsg('Error while uploading file.');
   }
+}
 
-  updateHeader();
+async function askForUpload(file) {
+  const onSubmit = (newFilename) => {
+    if (file.name === newFilename) {
+      uploadFile(file);
+    } else {
+      uploadFile(new File([file], newFilename, {type: file.type}))
+    }
+  };
+  modal.showModal(uploadFileModal(file.name, onSubmit));
 }
 
 async function uploadText(value) {
@@ -221,7 +295,7 @@ async function handleUploadBySelect(e) {
   const input = e.target;
 
   if (input.files[0]) {
-    await uploadFile(input.files[0]);
+    await askForUpload(input.files[0]);
 
     input.value = null;
   }
@@ -234,17 +308,11 @@ async function handleUploadByPaste(e) {
   const clipboardData = e.clipboardData;
 
   if (clipboardData.files.length) {
-    await uploadFile(clipboardData.files[0]);
+    await askForUpload(clipboardData.files[0]);
   } else {
     const pastedData = clipboardData.getData('text');
     if (text !== pastedData) await uploadText(pastedData);
   }
-}
-
-async function handleCopyText() {
-  const element = document.querySelector('textarea');
-
-  await navigator.clipboard.writeText(element.value);
 }
 
 function initTextarea() {
@@ -259,16 +327,16 @@ function initTextarea() {
   element.addEventListener('focusout', async function (e) {
     if (text !== e.target.value) await uploadText(e.target.value);
   });
+
+  document.getElementById('copy-text').addEventListener(
+    'click',
+    async () => await navigator.clipboard.writeText(element.value)
+  );
 }
 
 document.getElementById('file-upload').addEventListener(
   'change',
   handleUploadBySelect,
-);
-
-document.getElementById('copy-text').addEventListener(
-  'click',
-  handleCopyText,
 );
 
 globalThis.addEventListener('paste', handleUploadByPaste);

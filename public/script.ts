@@ -359,7 +359,11 @@ function initTextarea() {
 
   document.getElementById('copy-text').addEventListener(
     'click',
-    () => navigator.clipboard.writeText(element.value),
+    async (): Promise<void> => {
+      element.focus();
+      element.select();
+      await navigator.clipboard.writeText(element.value);
+    },
   );
 }
 

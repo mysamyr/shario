@@ -32,7 +32,7 @@ app.addEventListener('error', (evt): void => {
 });
 
 app.addEventListener('listen', ({ port }): void => {
-  console.log('Start listening on ' + port);
+  console.log('Start listening on http://localhost:' + port);
 });
 
 await app.listen({ port: PORT });

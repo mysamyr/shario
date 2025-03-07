@@ -4,10 +4,10 @@
     "dev": "deno run --env-file=.env -A --inspect --watch ./src/main.ts",
     "build": "deno run --allow-read --allow-write --allow-env --allow-net --allow-run bundle.ts",
     "compile:win": "deno task build && ENV=\"production\" deno compile --env-file=.env -E=PORT,ENV -N -RW -S='networkInterfaces' --target x86_64-pc-windows-msvc --include ./public --output ./assets/shario.exe ./src/main.js",
-    "compile:mac": "ENV=\"production\" deno compile --env-file=.env -E=PORT,ENV -N -RW -S='networkInterfaces' --target x86_64-apple-darwin --include ./public --output ./assets/shario.sh ./src/main.ts",
-    "compile:mac-arm": "ENV=\"production\" deno compile --env-file=.env -E=PORT,ENV -N -RW -S='networkInterfaces' --target aarch64-apple-darwin--include ./public --output ./assets/shario.sh ./src/main.ts",
-    "compile:linux": "ENV=\"production\" deno compile --env-file=.env -E=PORT,ENV -N -RW -S='networkInterfaces' --target x86_64-unknown-linux-gnu--include ./public --output ./assets/shario.sh ./src/main.ts",
-    "compile:linux-arm": "ENV=\"production\" deno compile --env-file=.env -E=PORT,ENV -N -RW -S='networkInterfaces' --target aarch64-unknown-linux-gnu--include ./public --output ./assets/shario.sh ./src/main.ts",
+    "compile:mac": "deno task build && ENV=\"production\" deno compile --env-file=.env -E=PORT,ENV -N -RW -S='networkInterfaces' --target x86_64-apple-darwin --include ./public --output ./assets/shario.sh ./src/main.js",
+    "compile:mac-arm": "deno task build && ENV=\"production\" deno compile --env-file=.env -E=PORT,ENV -N -RW -S='networkInterfaces' --target aarch64-apple-darwin --include ./public --output ./assets/shario.sh ./src/main.js",
+    "compile:linux": "deno task build && ENV=\"production\" deno compile --env-file=.env -E=PORT,ENV -N -RW -S='networkInterfaces' --target x86_64-unknown-linux-gnu --include ./public --output ./assets/shario.sh ./src/main.js",
+    "compile:linux-arm": "deno task build && ENV=\"production\" deno compile --env-file=.env -E=PORT,ENV -N -RW -S='networkInterfaces' --target aarch64-unknown-linux-gnu --include ./public --output ./assets/shario.sh ./src/main.js",
     "format": "deno fmt && deno lint"
   },
   "imports": {

@@ -25,6 +25,10 @@ body {
   padding: 1rem 0;
   background-color: var(--light-grey);
 }
+h1, h2 {
+  -webkit-user-select: none;
+  user-select: none;
+}
 
 .container {
   display: flex;
@@ -63,9 +67,12 @@ input[type='text'] {
   border-radius: 5px;
   display: inline-block;
   padding: 10px 20px;
-  cursor: pointer;
   font-size: 2rem;
 }
+.file-upload-label:hover {
+  background-color: var(--light-green);
+}
+/*SHARED TEXT*/
 #copy-text {
   margin-left: 1rem;
   font-size: 1.4rem;
@@ -101,7 +108,7 @@ a {
   overflow: hidden;
   white-space: nowrap;
 }
-
+/*BUTTONS*/
 .buttons {
   display: flex;
   align-items: center;
@@ -111,18 +118,20 @@ a {
   border: #fff 1px solid;
   border-radius: 5px;
   text-align: center;
-  cursor: pointer;
   padding: 0 8px;
+  text-decoration: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 .btn:hover {
   background-color: #fff;
   color: var(--light-green);
 }
 .delete {
-  background-color: #c13737;
+  background-color: var(--red);
 }
 .delete:hover {
-  color: #c13737;
+  color: var(--red);
 }
 /*DIALOG*/
 dialog:modal {
@@ -161,6 +170,5 @@ dialog::backdrop {
   color: var(--red);
   font-weight: bold;
   margin: 0 8px;
-  cursor: pointer;
   padding: 8px;
 }

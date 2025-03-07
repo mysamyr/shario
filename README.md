@@ -11,7 +11,8 @@
 - Clone the project
 - Create `.env` file according to `.env.example`
 - Run `deno run start` to start the application
-- Open `http://localhost:3000` in browser (port can be setup with `PORT` variable in `.env`)
+- Open `http://localhost:3000` in browser (port can be setup with `PORT`
+  variable in `.env`)
 
 ## API
 

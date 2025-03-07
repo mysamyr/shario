@@ -5,6 +5,4 @@
 
 /assets/*
 /files/*
-!/files/.gitkeep
-/public/qrcodes/*
-!/public/qrcodes/.gitkeep
+/qrcodes/*

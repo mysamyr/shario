@@ -1,21 +1,34 @@
 let text = '';
 
-const Div = props => {
+const Div = (props) => {
   const div = document.createElement('div');
   if (!props) return div;
-  if (props.className)
+  if (props.className) {
     div.classList.add(...props.className.split(' ').filter(Boolean));
+  }
   if (props.text) div.innerHTML = props.text;
   if (props.id) div.id = props.id;
   if (props.onClick) div.addEventListener('click', props.onClick);
 
   return div;
 };
-const Link = props => {
+const Paragraph = (props) => {
+  const div = document.createElement('p');
+  if (!props) return div;
+  if (props.className) {
+    div.classList.add(...props.className.split(' ').filter(Boolean));
+  }
+  if (props.text) div.innerHTML = props.text;
+  if (props.id) div.id = props.id;
+
+  return div;
+};
+const Link = (props) => {
   const a = document.createElement('a');
   if (!props) return a;
-  if (props.className)
+  if (props.className) {
     a.classList.add(...props.className.split(' ').filter(Boolean));
+  }
   if (props.text) a.innerHTML = props.text;
   if (props.id) a.id = props.id;
   if (props.href) a.href = props.href;
@@ -56,7 +69,7 @@ class Snackbar {
         className: 'snackbar-dismiss',
         text: '&times;',
         onClick: () => this._closeHandler(),
-      })
+      }),
     );
 
     component.addEventListener('mouseleave', () => this._startTimer());
@@ -91,10 +104,10 @@ class Snackbar {
 class Modal {
   constructor() {
     this.dialog = document.querySelector('dialog');
-    this.dialog.addEventListener('close', e => {
+    this.dialog.addEventListener('close', (e) => {
       e.target.innerHTML = '';
     });
-    this.dialog.addEventListener('click', e => {
+    this.dialog.addEventListener('click', (e) => {
       const dialogDimensions = this.dialog.getBoundingClientRect();
       if (
         e.clientX < dialogDimensions.left ||
@@ -111,12 +124,12 @@ class Modal {
     this.dialog.innerText = '';
     this.dialog.appendChild(modal);
     this.dialog.showModal();
-  };
+  }
 
   hideModal() {
     this.dialog.innerText = '';
     this.dialog.close();
-  };
+  }
 }
 
 const modal = new Modal();
@@ -128,8 +141,7 @@ function getLocationContainer(location, port) {
   });
   const qr = document.createElement('img');
   qr.src = `/qrcodes/${location}_${port}.png`;
-  const ip = document.createElement('p');
-  ip.innerText = `${location}:${port}`;
+  const ip = Paragraph({text: `${location}:${port}`});
   container.append(qr, ip);
   return container;
 }
@@ -158,43 +170,57 @@ function uploadFileModal(filename, onSubmit) {
       className: 'btn',
       text: 'Cancel',
       onClick: () => modal.hideModal(),
-    })
+    }),
   );
-  container.append(header, input, buttons)
+  container.append(header, input, buttons);
+  input.focus();
+  input.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      onSubmit(input.value);
+    }
+  });
   return container;
 }
 
 function renderFiles(files) {
   const filesContainer = document.getElementById('files');
-  files.forEach((file) => {
-    const container = Div({
-      className: 'file',
+  filesContainer.innerText = '';
+  if (files.length) {
+    files.forEach((file) => {
+      const container = Div({
+        className: 'file',
+      });
+      container.classList.add('file');
+      const fileLink = Link({
+        className: 'file-link',
+        href: `/files/${file}`,
+        target: '_blank',
+        text: file,
+      });
+      const buttonsContainer = Div({
+        className: 'buttons',
+      });
+      const downloadLink = Link({
+        className: 'btn',
+        href: `/files/${file}`,
+        download: file,
+        text: '&#8681;',
+      });
+      const deleteLink = Link({
+        className: 'delete btn',
+        text: 'x',
+        onClick: (e) => handleDeleteFile(e, file),
+      });
+      buttonsContainer.append(downloadLink, deleteLink);
+      container.append(fileLink, buttonsContainer);
+      filesContainer.appendChild(container);
     });
-    container.classList.add('file');
-    const fileLink = Link({
-      className: 'file-link',
-      href: `/files/${file}`,
-      target: '_blank',
-      text: file,
+  } else {
+    const container = Paragraph({
+      text: 'No files uploaded yet',
     });
-    const buttonsContainer = Div({
-      className: 'buttons',
-    });
-    const downloadLink = Link({
-      className: 'btn',
-      href: `/files/${file}`,
-      download: file,
-      text: '&#8681;',
-    });
-    const deleteLink = Link({
-      className: 'delete btn',
-      text: 'x',
-      onClick: (e) => handleDeleteFile(e, file)
-    });
-    buttonsContainer.append(downloadLink, deleteLink);
-    container.append(fileLink, buttonsContainer);
     filesContainer.appendChild(container);
-  });
+  }
 }
 
 async function updateHeader() {
@@ -211,13 +237,11 @@ async function updateHeader() {
   });
 
   document.querySelectorAll('.file').forEach((location) => location.remove());
-  if (info.files.length) {
-    renderFiles(info.files);
-  }
+  renderFiles(info.files);
   if (info.text.length) {
     const textarea = document.querySelector('textarea');
     textarea.value = info.text;
-    textarea.dispatchEvent(new Event('change'));
+    textarea.dispatchEvent(new Event('input'));
     text = info.text;
   }
 }
@@ -237,7 +261,7 @@ async function uploadFile(file) {
       updateHeader();
     } else {
       const {status, message} = await res.json();
-      console.warn(`Error with status ${status} and message ${message}`)
+      console.warn(`Error with status ${status} and message ${message}`);
       snackbar.displayMsg(message);
     }
   } catch (error) {
@@ -246,12 +270,12 @@ async function uploadFile(file) {
   }
 }
 
-async function askForUpload(file) {
+function askForUpload(file) {
   const onSubmit = (newFilename) => {
     if (file.name === newFilename) {
       uploadFile(file);
     } else {
-      uploadFile(new File([file], newFilename, {type: file.type}))
+      uploadFile(new File([file], newFilename, {type: file.type}));
     }
   };
   modal.showModal(uploadFileModal(file.name, onSubmit));
@@ -268,7 +292,9 @@ async function uploadText(value) {
     });
     if (!res.ok) {
       const {status, message} = await res.json();
-      snackbar.displayMsg(`Got an Error with status ${status} and message ${message}`);
+      snackbar.displayMsg(
+        `Got an Error with status ${status} and message ${message}`,
+      );
     }
   } catch (error) {
     console.error(error);
@@ -317,11 +343,12 @@ async function handleUploadByPaste(e) {
 
 function initTextarea() {
   const element = document.querySelector('textarea');
-  element.style.overflowY = 'hidden';
 
-  element.addEventListener('change', function () {
+  element.addEventListener('input', function () {
     this.style.height = 'auto';
-    this.style.height = this.scrollHeight + 4 + 'px'; // + borders
+    this.style.height = this.scrollHeight > 240
+      ? '244px'
+      : this.scrollHeight + 4 + 'px'; // + borders
   });
 
   element.addEventListener('focusout', async function (e) {
@@ -330,7 +357,7 @@ function initTextarea() {
 
   document.getElementById('copy-text').addEventListener(
     'click',
-    async () => await navigator.clipboard.writeText(element.value)
+    () =>  navigator.clipboard.writeText(element.value),
   );
 }
 

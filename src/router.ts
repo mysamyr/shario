@@ -1,5 +1,11 @@
 import { Context, Router, Status } from 'jsr:@oak/oak';
-import { deleteFile, getFile, getInfo, saveFile } from './controller.ts';
+import {
+  deleteFile,
+  getFile,
+  getInfo,
+  getQRCode,
+  saveFile,
+} from './controller.ts';
 
 const router: Router = new Router();
 
@@ -14,6 +20,15 @@ router.get('/files/:file', (ctx: Context): void => {
     ctx.throw(Status.BadRequest, 'No file name provided');
   }
   ctx.response.body = getFile(filename);
+});
+
+router.get('/qrcodes/:file', (ctx: Context): void => {
+  // @ts-ignore-next-line
+  const filename: string = ctx.params.file;
+  if (!filename) {
+    ctx.throw(Status.BadRequest, 'No file name provided');
+  }
+  ctx.response.body = getQRCode(filename);
 });
 
 router.post('/', async (ctx: Context): Promise<void> => {

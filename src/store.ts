@@ -5,10 +5,10 @@ class Store {
     this.value = '';
   }
 
-  getText() {
+  getText(): string {
     return this.value;
   }
-  setText(text: string) {
+  setText(text: string): void {
     this.value = text;
   }
 }

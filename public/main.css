@@ -16,17 +16,26 @@
 body {
   font-family: sans-serif;
   font-size: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  min-height: 100vh;
+  overflow: auto;
+  padding: 1rem 0;
+  background-color: var(--light-grey);
 }
 
 .container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
-  height: 100vh;
-  overflow: auto;
-  padding: 1rem 0;
-  background-color: var(--light-grey);
+  gap: 0.8rem;
+}
+.row {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
 }
 /*LOCATIONS*/
 #locations {
@@ -45,6 +54,9 @@ body {
 input[type='file'] {
   display: none;
 }
+input[type='text'] {
+  width: 100%;
+}
 .file-upload-label {
   background-color: var(--green);
   color: #fff;
@@ -53,6 +65,11 @@ input[type='file'] {
   padding: 10px 20px;
   cursor: pointer;
   font-size: 2rem;
+}
+#copy-text {
+  margin-left: 1rem;
+  font-size: 1.4rem;
+  cursor: pointer;
 }
 textarea {
   outline: none;
@@ -106,4 +123,44 @@ a {
 }
 .delete:hover {
   color: #c13737;
+}
+/*DIALOG*/
+dialog:modal {
+  margin: auto;
+  max-width: 80%;
+  color: var(--black);
+  background-color: var(--white);
+}
+dialog::backdrop {
+  background-color: hsla(0, 0%, 0%, 0.5);
+}
+.modal-container {
+  gap: 20px;
+  padding: 16px;
+}
+/*SNACKBAR*/
+.snackbar-container {
+  position: fixed;
+  bottom: 5%;
+  right: 5%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--green);
+  color: var(--white);
+  padding: 4px;
+  border-radius: 4px;
+  overflow: hidden;
+  animation: 300ms ease-out forwards slide-up;
+  z-index: 10;
+}
+.snackbar-label {
+  padding: 12px 8px;
+}
+.snackbar-dismiss {
+  color: var(--red);
+  font-weight: bold;
+  margin: 0 8px;
+  cursor: pointer;
+  padding: 8px;
 }

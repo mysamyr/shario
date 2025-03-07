@@ -1,28 +1,44 @@
-import { existsSync } from '@std/fs';
-import { join } from '@std/path';
+import { ensureDirSync, existsSync } from '@std/fs';
+import { dirname, join } from '@std/path';
 import { qrPng } from '@sigmasd/qrpng';
 import { getAddresses } from './addresses.ts';
-import { PORT } from '../config.ts';
+import { ENV, PORT } from '../config.ts';
 
-export function isFileExists(filePath: string): boolean {
-  return existsSync(filePath);
+export function getRootPath(): string {
+  if (ENV !== 'production') return Deno.cwd();
+  const execPath = Deno.execPath();
+  return dirname(execPath);
+}
+
+export function getFilesFolderPath(): string {
+  const filesDir = join(getRootPath(), 'files');
+  ensureDirSync(filesDir);
+  return filesDir;
+}
+
+export function getQRCodesFolderPath(): string {
+  const filesDir = join(getRootPath(), 'qrcodes');
+  ensureDirSync(filesDir);
+  return filesDir;
+}
+
+export function isFileExists(name: string): boolean {
+  return existsSync(join(getFilesFolderPath(), name));
 }
 
 export function readFile(name: string): Uint8Array {
-  return Deno.readFileSync(
-    // @ts-ignore-next-line
-    join(import.meta.dirname, '..', '..', 'files', name),
-  );
+  return Deno.readFileSync(join(getFilesFolderPath(), name));
+}
+
+export function readQRCode(name: string): Uint8Array {
+  return Deno.readFileSync(join(getQRCodesFolderPath(), name));
 }
 
 export function getFiles(): string[] {
-  const entries = Deno.readDirSync(
-    // @ts-ignore-next-line
-    join(import.meta.dirname, '..', '..', 'files'),
-  );
+  const entries = Deno.readDirSync(getFilesFolderPath());
   const files: string[] = [];
   for (const entry of entries) {
-    if (entry.isFile && entry.name !== '.gitkeep') {
+    if (entry.isFile) {
       files.push(entry.name);
     }
   }
@@ -33,12 +49,7 @@ export function generateQRCodes(): void {
   const addresses: string[] = getAddresses();
   for (const ip of addresses) {
     const filePath: string = join(
-      // @ts-ignore-next-line
-      import.meta.dirname,
-      '..',
-      '..',
-      'public',
-      'qrcodes',
+      getQRCodesFolderPath(),
       `${ip}_${PORT}.png`,
     );
     if (!existsSync(filePath)) {
@@ -53,11 +64,9 @@ export async function writeFile(
   path: string,
   content: Uint8Array | ReadableStream<Uint8Array>,
 ): Promise<void> {
-  // @ts-ignore-next-line
   await Deno.writeFile(path, content);
 }
 
 export async function removeFile(path: string): Promise<void> {
-  // @ts-ignore-next-line
   await Deno.remove(path);
 }

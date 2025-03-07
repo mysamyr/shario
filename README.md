@@ -11,7 +11,16 @@
 - Clone the project
 - Create `.env` file according to `.env.example`
 - Run `deno run start` to start the application
-- Open `http://localhost:3000` in browser (or set port from `.env`)
+- Open `http://localhost:3000` in browser (port can be setup with `PORT`
+  variable in `.env`)
+
+## API
+
+- GET /info
+- GET /files/:file
+- GET /files/:file/check
+- POST /
+- DELETE /:file
 
 ## Linting and formatting
 
@@ -22,6 +31,3 @@ from deno.
 - Run `deno task format` to do a formatting and linting.
 
 ## TODOs
-
-- add 'copy from textarea' button
-- add possibility to rename files as they are now `{ID}.ext`

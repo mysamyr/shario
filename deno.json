@@ -2,11 +2,11 @@
   "tasks": {
     "start": "deno run --env-file=.env -E=PORT,ENV -N -RW -S='networkInterfaces' ./src/main.ts",
     "dev": "deno run --env-file=.env -A --inspect --watch ./src/main.ts",
-    "compile:win": "deno compile --env-file=.env -E=PORT,ENV -N -RW -S='networkInterfaces' --target x86_64-pc-windows-msvc --icon ./public/favicon.ico --output ./assets/shario.exe ./src/main.ts",
-    "compile:mac": "deno compile --env-file=.env -E=PORT,ENV -N -RW -S='networkInterfaces' --target x86_64-apple-darwin --output ./assets/shario.sh ./src/main.ts",
-    "compile:mac-arm": "deno compile --env-file=.env -E=PORT,ENV -N -RW -S='networkInterfaces' --target aarch64-apple-darwin --output ./assets/shario.sh ./src/main.ts",
-    "compile:linux": "deno compile --env-file=.env -E=PORT,ENV -N -RW -S='networkInterfaces' --target x86_64-unknown-linux-gnu --output ./assets/shario.sh ./src/main.ts",
-    "compile:linux-arm": "deno compile --env-file=.env -E=PORT,ENV -N -RW -S='networkInterfaces' --target aarch64-unknown-linux-gnu --output ./assets/shario.sh ./src/main.ts",
+    "compile:win": "ENV=\"production\" deno compile --env-file=.env -E=PORT,ENV -N -RW -S='networkInterfaces' --target x86_64-pc-windows-msvc --include ./public --output ./assets/shario.exe ./src/main.ts",
+    "compile:mac": "ENV=\"production\" deno compile --env-file=.env -E=PORT,ENV -N -RW -S='networkInterfaces' --target x86_64-apple-darwin --include ./public --output ./assets/shario.sh ./src/main.ts",
+    "compile:mac-arm": "ENV=\"production\" deno compile --env-file=.env -E=PORT,ENV -N -RW -S='networkInterfaces' --target aarch64-apple-darwin--include ./public --output ./assets/shario.sh ./src/main.ts",
+    "compile:linux": "ENV=\"production\" deno compile --env-file=.env -E=PORT,ENV -N -RW -S='networkInterfaces' --target x86_64-unknown-linux-gnu--include ./public --output ./assets/shario.sh ./src/main.ts",
+    "compile:linux-arm": "ENV=\"production\" deno compile --env-file=.env -E=PORT,ENV -N -RW -S='networkInterfaces' --target aarch64-unknown-linux-gnu--include ./public --output ./assets/shario.sh ./src/main.ts",
     "format": "deno fmt && deno lint"
   },
   "imports": {
@@ -35,7 +35,8 @@
     "./dist",
     "./node_modules",
     "./files",
-    "./public/qrcodes"
+    "./qrcodes",
+    "./public/main.min.css"
   ],
   "lock": {
     "path": "./deno.lock",

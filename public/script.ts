@@ -1,3 +1,5 @@
+// deno-lint-ignore ban-ts-comment
+// @ts-nocheck
 let text = '';
 
 const Div = (props) => {
@@ -47,16 +49,16 @@ class Snackbar {
     this.TIME_TO_HIDE = 3 * 1000;
   }
 
-  _startTimer() {
+  _startTimer(): void {
     this.timer = setTimeout(() => this._closeHandler(), this.TIME_TO_HIDE);
   }
 
-  _clearTimer() {
+  _clearTimer(): void {
     clearTimeout(this.timer);
     this.timer = null;
   }
 
-  _showMessage(msg) {
+  _showMessage(msg: string): void {
     const component = Div({
       className: 'snackbar-container',
     });
@@ -82,7 +84,7 @@ class Snackbar {
     this.component = component;
   }
 
-  _closeHandler() {
+  _closeHandler(): void {
     this.messages.shift();
     this.component.remove();
     this.component = null;
@@ -93,7 +95,7 @@ class Snackbar {
     }
   }
 
-  displayMsg(msg) {
+  displayMsg(msg: string): void {
     this.messages.push(msg);
     if (!this.component) {
       this._showMessage(msg);
@@ -141,7 +143,7 @@ function getLocationContainer(location, port) {
   });
   const qr = document.createElement('img');
   qr.src = `/qrcodes/${location}_${port}.png`;
-  const ip = Paragraph({text: `${location}:${port}`});
+  const ip = Paragraph({ text: `${location}:${port}` });
   container.append(qr, ip);
   return container;
 }
@@ -260,7 +262,7 @@ async function uploadFile(file) {
       modal.hideModal();
       updateHeader();
     } else {
-      const {status, message} = await res.json();
+      const { status, message } = await res.json();
       console.warn(`Error with status ${status} and message ${message}`);
       snackbar.displayMsg(message);
     }
@@ -275,7 +277,7 @@ function askForUpload(file) {
     if (file.name === newFilename) {
       uploadFile(file);
     } else {
-      uploadFile(new File([file], newFilename, {type: file.type}));
+      uploadFile(new File([file], newFilename, { type: file.type }));
     }
   };
   modal.showModal(uploadFileModal(file.name, onSubmit));
@@ -291,7 +293,7 @@ async function uploadText(value) {
       body: formData,
     });
     if (!res.ok) {
-      const {status, message} = await res.json();
+      const { status, message } = await res.json();
       snackbar.displayMsg(
         `Got an Error with status ${status} and message ${message}`,
       );
@@ -309,7 +311,7 @@ async function handleDeleteFile(e, file) {
     method: 'DELETE',
   });
   if (!res.ok) {
-    const {status, message} = await res.json();
+    const { status, message } = await res.json();
     snackbar.displayMsg(`Error with status ${status} and message ${message}`);
   } else {
     snackbar.displayMsg('File deleted');
@@ -357,7 +359,7 @@ function initTextarea() {
 
   document.getElementById('copy-text').addEventListener(
     'click',
-    () =>  navigator.clipboard.writeText(element.value),
+    () => navigator.clipboard.writeText(element.value),
   );
 }
 

@@ -18,6 +18,7 @@
 
 - GET /info
 - GET /files/:file
+- GET /qrcodes/:file
 - GET /files/:file/check
 - POST /
 - DELETE /:file
@@ -31,3 +32,6 @@ from deno.
 - Run `deno task format` to do a formatting and linting.
 
 ## TODOs
+
+- fill `/public/script.ts` with types
+- test compile scripts for mac and linux

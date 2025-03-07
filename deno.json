@@ -2,7 +2,8 @@
   "tasks": {
     "start": "deno run --env-file=.env -E=PORT,ENV -N -RW -S='networkInterfaces' ./src/main.ts",
     "dev": "deno run --env-file=.env -A --inspect --watch ./src/main.ts",
-    "compile:win": "ENV=\"production\" deno compile --env-file=.env -E=PORT,ENV -N -RW -S='networkInterfaces' --target x86_64-pc-windows-msvc --include ./public --output ./assets/shario.exe ./src/main.ts",
+    "build": "deno run --allow-read --allow-write --allow-env --allow-net --allow-run bundle.ts",
+    "compile:win": "deno task build && ENV=\"production\" deno compile --env-file=.env -E=PORT,ENV -N -RW -S='networkInterfaces' --target x86_64-pc-windows-msvc --include ./public --output ./assets/shario.exe ./src/main.js",
     "compile:mac": "ENV=\"production\" deno compile --env-file=.env -E=PORT,ENV -N -RW -S='networkInterfaces' --target x86_64-apple-darwin --include ./public --output ./assets/shario.sh ./src/main.ts",
     "compile:mac-arm": "ENV=\"production\" deno compile --env-file=.env -E=PORT,ENV -N -RW -S='networkInterfaces' --target aarch64-apple-darwin--include ./public --output ./assets/shario.sh ./src/main.ts",
     "compile:linux": "ENV=\"production\" deno compile --env-file=.env -E=PORT,ENV -N -RW -S='networkInterfaces' --target x86_64-unknown-linux-gnu--include ./public --output ./assets/shario.sh ./src/main.ts",
@@ -19,6 +20,13 @@
     "include": [
       "./src",
       "./public"
+    ]
+  },
+  "compilerOptions": {
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
     ]
   },
   "fmt": {

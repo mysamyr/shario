@@ -34,4 +34,5 @@ from deno.
 ## TODOs
 
 - fill `/public/script.ts` with types
-- test compile scripts for mac and linux
+- test compile scripts for mac
+- implement drag and drop

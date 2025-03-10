@@ -1,8 +1,16 @@
-// deno-lint-ignore ban-ts-comment
-// @ts-nocheck
-let text = '';
+type Info = {
+  locations: string[];
+  port: number;
+  files: string[];
+  text: string;
+};
 
-const Div = (props) => {
+const Div = (props: {
+  id?: string;
+  text?: string;
+  className?: string;
+  onClick?: (this:HTMLDivElement, ev: MouseEvent) => void;
+}): HTMLDivElement => {
   const div = document.createElement('div');
   if (!props) return div;
   if (props.className) {
@@ -14,7 +22,11 @@ const Div = (props) => {
 
   return div;
 };
-const Paragraph = (props) => {
+const Paragraph = (props: {
+  id?: string;
+  text?: string;
+  className?: string;
+}): HTMLParagraphElement => {
   const div = document.createElement('p');
   if (!props) return div;
   if (props.className) {
@@ -25,7 +37,15 @@ const Paragraph = (props) => {
 
   return div;
 };
-const Link = (props) => {
+const Link = (props: {
+  id?: string;
+  text?: string;
+  href?: string;
+  target?: string;
+  download?: string;
+  className?: string;
+  onClick?: (this:HTMLAnchorElement, ev: MouseEvent) => void;
+}): HTMLAnchorElement => {
   const a = document.createElement('a');
   if (!props) return a;
   if (props.className) {
@@ -42,12 +62,10 @@ const Link = (props) => {
 };
 
 class Snackbar {
-  constructor() {
-    this.timer = null;
-    this.component = null;
-    this.messages = [];
-    this.TIME_TO_HIDE = 3 * 1000;
-  }
+  timer: number | null | undefined = null;
+  component: HTMLElement | null = null;
+  messages: string[] = [];
+  TIME_TO_HIDE: number = 3 * 1000;
 
   _startTimer(): void {
     this.timer = setTimeout(() => this._closeHandler(), this.TIME_TO_HIDE);
@@ -104,13 +122,14 @@ class Snackbar {
 }
 
 class Modal {
+  dialog: HTMLDialogElement;
   constructor() {
-    this.dialog = document.querySelector('dialog');
-    this.dialog.addEventListener('close', (e) => {
+    this.dialog = document.querySelector('dialog') as HTMLDialogElement;
+    this.dialog.addEventListener('close', (e): void => {
       e.target.innerHTML = '';
     });
-    this.dialog.addEventListener('click', (e) => {
-      const dialogDimensions = this.dialog.getBoundingClientRect();
+    this.dialog.addEventListener('click', (e): void => {
+      const dialogDimensions: DOMRect = this.dialog.getBoundingClientRect();
       if (
         e.clientX < dialogDimensions.left ||
         e.clientX > dialogDimensions.right ||
@@ -122,44 +141,51 @@ class Modal {
     });
   }
 
-  showModal(modal) {
+  showModal(modal: HTMLElement): void {
     this.dialog.innerText = '';
     this.dialog.appendChild(modal);
     this.dialog.showModal();
   }
 
-  hideModal() {
+  hideModal(): void {
     this.dialog.innerText = '';
     this.dialog.close();
   }
 }
 
-const modal = new Modal();
-const snackbar = new Snackbar();
+let text: string = '';
 
-function getLocationContainer(location, port) {
-  const container = Div({
+const modal: Modal = new Modal();
+const snackbar: Snackbar = new Snackbar();
+const locationsContainer: HTMLDivElement = document.getElementById('locations') as HTMLDivElement;
+const filesContainer: HTMLDivElement = document.getElementById('files') as HTMLDivElement;
+const uploadFileInput: HTMLInputElement = document.getElementById('file-upload') as HTMLInputElement;
+const copyTextBtn: HTMLParagraphElement = document.getElementById('copy-text') as HTMLParagraphElement;
+const textarea: HTMLTextAreaElement = document.querySelector('textarea') as HTMLTextAreaElement;
+
+function getLocationContainer(location: string, port: number): HTMLDivElement {
+  const container: HTMLDivElement = Div({
     className: 'location',
   });
-  const qr = document.createElement('img');
+  const qr: HTMLImageElement = document.createElement('img');
   qr.src = `/qrcodes/${location}_${port}.png`;
-  const ip = Paragraph({ text: `${location}:${port}` });
+  const ip: HTMLParagraphElement = Paragraph({ text: `${location}:${port}` });
   container.append(qr, ip);
   return container;
 }
 
-function uploadFileModal(filename, onSubmit) {
-  const container = Div({
+function uploadFileModal(filename: string, onSubmit: (param1: string) => void): HTMLDivElement {
+  const container: HTMLDivElement = Div({
     className: 'container modal-container',
   });
 
-  const header = document.createElement('h2');
+  const header: HTMLHeadingElement = document.createElement('h2');
   header.innerText = "Uploaded file's name:";
 
-  const buttons = Div({
+  const buttons: HTMLDivElement = Div({
     className: 'buttons',
   });
-  const input = document.createElement('input');
+  const input: HTMLInputElement = document.createElement('input');
   input.type = 'text';
   input.value = filename;
   buttons.append(
@@ -176,7 +202,7 @@ function uploadFileModal(filename, onSubmit) {
   );
   container.append(header, input, buttons);
   input.focus();
-  input.addEventListener('keypress', (e) => {
+  input.addEventListener('keypress', (e: KeyboardEvent): void => {
     if (e.key === 'Enter') {
       onSubmit(input.value);
     }
@@ -184,76 +210,74 @@ function uploadFileModal(filename, onSubmit) {
   return container;
 }
 
-function renderFiles(files) {
-  const filesContainer = document.getElementById('files');
+function renderFiles(files: string[]): void {
   filesContainer.innerText = '';
   if (files.length) {
-    files.forEach((file) => {
-      const container = Div({
+    files.forEach((file: string): void => {
+      const container: HTMLDivElement = Div({
         className: 'file',
       });
       container.classList.add('file');
-      const fileLink = Link({
+      const fileLink: HTMLAnchorElement = Link({
         className: 'file-link',
         href: `/files/${file}`,
         target: '_blank',
         text: file,
       });
-      const buttonsContainer = Div({
+      const buttonsContainer: HTMLDivElement = Div({
         className: 'buttons',
       });
-      const downloadLink = Link({
+      const downloadLink: HTMLAnchorElement = Link({
         className: 'btn',
         href: `/files/${file}`,
         download: file,
         text: '&#8681;',
       });
-      const deleteLink = Link({
+      const deleteLink: HTMLAnchorElement = Link({
         className: 'delete btn',
         text: 'x',
-        onClick: (e) => handleDeleteFile(e, file),
+        onClick: (e: MouseEvent) => handleDeleteFile(e, file),
       });
       buttonsContainer.append(downloadLink, deleteLink);
       container.append(fileLink, buttonsContainer);
       filesContainer.appendChild(container);
     });
   } else {
-    const container = Paragraph({
+    const container: HTMLParagraphElement = Paragraph({
       text: 'No files uploaded yet',
     });
     filesContainer.appendChild(container);
   }
 }
 
-async function updateHeader() {
-  const data = await fetch('/info');
-  const info = await data.json();
+async function updateHeader(): Promise<void> {
+  const data: Response = await fetch('/info');
+  const info: Info = await data.json();
 
-  document.querySelectorAll('.location').forEach((location) =>
+  document.querySelectorAll('.location').forEach((location: Element): void =>
     location.remove()
   );
-  info.locations.forEach((location) => {
-    document.getElementById('locations').appendChild(
+  info.locations.forEach((location: string): void => {
+    locationsContainer.appendChild(
       getLocationContainer(location, info.port),
     );
   });
 
-  document.querySelectorAll('.file').forEach((location) => location.remove());
+  document.querySelectorAll('.file').forEach((location: Element): void => location.remove());
   renderFiles(info.files);
   if (info.text.length) {
-    const textarea = document.querySelector('textarea');
     textarea.value = info.text;
     textarea.dispatchEvent(new Event('input'));
     text = info.text;
   }
 }
 
-async function uploadFile(file) {
+async function uploadFile(file: FormDataEntryValue): Promise<void> {
   const formData = new FormData();
   formData.append('file', file);
 
   try {
-    const res = await fetch('/', {
+    const res: Response = await fetch('/', {
       method: 'POST',
       body: formData,
     });
@@ -262,7 +286,7 @@ async function uploadFile(file) {
       modal.hideModal();
       updateHeader();
     } else {
-      const { status, message } = await res.json();
+      const { status, message }: { status: number, message: string } = await res.json();
       console.warn(`Error with status ${status} and message ${message}`);
       snackbar.displayMsg(message);
     }
@@ -272,8 +296,8 @@ async function uploadFile(file) {
   }
 }
 
-function askForUpload(file) {
-  const onSubmit = (newFilename) => {
+function askForUpload(file: File): void {
+  const onSubmit = (newFilename: string): void => {
     if (file.name === newFilename) {
       uploadFile(file);
     } else {
@@ -283,17 +307,17 @@ function askForUpload(file) {
   modal.showModal(uploadFileModal(file.name, onSubmit));
 }
 
-async function uploadText(value) {
+async function uploadText(value: string): Promise<void> {
   const formData = new FormData();
   formData.append('text', value);
 
   try {
-    const res = await fetch('/', {
+    const res: Response = await fetch('/', {
       method: 'POST',
       body: formData,
     });
     if (!res.ok) {
-      const { status, message } = await res.json();
+      const { status, message }: { status: number, message: string } = await res.json();
       snackbar.displayMsg(
         `Got an Error with status ${status} and message ${message}`,
       );
@@ -305,13 +329,13 @@ async function uploadText(value) {
   updateHeader();
 }
 
-async function handleDeleteFile(e, file) {
+async function handleDeleteFile(e: Event, file: string): Promise<void> {
   e.preventDefault();
-  const res = await fetch(`/${file}`, {
+  const res: Response = await fetch(`/${file}`, {
     method: 'DELETE',
   });
   if (!res.ok) {
-    const { status, message } = await res.json();
+    const { status, message }: { status: number, message: string } = await res.json();
     snackbar.displayMsg(`Error with status ${status} and message ${message}`);
   } else {
     snackbar.displayMsg('File deleted');
@@ -319,11 +343,9 @@ async function handleDeleteFile(e, file) {
   updateHeader();
 }
 
-async function handleUploadBySelect(e) {
-  const input = e.target;
-
-  if (input.files[0]) {
-    await askForUpload(input.files[0]);
+async function handleUploadBySelect(): Promise<void> {
+  if (uploadFileInput.files[0]) {
+    await askForUpload(uploadFileInput.files[0]);
 
     input.value = null;
   }
@@ -343,31 +365,29 @@ async function handleUploadByPaste(e) {
   }
 }
 
-function initTextarea() {
-  const element = document.querySelector('textarea');
-
-  element.addEventListener('input', function () {
-    this.style.height = 'auto';
-    this.style.height = this.scrollHeight > 240
+function initTextarea(): void {
+  textarea.addEventListener('input', function (): void {
+    textarea.style.height = 'auto';
+    textarea.style.height = textarea.scrollHeight > 240
       ? '244px'
-      : this.scrollHeight + 4 + 'px'; // + borders
+      : textarea.scrollHeight + 4 + 'px'; // + borders
   });
 
-  element.addEventListener('focusout', async function (e) {
-    if (text !== e.target.value) await uploadText(e.target.value);
+  textarea.addEventListener('focusout', async function (): Promise<void> {
+    if (text !== textarea.value) await uploadText(textarea.value);
   });
 
-  document.getElementById('copy-text').addEventListener(
+  copyTextBtn.addEventListener(
     'click',
     async (): Promise<void> => {
-      element.focus();
-      element.select();
-      await navigator.clipboard.writeText(element.value);
+      textarea.focus();
+      textarea.select();
+      await navigator.clipboard.writeText(textarea.value);
     },
   );
 }
 
-document.getElementById('file-upload').addEventListener(
+uploadFileInput.addEventListener(
   'change',
   handleUploadBySelect,
 );

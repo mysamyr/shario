@@ -72,6 +72,19 @@ input[type='text'] {
 .file-upload-label:hover {
   background-color: var(--light-green);
 }
+.upload-label-drag {
+  background-color: var(--light-green);
+}
+.drag-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: none;
+  z-index: 9;
+}
 /*SHARED TEXT*/
 #copy-text {
   margin-left: 1rem;

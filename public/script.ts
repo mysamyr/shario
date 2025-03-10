@@ -9,7 +9,7 @@ const Div = (props: {
   id?: string;
   text?: string;
   className?: string;
-  onClick?: (this:HTMLDivElement, ev: MouseEvent) => void;
+  onClick?: (this: HTMLDivElement, ev: MouseEvent) => void;
 }): HTMLDivElement => {
   const div = document.createElement('div');
   if (!props) return div;
@@ -44,7 +44,7 @@ const Link = (props: {
   target?: string;
   download?: string;
   className?: string;
-  onClick?: (this:HTMLAnchorElement, ev: MouseEvent) => void;
+  onClick?: (this: HTMLAnchorElement, ev: MouseEvent) => void;
 }): HTMLAnchorElement => {
   const a = document.createElement('a');
   if (!props) return a;
@@ -62,7 +62,7 @@ const Link = (props: {
 };
 
 class Snackbar {
-  timer: number | null | undefined = null;
+  timer: number | undefined;
   component: HTMLElement | null = null;
   messages: string[] = [];
   TIME_TO_HIDE: number = 3 * 1000;
@@ -73,7 +73,7 @@ class Snackbar {
 
   _clearTimer(): void {
     clearTimeout(this.timer);
-    this.timer = null;
+    delete this.timer;
   }
 
   _showMessage(msg: string): void {
@@ -104,7 +104,7 @@ class Snackbar {
 
   _closeHandler(): void {
     this.messages.shift();
-    this.component.remove();
+    this.component && this.component.remove();
     this.component = null;
     this._clearTimer();
 
@@ -123,12 +123,13 @@ class Snackbar {
 
 class Modal {
   dialog: HTMLDialogElement;
+
   constructor() {
     this.dialog = document.querySelector('dialog') as HTMLDialogElement;
-    this.dialog.addEventListener('close', (e): void => {
-      e.target.innerHTML = '';
+    this.dialog.addEventListener('close', (): void => {
+      this.dialog.innerHTML = '';
     });
-    this.dialog.addEventListener('click', (e): void => {
+    this.dialog.addEventListener('click', (e: MouseEvent): void => {
       const dialogDimensions: DOMRect = this.dialog.getBoundingClientRect();
       if (
         e.clientX < dialogDimensions.left ||
@@ -157,11 +158,21 @@ let text: string = '';
 
 const modal: Modal = new Modal();
 const snackbar: Snackbar = new Snackbar();
-const locationsContainer: HTMLDivElement = document.getElementById('locations') as HTMLDivElement;
-const filesContainer: HTMLDivElement = document.getElementById('files') as HTMLDivElement;
-const uploadFileInput: HTMLInputElement = document.getElementById('file-upload') as HTMLInputElement;
-const copyTextBtn: HTMLParagraphElement = document.getElementById('copy-text') as HTMLParagraphElement;
-const textarea: HTMLTextAreaElement = document.querySelector('textarea') as HTMLTextAreaElement;
+const locationsContainer: HTMLDivElement = document.getElementById(
+  'locations',
+) as HTMLDivElement;
+const filesContainer: HTMLDivElement = document.getElementById(
+  'files',
+) as HTMLDivElement;
+const uploadFileInput: HTMLInputElement = document.getElementById(
+  'file-upload',
+) as HTMLInputElement;
+const copyTextBtn: HTMLParagraphElement = document.getElementById(
+  'copy-text',
+) as HTMLParagraphElement;
+const textarea: HTMLTextAreaElement = document.querySelector(
+  'textarea',
+) as HTMLTextAreaElement;
 
 function getLocationContainer(location: string, port: number): HTMLDivElement {
   const container: HTMLDivElement = Div({
@@ -174,7 +185,10 @@ function getLocationContainer(location: string, port: number): HTMLDivElement {
   return container;
 }
 
-function uploadFileModal(filename: string, onSubmit: (param1: string) => void): HTMLDivElement {
+function uploadFileModal(
+  filename: string,
+  onSubmit: (param1: string) => void,
+): HTMLDivElement {
   const container: HTMLDivElement = Div({
     className: 'container modal-container',
   });
@@ -236,7 +250,7 @@ function renderFiles(files: string[]): void {
       const deleteLink: HTMLAnchorElement = Link({
         className: 'delete btn',
         text: 'x',
-        onClick: (e: MouseEvent) => handleDeleteFile(e, file),
+        onClick: (e: MouseEvent) => deleteFile(e, file),
       });
       buttonsContainer.append(downloadLink, deleteLink);
       container.append(fileLink, buttonsContainer);
@@ -263,7 +277,9 @@ async function updateHeader(): Promise<void> {
     );
   });
 
-  document.querySelectorAll('.file').forEach((location: Element): void => location.remove());
+  document.querySelectorAll('.file').forEach((location: Element): void =>
+    location.remove()
+  );
   renderFiles(info.files);
   if (info.text.length) {
     textarea.value = info.text;
@@ -284,9 +300,9 @@ async function uploadFile(file: FormDataEntryValue): Promise<void> {
     if (res.ok) {
       snackbar.displayMsg('File uploaded successfully.');
       modal.hideModal();
-      updateHeader();
     } else {
-      const { status, message }: { status: number, message: string } = await res.json();
+      const { status, message }: { status: number; message: string } = await res
+        .json();
       console.warn(`Error with status ${status} and message ${message}`);
       snackbar.displayMsg(message);
     }
@@ -297,19 +313,19 @@ async function uploadFile(file: FormDataEntryValue): Promise<void> {
 }
 
 function askForUpload(file: File): void {
-  const onSubmit = (newFilename: string): void => {
-    if (file.name === newFilename) {
-      uploadFile(file);
-    } else {
-      uploadFile(new File([file], newFilename, { type: file.type }));
-    }
+  const onSubmit = async (newFilename: string): Promise<void> => {
+    const fileToUpload: File = file.name === newFilename
+      ? file
+      : new File([file], newFilename, { type: file.type });
+    await uploadFile(fileToUpload);
+    updateHeader();
   };
   modal.showModal(uploadFileModal(file.name, onSubmit));
 }
 
 async function uploadText(value: string): Promise<void> {
   const formData = new FormData();
-  formData.append('text', value);
+  formData.append('text', value.trim());
 
   try {
     const res: Response = await fetch('/', {
@@ -317,7 +333,8 @@ async function uploadText(value: string): Promise<void> {
       body: formData,
     });
     if (!res.ok) {
-      const { status, message }: { status: number, message: string } = await res.json();
+      const { status, message }: { status: number; message: string } = await res
+        .json();
       snackbar.displayMsg(
         `Got an Error with status ${status} and message ${message}`,
       );
@@ -329,13 +346,14 @@ async function uploadText(value: string): Promise<void> {
   updateHeader();
 }
 
-async function handleDeleteFile(e: Event, file: string): Promise<void> {
+async function deleteFile(e: Event, file: string): Promise<void> {
   e.preventDefault();
   const res: Response = await fetch(`/${file}`, {
     method: 'DELETE',
   });
   if (!res.ok) {
-    const { status, message }: { status: number, message: string } = await res.json();
+    const { status, message }: { status: number; message: string } = await res
+      .json();
     snackbar.displayMsg(`Error with status ${status} and message ${message}`);
   } else {
     snackbar.displayMsg('File deleted');
@@ -343,22 +361,23 @@ async function handleDeleteFile(e: Event, file: string): Promise<void> {
   updateHeader();
 }
 
-async function handleUploadBySelect(): Promise<void> {
-  if (uploadFileInput.files[0]) {
-    await askForUpload(uploadFileInput.files[0]);
+function handleUploadBySelect(): void {
+  const files: FileList = uploadFileInput.files as FileList;
+  if (files[0]) {
+    askForUpload(files[0]);
 
-    input.value = null;
+    uploadFileInput.value = '';
   }
 }
 
-async function handleUploadByPaste(e) {
+async function handleUploadByPaste(e: ClipboardEvent): Promise<void> {
   e.stopPropagation();
   e.preventDefault();
 
-  const clipboardData = e.clipboardData;
+  const clipboardData: DataTransfer = e.clipboardData as DataTransfer;
 
   if (clipboardData.files.length) {
-    await askForUpload(clipboardData.files[0]);
+    askForUpload(clipboardData.files[0]);
   } else {
     const pastedData = clipboardData.getData('text');
     if (text !== pastedData) await uploadText(pastedData);
@@ -387,6 +406,57 @@ function initTextarea(): void {
   );
 }
 
+function initDragAndDrop(): void {
+  const uploadButton: HTMLLabelElement = document.querySelector(
+    '.file-upload-label',
+  ) as HTMLLabelElement;
+  const dragOverlay: HTMLDivElement = document.getElementById(
+    'overlay',
+  ) as HTMLDivElement;
+  let dragCounter: number = 0;
+
+  document.addEventListener('dragenter', (e: DragEvent): void => {
+    e.preventDefault();
+    e.stopPropagation();
+    dragCounter++;
+    uploadButton.innerText = 'Release to upload';
+    dragOverlay.style.display = 'block';
+    uploadButton.classList.add('upload-label-drag');
+  });
+
+  document.addEventListener('dragover', (e: DragEvent): void => {
+    e.preventDefault();
+    e.stopPropagation();
+  });
+  document.addEventListener('dragleave', (e: DragEvent): void => {
+    e.preventDefault();
+    e.stopPropagation();
+    dragCounter--;
+    if (dragCounter === 0) {
+      uploadButton.innerText = 'Select File';
+      uploadButton.classList.remove('upload-label-drag');
+      dragOverlay.style.display = 'none';
+    }
+  });
+
+  document.addEventListener('drop', async (e: DragEvent): Promise<void> => {
+    e.preventDefault();
+    e.stopPropagation();
+    uploadButton.innerText = 'Select File';
+    uploadButton.classList.remove('upload-label-drag');
+    dragOverlay.style.display = 'none';
+
+    const dragData: DataTransfer = e.dataTransfer as DataTransfer;
+
+    if (dragData.files.length) {
+      askForUpload(dragData.files[0]);
+    } else {
+      const pastedData = dragData.getData('text');
+      if (text !== pastedData) await uploadText(pastedData);
+    }
+  });
+}
+
 uploadFileInput.addEventListener(
   'change',
   handleUploadBySelect,
@@ -395,5 +465,7 @@ uploadFileInput.addEventListener(
 globalThis.addEventListener('paste', handleUploadByPaste);
 
 initTextarea();
+
+initDragAndDrop();
 
 updateHeader();

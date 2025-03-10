@@ -4,6 +4,7 @@ import router from './router.ts';
 import requestLogger from './middlewares/request-logger.ts';
 import responseTime from './middlewares/response-time.ts';
 import errorHandler from './middlewares/error-handler.ts';
+import { openUrlInBrowser } from './services/open.ts';
 import { PORT } from './config.ts';
 
 const app: Application = new Application();
@@ -33,6 +34,7 @@ app.addEventListener('error', (evt): void => {
 
 app.addEventListener('listen', ({ port }): void => {
   console.log('Start listening on http://localhost:' + port);
+  openUrlInBrowser(`http://localhost:${PORT}`);
 });
 
 await app.listen({ port: PORT });

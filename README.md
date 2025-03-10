@@ -6,33 +6,49 @@
 - [Typescript](https://www.typescriptlang.org/)
 - [Oak](https://oakserver.org/)
 
+## Features
+
+- Share files over LAN
+- Generate QR codes for file sharing
+- Upload/download files via a web interface
+- Share text via a web interface
+- Supports simple paste (Ctrl + V) for text/picture sharing
+
 ## Setup
 
-- Clone the project
-- Create `.env` file according to `.env.example`
-- Run `deno run start` to start the application
-- Open `http://localhost:3000` in browser (port can be setup with `PORT`
-  variable in `.env`)
+1. Clone the project:
+    ```sh
+   git clone git@github.com:mysamyr/shario.git
+   cd shario
+   ```
+2. Create `.env` file based on `.env.example`
+3. Build client scripts and styles:
+    ```sh
+    deno task build
+   ```
+4. Start the application:
+    ```sh
+    deno task start
+   ```
 
-## API
+## API Endpoints
 
-- GET /info
-- GET /files/:file
-- GET /qrcodes/:file
-- GET /files/:file/check
-- POST /
-- DELETE /:file
+- GET /info - Retrieve server information
+- GET /files/:file - Download a specific file
+- GET /qrcodes/:file - Get QR code for a specific file
+- GET /files/:file/check - Check if a file exists
+- POST / - Upload a file or text
+- DELETE /:file - Delete a specific file
 
 ## Linting and formatting
 
-Project uses
-[default formatting and linting](https://docs.deno.com/runtime/fundamentals/linting_and_formatting/)
-from deno.
-
-- Run `deno task format` to do a formatting and linting.
+This project uses Deno's default linting and formatting tools.
+- To format the code:
+  ```sh
+  deno task format
+  ```
 
 ## TODOs
 
-- fill `/public/script.ts` with types
-- test compile scripts for mac
-- implement drag and drop
+- Test compile scripts for macOS
+- Implement drag and drop functionality

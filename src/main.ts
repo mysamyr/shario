@@ -34,7 +34,7 @@ app.addEventListener('error', (evt): void => {
 
 app.addEventListener('listen', ({ port }): void => {
   console.log('Start listening on http://localhost:' + port);
-  openUrlInBrowser(`http://localhost:${PORT}`);
+  openUrlInBrowser(`http://localhost:${port}`);
 });
 
 await app.listen({ port: PORT });

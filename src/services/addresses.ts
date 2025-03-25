@@ -8,3 +8,19 @@ export function getAddresses(): string[] {
     return acc;
   }, []);
 }
+
+// deno-lint-ignore require-await
+export async function isPortOpen(startPort: number): Promise<boolean> {
+  try {
+    const listener = Deno.listen({
+      port: startPort,
+    });
+    listener.close();
+    return true;
+  } catch (error) {
+    if (error instanceof Deno.errors.AddrInUse) {
+      return false;
+    }
+    throw error;
+  }
+}

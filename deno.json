@@ -1,6 +1,6 @@
 {
   "tasks": {
-    "start": "deno run --env-file=.env -E=PORT,ENV -N -RW -S='networkInterfaces' ./src/main.ts",
+    "start": "deno run --env-file=.env -E=PORT,ENV -N -RW --allow-run -S='networkInterfaces' ./src/main.ts",
     "dev": "deno run --env-file=.env -A --inspect --watch ./src/main.ts",
     "build": "deno run --allow-read --allow-write --allow-env --allow-net --allow-run bundle.ts",
     "compile:win": "deno task build && ENV=\"production\" deno compile --env-file=.env --allow-run -E=PORT,ENV -N -RW -S='networkInterfaces' --target x86_64-pc-windows-msvc --include ./public --output ./assets/shario.exe --icon ./public/windows-icon.ico ./src/main.js",

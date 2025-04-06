@@ -4,3 +4,7 @@ export type Info = {
   files: string[];
   text: string;
 };
+
+export type RenameFileBody = {
+  name: string;
+};

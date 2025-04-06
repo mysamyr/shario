@@ -21,7 +21,7 @@ export const openUrlInBrowser = (url: string) => {
       stdout: 'piped',
     });
     process.spawn();
-  } catch(e) {
+  } catch (e) {
     console.error(e);
   }
 };

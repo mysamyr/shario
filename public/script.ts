@@ -4,6 +4,12 @@ type Info = {
   files: string[];
   text: string;
 };
+type InputModalProps = {
+  headerText: string;
+  submitText: string;
+  filename: string;
+  onSubmit: (param1: string, param2: string) => void;
+};
 
 const Div = (props: {
   id?: string;
@@ -185,16 +191,18 @@ function getLocationContainer(location: string, port: number): HTMLDivElement {
   return container;
 }
 
-function uploadFileModal(
-  filename: string,
-  onSubmit: (param1: string) => void,
-): HTMLDivElement {
+function inputModal({
+  headerText,
+  submitText,
+  filename,
+  onSubmit,
+}: InputModalProps): HTMLDivElement {
   const container: HTMLDivElement = Div({
     className: 'container modal-container',
   });
 
   const header: HTMLHeadingElement = document.createElement('h2');
-  header.innerText = "Uploaded file's name:";
+  header.innerText = headerText;
 
   const buttons: HTMLDivElement = Div({
     className: 'buttons',
@@ -205,8 +213,8 @@ function uploadFileModal(
   buttons.append(
     Div({
       className: 'btn',
-      text: 'Upload',
-      onClick: () => onSubmit(input.value),
+      text: submitText,
+      onClick: () => onSubmit(input.value, filename),
     }),
     Div({
       className: 'btn',
@@ -218,10 +226,34 @@ function uploadFileModal(
   input.focus();
   input.addEventListener('keypress', (e: KeyboardEvent): void => {
     if (e.key === 'Enter') {
-      onSubmit(input.value);
+      onSubmit(input.value, filename);
     }
   });
   return container;
+}
+
+function uploadFileModal(
+  filename: string,
+  onSubmit: (param1: string) => void,
+): HTMLDivElement {
+  return inputModal({
+    headerText: "Uploaded file's name:",
+    submitText: 'Upload',
+    filename,
+    onSubmit,
+  });
+}
+
+function renameFileModal(
+  filename: string,
+  onSubmit: (param1: string, param2: string) => void,
+): HTMLDivElement {
+  return inputModal({
+    headerText: 'Rename file:',
+    submitText: 'Rename',
+    filename,
+    onSubmit,
+  });
 }
 
 function renderFiles(files: string[]): void {
@@ -242,17 +274,22 @@ function renderFiles(files: string[]): void {
         className: 'buttons',
       });
       const downloadLink: HTMLAnchorElement = Link({
-        className: 'btn',
+        className: 'btn file-btn',
         href: `/files/${file}`,
         download: file,
-        text: '&#8681;',
+        text: '&#x2193;',
       });
-      const deleteLink: HTMLAnchorElement = Link({
-        className: 'delete btn',
-        text: 'x',
+      const renameBtn: HTMLDivElement = Div({
+        className: 'btn file-btn',
+        text: '&#9998;',
+        onClick: (e: MouseEvent) => handleRenameFile(e, file),
+      });
+      const deleteLink: HTMLDivElement = Div({
+        className: 'delete btn file-btn',
+        text: '&#10005;',
         onClick: (e: MouseEvent) => deleteFile(e, file),
       });
-      buttonsContainer.append(downloadLink, deleteLink);
+      buttonsContainer.append(downloadLink, renameBtn, deleteLink);
       container.append(fileLink, buttonsContainer);
       filesContainer.appendChild(container);
     });
@@ -346,6 +383,30 @@ async function uploadText(value: string): Promise<void> {
   updateHeader();
 }
 
+async function renameFile(newValue: string, oldValue: string): Promise<void> {
+  if (!newValue.trim()) {
+    snackbar.displayMsg('Provide file name');
+    return;
+  }
+  if (newValue.trim().toLocaleLowerCase() === oldValue.toLocaleLowerCase()) {
+    snackbar.displayMsg("Name wasn't change");
+    return;
+  }
+  const res: Response = await fetch(`/${oldValue}`, {
+    method: 'PUT',
+    body: JSON.stringify({ name: newValue }),
+  });
+  if (res.ok) {
+    snackbar.displayMsg('File renamed');
+    modal.hideModal();
+    updateHeader();
+  } else {
+    const { status, message }: { status: number; message: string } = await res
+      .json();
+    snackbar.displayMsg(`Error with status ${status} and message ${message}`);
+  }
+}
+
 async function deleteFile(e: Event, file: string): Promise<void> {
   e.preventDefault();
   const res: Response = await fetch(`/${file}`, {
@@ -368,6 +429,12 @@ function handleUploadBySelect(): void {
 
     uploadFileInput.value = '';
   }
+}
+
+function handleRenameFile(e: Event, file: string): void {
+  e.preventDefault();
+
+  modal.showModal(renameFileModal(file, renameFile));
 }
 
 async function handleUploadByPaste(e: ClipboardEvent): Promise<void> {

@@ -6,6 +6,7 @@ import {
   getFiles,
   getFilesFolderPath,
   isFileExists,
+  moveFile,
   readFile,
   readQRCode,
   removeFile,
@@ -43,6 +44,19 @@ export async function saveFile(req: Request, _res: Response): Promise<void> {
       Store.setText(val);
     }
   }
+}
+
+export async function renameFile(
+  filename: string,
+  newFilename: string,
+): Promise<void> {
+  if (!isFileExists(filename)) {
+    throw new httpErrors.BadRequest("File doesn't exists");
+  }
+  await moveFile(
+    join(getFilesFolderPath(), filename),
+    join(getFilesFolderPath(), newFilename),
+  );
 }
 
 export async function deleteFile(filename: string): Promise<void> {

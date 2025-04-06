@@ -67,6 +67,13 @@ export async function writeFile(
   await Deno.writeFile(path, content);
 }
 
+export async function moveFile(
+  originalPath: string,
+  newPath: string,
+): Promise<void> {
+  await Deno.rename(originalPath, newPath);
+}
+
 export async function removeFile(path: string): Promise<void> {
   await Deno.remove(path);
 }

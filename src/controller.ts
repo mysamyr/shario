@@ -23,6 +23,9 @@ export function getInfo(): Info {
 }
 
 export function getFile(filename: string): Uint8Array {
+  if (!isFileExists(filename)) {
+    throw new httpErrors.BadRequest('File does not exist');
+  }
   return readFile(filename);
 }
 

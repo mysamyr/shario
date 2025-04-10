@@ -11,13 +11,13 @@ type InputModalProps = {
   onSubmit: (param1: string, param2: string) => void;
 };
 
-const Div = (props: {
+function Div(props: {
   id?: string;
   text?: string;
   className?: string;
   onClick?: (this: HTMLDivElement, ev: MouseEvent) => void;
-}): HTMLDivElement => {
-  const div = document.createElement('div');
+}): HTMLDivElement {
+  const div: HTMLDivElement = document.createElement('div');
   if (!props) return div;
   if (props.className) {
     div.classList.add(...props.className.split(' ').filter(Boolean));
@@ -27,23 +27,23 @@ const Div = (props: {
   if (props.onClick) div.addEventListener('click', props.onClick);
 
   return div;
-};
-const Paragraph = (props: {
+}
+function Paragraph(props: {
   id?: string;
   text?: string;
   className?: string;
-}): HTMLParagraphElement => {
-  const div = document.createElement('p');
-  if (!props) return div;
+}): HTMLParagraphElement {
+  const p: HTMLParagraphElement = document.createElement('p');
+  if (!props) return p;
   if (props.className) {
-    div.classList.add(...props.className.split(' ').filter(Boolean));
+    p.classList.add(...props.className.split(' ').filter(Boolean));
   }
-  if (props.text) div.innerHTML = props.text;
-  if (props.id) div.id = props.id;
+  if (props.text) p.innerHTML = props.text;
+  if (props.id) p.id = props.id;
 
-  return div;
-};
-const Link = (props: {
+  return p;
+}
+function Link(props: {
   id?: string;
   text?: string;
   href?: string;
@@ -51,8 +51,8 @@ const Link = (props: {
   download?: string;
   className?: string;
   onClick?: (this: HTMLAnchorElement, ev: MouseEvent) => void;
-}): HTMLAnchorElement => {
-  const a = document.createElement('a');
+}): HTMLAnchorElement {
+  const a: HTMLAnchorElement = document.createElement('a');
   if (!props) return a;
   if (props.className) {
     a.classList.add(...props.className.split(' ').filter(Boolean));
@@ -65,7 +65,7 @@ const Link = (props: {
   if (props.onClick) a.addEventListener('click', props.onClick);
 
   return a;
-};
+}
 
 class Snackbar {
   timer: number | undefined;

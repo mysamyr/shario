@@ -1,4 +1,4 @@
-import {Context, Next} from '@oak/oak';
+import { Context, Next } from '@oak/oak';
 
 export default async (context: Context, next: Next): Promise<void> => {
   const start: number = Date.now();

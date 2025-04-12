@@ -34,7 +34,9 @@ app.addEventListener('error', (evt): void => {
 
 app.addEventListener('listen', ({ port }): void => {
   console.log('Start listening on http://localhost:' + port);
-  openUrlInBrowser(`http://localhost:${port}`);
+  if (Deno.env.get('ENV') === 'production') {
+    openUrlInBrowser(`http://localhost:${port}`);
+  }
 });
 
 await app.listen({ port: PORT });

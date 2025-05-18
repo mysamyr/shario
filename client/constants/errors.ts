@@ -20,7 +20,8 @@ export const FILENAME_TOO_SHORT: string =
 export const FILENAME_STARTS_DOT: string = 'Filename cannot start with a dot';
 export const FILENAME_ENDS_DOT: string = 'Filename cannot end with a dot';
 export const NAME_WAS_NOT_CHANGED: string = 'Name was not changed';
-export const FILE_TOO_BIG: string = 'File size exceeds 1GB';
+export const FILES_TOO_BIG = (files: string): string =>
+  `Files ${files} size exceeds 10GB`;
 export const UPLOAD_ERROR: string = 'Error while uploading file.';
 export const API_ERROR_$ = (status: number, message: string): string =>
   `Error with status ${status} and message ${message}`;

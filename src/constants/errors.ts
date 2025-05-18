@@ -22,7 +22,7 @@ export const FILENAME_STARTS_DOT: string = 'Filename cannot start with a dot';
 export const FILENAME_ENDS_DOT: string = 'Filename cannot end with a dot';
 export const FILE_ALREADY_EXISTS: string = 'File already exists';
 export const NOT_EXISTING_FILE: string = "File doesn't exists";
-export const FILE_TOO_BIG: string = 'File size exceeds 1GB';
+export const FILE_TOO_BIG: string = 'File size exceeds 10GB';
 export const PLATFORM_IS_NOT_SUPPORTED: string =
   `Platform ${Deno.build.os} isn't supported.`;
 export const NO_FILE: string = 'No file provided';

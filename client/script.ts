@@ -39,7 +39,7 @@ async function uploadText(value: string): Promise<void> {
 function handleUploadBySelect(): void {
   const files: FileList = uploadFileInput.files as FileList;
   if (files[0]) {
-    askForUpload(files[0]);
+    askForUpload(Array.from(files));
 
     uploadFileInput.value = '';
   }
@@ -52,7 +52,7 @@ async function handleUploadByPaste(e: ClipboardEvent): Promise<void> {
   const clipboardData: DataTransfer = e.clipboardData as DataTransfer;
 
   if (clipboardData.files.length) {
-    askForUpload(clipboardData.files[0]);
+    askForUpload(Array.from(clipboardData.files));
   } else {
     const pastedData = clipboardData.getData('text');
     if (getText() !== pastedData) await uploadText(pastedData);
@@ -124,7 +124,7 @@ function initDragAndDrop(): void {
     const dragData: DataTransfer = e.dataTransfer as DataTransfer;
 
     if (dragData.files.length) {
-      askForUpload(dragData.files[0]);
+      askForUpload(Array.from(dragData.files));
     } else {
       const pastedData = dragData.getData('text');
       if (getText() !== pastedData) await uploadText(pastedData);

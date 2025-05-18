@@ -1,8 +1,21 @@
-import { InputModalProps } from '../types.ts';
-import { Div, Header } from '../components.ts';
+import { ApiError, InputModalProps } from '../types.ts';
+import { Div, Header, Input } from '../components.ts';
 import modal from './modal.ts';
 import snackbar from './snackbar.ts';
 import { updateHeader } from './header.ts';
+import { validateFilename } from '../helpers.ts';
+import {
+  API_ERROR_$,
+  FILE_TOO_BIG,
+  NAME_WAS_NOT_CHANGED,
+  UPLOAD_ERROR,
+} from '../constants/errors.ts';
+import {
+  FILE_DELETED,
+  FILE_RENAMED,
+  FILE_UPLOADED,
+} from '../constants/messages.ts';
+import { MAX_FILE_SIZE } from '../constants/index.ts';
 
 function inputModal({
   headerText,
@@ -22,14 +35,15 @@ function inputModal({
   const buttons: HTMLDivElement = Div({
     className: 'buttons',
   });
-  const input: HTMLInputElement = document.createElement('input');
-  input.type = 'text';
-  input.value = filename;
+  const input: HTMLInputElement = Input({
+    type: 'text',
+    value: filename,
+  });
   buttons.append(
     Div({
       className: 'btn',
       text: submitText,
-      onClick: () => onSubmit(input.value, filename),
+      onClick: () => onSubmit(input.value, filename.trim()),
     }),
     Div({
       className: 'btn',
@@ -84,32 +98,32 @@ async function uploadFile(file: FormDataEntryValue): Promise<void> {
   bar.style.width = '0';
 
   try {
-    await new Promise<void>((resolve, reject) => {
-      const xhr = new XMLHttpRequest();
+    await new Promise<void>((resolve, reject): void => {
+      const xhr: XMLHttpRequest = new XMLHttpRequest();
       xhr.open('POST', '/');
-      xhr.upload.onprogress = (event) => {
+      xhr.upload.onprogress = (event: ProgressEvent<EventTarget>): void => {
         if (event.lengthComputable) {
           const percent: number = (event.loaded / event.total) * 100;
           bar.style.width = percent + '%';
         }
       };
-      xhr.onload = () => {
+      xhr.onload = (): void => {
         progressBar.style.display = 'none';
         if (xhr.status >= 200 && xhr.status < 300) {
-          snackbar.displayMsg('File uploaded successfully.');
+          snackbar.displayMsg(FILE_UPLOADED);
           modal.hideModal();
           resolve();
         } else {
-          const { status, message } = JSON.parse(xhr.responseText);
-          console.warn(`Error with status ${status} and message ${message}`);
+          const { status, message }: ApiError = JSON.parse(xhr.responseText);
+          console.warn(API_ERROR_$(status, message));
           snackbar.displayMsg(message);
           reject(new Error(message));
         }
       };
-      xhr.onerror = () => {
+      xhr.onerror = (): void => {
         progressBar.style.display = 'none';
-        snackbar.displayMsg('Error while uploading file.');
-        reject(new Error('Upload failed'));
+        snackbar.displayMsg(UPLOAD_ERROR);
+        reject(new Error(UPLOAD_ERROR));
       };
       xhr.send(formData);
     });
@@ -119,11 +133,16 @@ async function uploadFile(file: FormDataEntryValue): Promise<void> {
 }
 
 export function askForUpload(file: File): void {
-  if (file.size > 1024 * 1024 * 1024) {
-    snackbar.displayMsg('File size exceeds 1GB');
+  if (file.size > MAX_FILE_SIZE) {
+    snackbar.displayMsg(FILE_TOO_BIG);
     return;
   }
   const onSubmit = async (newFilename: string): Promise<void> => {
+    const error: string | undefined = validateFilename(newFilename);
+    if (error) {
+      snackbar.displayMsg(error);
+      return;
+    }
     const fileToUpload: File = file.name === newFilename
       ? file
       : new File([file], newFilename, { type: file.type });
@@ -134,12 +153,13 @@ export function askForUpload(file: File): void {
 }
 
 async function renameFile(newValue: string, oldValue: string): Promise<void> {
-  if (!newValue.trim()) {
-    snackbar.displayMsg('Provide file name');
+  const error: string | undefined = validateFilename(newValue);
+  if (error) {
+    snackbar.displayMsg(error);
     return;
   }
-  if (newValue.trim().toLocaleLowerCase() === oldValue.toLocaleLowerCase()) {
-    snackbar.displayMsg("Name wasn't change");
+  if (newValue.toLocaleLowerCase() === oldValue.toLocaleLowerCase()) {
+    snackbar.displayMsg(NAME_WAS_NOT_CHANGED);
     return;
   }
   const res: Response = await fetch(`/${oldValue}`, {
@@ -147,13 +167,13 @@ async function renameFile(newValue: string, oldValue: string): Promise<void> {
     body: JSON.stringify({ name: newValue }),
   });
   if (res.ok) {
-    snackbar.displayMsg('File renamed');
+    snackbar.displayMsg(FILE_RENAMED);
     modal.hideModal();
     updateHeader();
   } else {
-    const { status, message }: { status: number; message: string } = await res
+    const { status, message }: ApiError = await res
       .json();
-    snackbar.displayMsg(`Error with status ${status} and message ${message}`);
+    snackbar.displayMsg(API_ERROR_$(status, message));
   }
 }
 
@@ -163,11 +183,11 @@ export async function deleteFile(e: Event, file: string): Promise<void> {
     method: 'DELETE',
   });
   if (!res.ok) {
-    const { status, message }: { status: number; message: string } = await res
+    const { status, message }: ApiError = await res
       .json();
-    snackbar.displayMsg(`Error with status ${status} and message ${message}`);
+    snackbar.displayMsg(API_ERROR_$(status, message));
   } else {
-    snackbar.displayMsg('File deleted');
+    snackbar.displayMsg(FILE_DELETED);
   }
   updateHeader();
 }

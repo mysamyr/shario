@@ -21,7 +21,7 @@
   "lint": {
     "include": [
       "./src",
-      "./public"
+      "./client"
     ]
   },
   "compilerOptions": {
@@ -42,8 +42,9 @@
   },
   "exclude": [
     "./.idea",
-    "./.hook",
+    "./.hooks",
     "./assets",
+    "./public",
     "./files",
     "./qrcodes",
     "./src/main.js",

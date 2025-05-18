@@ -2,6 +2,12 @@ import { join } from '@std/path';
 import { httpErrors, Request, Response } from 'jsr:@oak/oak';
 import { Info } from './types.ts';
 import {
+  FILE_ALREADY_EXISTS,
+  FILE_TOO_BIG,
+  NOT_EXISTING_FILE,
+} from './constants/errors.ts';
+import { MAX_FILE_SIZE } from './constants/index.ts';
+import {
   generateQRCodes,
   getFiles,
   getFilesFolderPath,
@@ -25,7 +31,7 @@ export function getInfo(): Info {
 
 export function getFile(filename: string): Uint8Array {
   if (!isFileExists(filename)) {
-    throw new httpErrors.BadRequest('File does not exist');
+    throw new httpErrors.BadRequest(NOT_EXISTING_FILE);
   }
   return readFile(filename);
 }
@@ -40,10 +46,10 @@ export async function saveFile(req: Request, _res: Response): Promise<void> {
     const val: FormDataEntryValue = pair[1];
     if (val instanceof File) {
       if (isFileExists(val.name)) {
-        throw new httpErrors.BadRequest('File name already exists');
+        throw new httpErrors.BadRequest(FILE_ALREADY_EXISTS);
       }
-      if (val.size > 1024 * 1024 * 1024) {
-        throw new httpErrors.BadRequest('File size exceeds 1GB');
+      if (val.size > MAX_FILE_SIZE) {
+        throw new httpErrors.BadRequest(FILE_TOO_BIG);
       }
       const validationError = validateFilename(val.name);
       if (validationError) {
@@ -62,7 +68,7 @@ export async function renameFile(
   newFilename: string,
 ): Promise<void> {
   if (!isFileExists(filename)) {
-    throw new httpErrors.BadRequest("File doesn't exists");
+    throw new httpErrors.BadRequest(NOT_EXISTING_FILE);
   }
   const validationError = validateFilename(newFilename);
   if (validationError) {
@@ -76,7 +82,7 @@ export async function renameFile(
 
 export async function deleteFile(filename: string): Promise<void> {
   if (!isFileExists(filename)) {
-    throw new httpErrors.BadRequest("File doesn't exists");
+    throw new httpErrors.BadRequest(NOT_EXISTING_FILE);
   }
   await removeFile(join(getFilesFolderPath(), filename));
 }

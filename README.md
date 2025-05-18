@@ -52,5 +52,5 @@ This project uses Deno's default linting and formatting tools.
 
 ## TODOs
 
-- Test compile scripts for macOS
-- Allow multiple file upload
+- Test compile scripts for Win, macOS and Linux
+- Allow multiple file upload (on Client)

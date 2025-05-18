@@ -1,3 +1,5 @@
+import { PLATFORM_IS_NOT_SUPPORTED } from '../constants/errors.ts';
+
 const commands = (): [string] | [string, string[]] => {
   switch (Deno.build.os) {
     case 'android':
@@ -8,7 +10,7 @@ const commands = (): [string] | [string, string[]] => {
     case 'windows':
       return ['cmd', ['/c', 'start']];
     default:
-      throw new Error(`Platform ${Deno.build.os} isn't supported.`);
+      throw new Error(PLATFORM_IS_NOT_SUPPORTED);
   }
 };
 

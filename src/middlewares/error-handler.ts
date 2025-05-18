@@ -1,9 +1,10 @@
 import { isHttpError } from 'jsr:@oak/commons/http_errors';
 import { Context, Next, Status } from 'jsr:@oak/oak';
 import * as config from './../config.ts';
+import { INTERNAL_SERVER_ERROR } from '../constants/errors.ts';
 
 function isDevelopmentMode(): boolean {
-  return config.ENV === 'dev' || config.ENV === 'development';
+  return config.ENV === 'development';
 }
 
 export default async (ctx: Context, next: Next): Promise<void> => {
@@ -16,7 +17,7 @@ export default async (ctx: Context, next: Next): Promise<void> => {
     const status = err.status || err.statusCode || Status.InternalServerError;
 
     if (!isHttpError(err)) {
-      message = isDevelopmentMode() ? message : 'Internal Server Error';
+      message = isDevelopmentMode() ? message : INTERNAL_SERVER_ERROR;
     }
     if (isDevelopmentMode()) {
       console.error(err);

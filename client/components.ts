@@ -52,6 +52,29 @@ export function Paragraph(props: {
   return p;
 }
 
+export function Input(props: {
+  id?: string;
+  type?: string;
+  value?: string;
+  title?: string;
+  className?: string;
+  onClick?: (this: HTMLInputElement, ev: MouseEvent) => void;
+  onChange?: (this: HTMLInputElement, ev: Event) => void;
+}): HTMLInputElement {
+  const input: HTMLInputElement = document.createElement('input');
+  if (!props) return input;
+  if (props.className) {
+    input.classList.add(...props.className.split(' ').filter(Boolean));
+  }
+  if (props.id) input.id = props.id;
+  if (props.type) input.type = props.type;
+  if (props.value) input.value = props.value;
+  if (props.title) input.title = props.title;
+  if (props.onClick) input.addEventListener('click', props.onClick);
+  if (props.onChange) input.addEventListener('change', props.onChange);
+
+  return input;
+}
 export function Link(props: {
   id?: string;
   text?: string;

@@ -2,6 +2,8 @@ import snackbar from './features/snackbar.ts';
 import { updateHeader } from './features/header.ts';
 import { getText } from './features/text.ts';
 import { askForUpload } from './features/files.ts';
+import { API_ERROR_$ } from './constants/errors.ts';
+import { ApiError } from './types.ts';
 
 const uploadFileInput: HTMLInputElement = document.getElementById(
   'file-upload',
@@ -23,11 +25,9 @@ async function uploadText(value: string): Promise<void> {
       body: formData,
     });
     if (!res.ok) {
-      const { status, message }: { status: number; message: string } = await res
+      const { status, message }: ApiError = await res
         .json();
-      snackbar.displayMsg(
-        `Got an Error with status ${status} and message ${message}`,
-      );
+      snackbar.displayMsg(API_ERROR_$(status, message));
     }
   } catch (error) {
     console.error(error);

@@ -1,12 +1,13 @@
 /.idea
-.DS_Store
 /node_modules
 /dist
+.DS_Store
 .env
 
 /assets/*
 /files/*
 /qrcodes/*
+
 /src/main.js
 /public/script.min.js
 /public/main.min.css

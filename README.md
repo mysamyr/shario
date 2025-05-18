@@ -10,39 +10,41 @@
 
 - Share files over LAN
 - Generate QR codes for file sharing
-- Upload/download files via a web interface
+- Upload/download files via a web interface or using URL
 - Share text via a web interface
-- Supports simple paste (Ctrl + V) for text/picture sharing
+- Supports simple paste (Ctrl/Cmd + V) for text and file
+- Supports Drag&Drop for text and file
 
 ## Setup
 
 1. Clone the project:
-    ```sh
-   git clone git@github.com:mysamyr/shario.git
-   cd shario
+   ```sh
+   git clone git@github.com:mysamyr/shario.git && cd shario
    ```
-2. Create `.env` file based on `.env.example`
+2. (optional) Create `.env` file based on `.env.example`
 3. Build client scripts and styles:
-    ```sh
-    deno task build
+   ```sh
+   deno task build
    ```
 4. Start the application:
-    ```sh
-    deno task start
+   ```sh
+   deno task start
    ```
 
 ## API Endpoints
 
-- GET /info - Retrieve server information
-- GET /files/:file - Download a specific file
-- GET /qrcodes/:file - Get QR code for a specific file
-- GET /files/:file/check - Check if a file exists
-- POST / - Upload a file or text
-- DELETE /:file - Delete a specific file
+- `GET /info` - Retrieve server information
+- `GET /files/:file` - Download a specific file
+- `GET /qrcodes/:file` - Get QR code for a specific file
+- `GET /files/:file/check` - Check if a file exists
+- `POST /` - Upload a file or text
+- `PUT /:file` - Rename a file
+- `DELETE /:file` - Delete a specific file
 
 ## Linting and formatting
 
 This project uses Deno's default linting and formatting tools.
+
 - To format the code:
   ```sh
   deno task format
@@ -50,5 +52,6 @@ This project uses Deno's default linting and formatting tools.
 
 ## TODOs
 
-- Test compile scripts for macOS
-- Implement drag and drop functionality
+- Test compile scripts for Win, macOS and Linux
+- Rework the files uploading to call API for upload separate file with its own
+  progress bar and display progress bar for each file

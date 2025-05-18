@@ -6,7 +6,7 @@ import { ENV, PORT } from '../config.ts';
 
 export function getRootPath(): string {
   if (ENV !== 'production') return Deno.cwd();
-  const execPath = Deno.execPath();
+  const execPath = Deno.execPath(); // application file path or deno executable path
   return dirname(execPath);
 }
 
@@ -65,6 +65,13 @@ export async function writeFile(
   content: Uint8Array | ReadableStream<Uint8Array>,
 ): Promise<void> {
   await Deno.writeFile(path, content);
+}
+
+export async function moveFile(
+  originalPath: string,
+  newPath: string,
+): Promise<void> {
+  await Deno.rename(originalPath, newPath);
 }
 
 export async function removeFile(path: string): Promise<void> {

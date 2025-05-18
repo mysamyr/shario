@@ -1,14 +1,16 @@
 {
   "tasks": {
-    "start": "deno run --env-file=.env -E=PORT,ENV -N -RW -S='networkInterfaces' ./src/main.ts",
+    "start": "deno task build && deno run --env-file=.env -E=PORT,ENV -N -RW --allow-run -S='networkInterfaces' ./src/main.ts",
     "dev": "deno run --env-file=.env -A --inspect --watch ./src/main.ts",
     "build": "deno run --allow-read --allow-write --allow-env --allow-net --allow-run bundle.ts",
+    "build:dev": "deno run --allow-read --allow-write --allow-env --allow-net --allow-run bundle-dev.ts",
     "compile:win": "deno task build && ENV=\"production\" deno compile --env-file=.env --allow-run -E=PORT,ENV -N -RW -S='networkInterfaces' --target x86_64-pc-windows-msvc --include ./public --output ./assets/shario.exe --icon ./public/windows-icon.ico ./src/main.js",
     "compile:mac": "deno task build && ENV=\"production\" deno compile --env-file=.env --allow-run -E=PORT,ENV -N -RW -S='networkInterfaces' --target x86_64-apple-darwin --include ./public --output ./assets/shario.sh ./src/main.js",
     "compile:mac-arm": "deno task build && ENV=\"production\" deno compile --env-file=.env --allow-run -E=PORT,ENV -N -RW -S='networkInterfaces' --target aarch64-apple-darwin --include ./public --output ./assets/shario.sh ./src/main.js",
     "compile:linux": "deno task build && ENV=\"production\" deno compile --env-file=.env --allow-run -E=PORT,ENV -N -RW -S='networkInterfaces' --target x86_64-unknown-linux-gnu --include ./public --output ./assets/shario.sh ./src/main.js",
     "compile:linux-arm": "deno task build && ENV=\"production\" deno compile --env-file=.env --allow-run -E=PORT,ENV -N -RW -S='networkInterfaces' --target aarch64-unknown-linux-gnu --include ./public --output ./assets/shario.sh ./src/main.js",
-    "format": "deno fmt && deno lint"
+    "format": "deno fmt && deno lint",
+    "hook": "deno run --allow-read --allow-run --allow-write https://deno.land/x/deno_hooks@0.1.2/mod.ts"
   },
   "imports": {
     "@oak/oak": "jsr:@oak/oak@^17.1.4",
@@ -19,7 +21,7 @@
   "lint": {
     "include": [
       "./src",
-      "./public"
+      "./client"
     ]
   },
   "compilerOptions": {
@@ -40,10 +42,10 @@
   },
   "exclude": [
     "./.idea",
+    "./.hooks",
     "./assets",
-    "./dist",
+    "./public",
     "./files",
-    "./node_modules",
     "./qrcodes",
     "./src/main.js",
     "./public/main.min.css",

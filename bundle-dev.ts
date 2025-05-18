@@ -14,7 +14,7 @@ await esbuild.build({
   treeShaking: true,
 });
 
-await esbuild.build({
+const ctx1 = await esbuild.context({
   entryPoints: ['./client/script.ts'],
   outfile: './public/script.min.js',
   bundle: true,
@@ -26,7 +26,7 @@ await esbuild.build({
   treeShaking: true,
 });
 
-await esbuild.build({
+const ctx2 = await esbuild.context({
   plugins: [],
   entryPoints: ['./public/main.css'],
   outfile: './public/main.min.css',
@@ -34,4 +34,4 @@ await esbuild.build({
   minify: true,
 });
 
-await esbuild.stop();
+await Promise.all([ctx1.watch(), ctx2.watch()]);

@@ -6,7 +6,7 @@ import { ENV, PORT } from '../config.ts';
 
 export function getRootPath(): string {
   if (ENV !== 'production') return Deno.cwd();
-  const execPath = Deno.execPath();
+  const execPath = Deno.execPath(); // application file path or deno executable path
   return dirname(execPath);
 }
 

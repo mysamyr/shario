@@ -15,7 +15,7 @@ await esbuild.build({
 });
 
 const ctx1 = await esbuild.context({
-  entryPoints: ['./public/script.ts'],
+  entryPoints: ['./client/script.ts'],
   outfile: './public/script.min.js',
   bundle: true,
   platform: 'browser',

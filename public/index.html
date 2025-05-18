@@ -15,16 +15,20 @@
 
     <div class="container">
       <h2>Upload file:</h2>
-      <label for="file-upload" class="file-upload-label">Select File</label>
+      <label
+        for="file-upload"
+        class="file-upload-label"
+        title="Upload file from disk"
+      >Select File</label>
       <input id="file-upload" type="file" />
     </div>
 
     <div class="container">
       <div class="row">
         <h2>Shared text:</h2>
-        <p id="copy-text">&#128203;</p>
+        <p id="copy-text" title="Copy textarea content">&#128203;</p>
       </div>
-      <textarea></textarea>
+      <textarea placeholder="Write something here to share"></textarea>
     </div>
 
     <div class="container">
@@ -35,6 +39,10 @@
     <dialog></dialog>
 
     <div id="overlay" class="drag-overlay"></div>
+
+    <div id="upload-progress">
+      <div id="upload-bar"></div>
+    </div>
 
     <script src="script.min.js"></script>
   </body>

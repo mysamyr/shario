@@ -15,7 +15,7 @@ await esbuild.build({
 });
 
 await esbuild.build({
-  entryPoints: ['./public/script.ts'],
+  entryPoints: ['./client/script.ts'],
   outfile: './public/script.min.js',
   bundle: true,
   platform: 'browser',

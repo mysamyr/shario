@@ -1,4 +1,5 @@
 /.idea
+.DS_Store
 /node_modules
 /dist
 .env
@@ -8,3 +9,4 @@
 /qrcodes/*
 /src/main.js
 /public/script.min.js
+/public/main.min.css

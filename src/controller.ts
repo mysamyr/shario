@@ -12,10 +12,11 @@ import {
   removeFile,
   writeFile,
 } from './services/files.ts';
-import { getAddresses } from './services/addresses.ts';
 import { PORT } from './config.ts';
 import { mapInfo } from './mappers.ts';
 import Store from './store.ts';
+import { validateFilename } from './helpers.ts';
+import { getAddresses } from './services/addresses.ts';
 
 export function getInfo(): Info {
   generateQRCodes();
@@ -41,6 +42,13 @@ export async function saveFile(req: Request, _res: Response): Promise<void> {
       if (isFileExists(val.name)) {
         throw new httpErrors.BadRequest('File name already exists');
       }
+      if (val.size > 1024 * 1024 * 1024) {
+        throw new httpErrors.BadRequest('File size exceeds 1GB');
+      }
+      const validationError = validateFilename(val.name);
+      if (validationError) {
+        throw new httpErrors.BadRequest(validationError);
+      }
       const content: ReadableStream<Uint8Array> = val.stream();
       await writeFile(join(getFilesFolderPath(), val.name), content);
     } else {
@@ -55,6 +63,10 @@ export async function renameFile(
 ): Promise<void> {
   if (!isFileExists(filename)) {
     throw new httpErrors.BadRequest("File doesn't exists");
+  }
+  const validationError = validateFilename(newFilename);
+  if (validationError) {
+    throw new httpErrors.BadRequest(validationError);
   }
   await moveFile(
     join(getFilesFolderPath(), filename),

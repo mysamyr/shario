@@ -21,7 +21,7 @@
    ```sh
    git clone git@github.com:mysamyr/shario.git && cd shario
    ```
-2. Create `.env` file based on `.env.example`
+2. (optional) Create `.env` file based on `.env.example`
 3. Build client scripts and styles:
    ```sh
    deno task build
@@ -53,6 +53,4 @@ This project uses Deno's default linting and formatting tools.
 ## TODOs
 
 - Test compile scripts for macOS
-- Test port autoselect
-- Test file renaming
-- Add filename validation
+- Allow multiple file upload

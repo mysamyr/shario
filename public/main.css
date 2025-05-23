@@ -61,6 +61,11 @@ h1, h2 {
   align-items: center;
 }
 
+img {
+  user-drag: none;
+  -webkit-user-drag: none;
+}
+
 /*UPLOAD*/
 input[type='file'] {
   display: none;

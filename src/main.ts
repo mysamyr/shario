@@ -19,8 +19,7 @@ app.use(router.allowedMethods());
 app.use(async (context: Context, next: Next) => {
   try {
     await context.send({
-      // @ts-ignore-next-line
-      root: join(import.meta.dirname, '..', 'public'),
+      root: join(import.meta.dirname as string, '..', 'public'),
       index: 'index.html',
     });
   } catch {

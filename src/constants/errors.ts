@@ -1,4 +1,5 @@
 export const INTERNAL_SERVER_ERROR: string = 'Internal Server Error';
+export const ACCESS_DENIED: string = 'Access denied';
 export const NO_FILENAME_PROVIDED: string = 'No filename provided';
 export const FILENAME_SLASHES: string = 'Filename cannot contain slashes';
 export const FILENAME_BACKSLASHES: string =

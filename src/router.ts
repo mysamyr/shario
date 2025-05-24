@@ -1,4 +1,4 @@
-import { Context, Router, Status } from 'jsr:@oak/oak';
+import { Context, Router, Status } from '@oak/oak';
 import {
   deleteFile,
   getFile,

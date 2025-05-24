@@ -4,6 +4,7 @@ import router from './router.ts';
 import requestLogger from './middlewares/request-logger.ts';
 import responseTime from './middlewares/response-time.ts';
 import errorHandler from './middlewares/error-handler.ts';
+import localNetworkMiddleware from './middlewares/local-network.ts';
 import { openUrlInBrowser } from './services/open.ts';
 import { ENV, PORT } from './config.ts';
 
@@ -12,6 +13,7 @@ const app: Application = new Application();
 app.use(requestLogger);
 app.use(errorHandler);
 app.use(responseTime);
+app.use(localNetworkMiddleware);
 
 app.use(router.routes());
 app.use(router.allowedMethods());

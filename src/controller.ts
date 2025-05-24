@@ -1,5 +1,5 @@
 import { join } from '@std/path';
-import { httpErrors, Request, Response } from 'jsr:@oak/oak';
+import { httpErrors, Request, Response } from '@oak/oak';
 import { Info } from './types.ts';
 import {
   FILE_ALREADY_EXISTS,

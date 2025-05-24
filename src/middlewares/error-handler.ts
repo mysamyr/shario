@@ -1,5 +1,5 @@
-import { isHttpError } from 'jsr:@oak/commons/http_errors';
-import { Context, Next, Status } from 'jsr:@oak/oak';
+import { isHttpError } from '@oak/commons/http_errors';
+import { Context, Next, Status } from '@oak/oak';
 import * as config from './../config.ts';
 import { INTERNAL_SERVER_ERROR } from '../constants/errors.ts';
 

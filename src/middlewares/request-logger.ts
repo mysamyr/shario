@@ -1,12 +1,11 @@
 import { Context, Next } from '@oak/oak';
 
-export default async (context: Context, next: Next): Promise<void> => {
+export default async (ctx: Context, next: Next): Promise<void> => {
   await next();
-  // @ts-ignore-next-line
-  const rt: string = context.response.headers.get('X-Response-Time');
-  console.log(
-    `${context.request.method} ${
-      decodeURIComponent(context.request.url.pathname)
-    } - ${rt} - ${context.response.status}`,
+  const rt: string = ctx.response.headers.get('X-Response-Time') as string;
+  console.info(
+    `${ctx.request.method} ${
+      decodeURIComponent(ctx.request.url.pathname)
+    } ${ctx.request.ip} - ${rt} - ${ctx.response.status}`,
   );
 };

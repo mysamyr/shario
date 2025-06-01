@@ -9,7 +9,7 @@ export type InputModalProps = {
   headerText: string;
   submitText: string;
   filenames: string[];
-  onSubmit: (param1: string[], param2: string) => void;
+  onSubmit: (param1: HTMLInputElement[], param2: string) => void;
 };
 
 export type ApiError = { status: number; message: string };

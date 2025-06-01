@@ -16,13 +16,10 @@ const textarea: HTMLTextAreaElement = document.querySelector(
 ) as HTMLTextAreaElement;
 
 async function uploadText(value: string): Promise<void> {
-  const formData = new FormData();
-  formData.append('text', value.trim());
-
   try {
-    const res: Response = await fetch('/', {
+    const res: Response = await fetch('/text', {
       method: 'POST',
-      body: formData,
+      body: value.trim(),
     });
     if (!res.ok) {
       const { status, message }: ApiError = await res

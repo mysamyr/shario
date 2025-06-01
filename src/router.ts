@@ -6,9 +6,10 @@ import {
   getQRCode,
   renameFile,
   saveFile,
+  updateText,
 } from './controller.ts';
 import { RenameFileBody } from './types.ts';
-import { NO_FILE, NO_FILENAME_PROVIDED } from './constants/errors.ts';
+import {NO_BODY, NO_FILENAME_PROVIDED} from './constants/errors.ts';
 
 const router: Router = new Router();
 
@@ -36,9 +37,17 @@ router.get('/qrcodes/:file', (ctx: Context): void => {
 
 router.post('/', async (ctx: Context): Promise<void> => {
   if (!ctx.request.hasBody) {
-    ctx.throw(Status.BadRequest, NO_FILE);
+    ctx.throw(Status.BadRequest, NO_BODY);
   }
   await saveFile(ctx.request, ctx.response);
+  ctx.response.status = Status.Created;
+});
+
+router.post('/text', async (ctx: Context): Promise<void> => {
+  if (!ctx.request.hasBody) {
+    ctx.throw(Status.BadRequest, NO_BODY);
+  }
+  await updateText(ctx.request, ctx.response);
   ctx.response.status = Status.Created;
 });
 

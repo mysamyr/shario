@@ -230,21 +230,3 @@ dialog::backdrop {
   margin: 0 8px;
   padding: 8px;
 }
-
-/*UPLOAD PROGRESS*/
-#upload-progress {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 4px;
-  z-index: 99;
-}
-
-#upload-bar {
-  height: 100%;
-  width: 0;
-  background: var(--green);
-  transition: width 0.2s;
-}

@@ -27,3 +27,4 @@ export const FILE_TOO_BIG: string = 'File size exceeds 10GB';
 export const PLATFORM_IS_NOT_SUPPORTED: string =
   `Platform ${Deno.build.os} isn't supported.`;
 export const NO_FILE: string = 'No file provided';
+export const NO_BODY: string = 'No request body provided';

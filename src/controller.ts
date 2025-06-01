@@ -4,6 +4,7 @@ import { Info } from './types.ts';
 import {
   FILE_ALREADY_EXISTS,
   FILE_TOO_BIG,
+  NO_FILE,
   NOT_EXISTING_FILE,
 } from './constants/errors.ts';
 import { MAX_FILE_SIZE } from './constants/index.ts';
@@ -42,25 +43,27 @@ export function getQRCode(filename: string): Uint8Array {
 
 export async function saveFile(req: Request, _res: Response): Promise<void> {
   const reqBody: FormData = await req.body.formData();
-  for (const pair of reqBody.entries()) {
-    const val: FormDataEntryValue = pair[1];
-    if (val instanceof File) {
-      if (isFileExists(val.name)) {
-        throw new httpErrors.BadRequest(FILE_ALREADY_EXISTS);
-      }
-      if (val.size > MAX_FILE_SIZE) {
-        throw new httpErrors.BadRequest(FILE_TOO_BIG);
-      }
-      const validationError = validateFilename(val.name);
-      if (validationError) {
-        throw new httpErrors.BadRequest(validationError);
-      }
-      const content: ReadableStream<Uint8Array> = val.stream();
-      await writeFile(join(getFilesFolderPath(), val.name), content);
-    } else {
-      Store.setText(val);
-    }
+  const file: FormDataEntryValue | null = reqBody.get('file');
+  if (!file || !(file instanceof File)) {
+    throw new httpErrors.BadRequest(NO_FILE);
   }
+  if (isFileExists(file.name)) {
+    throw new httpErrors.BadRequest(FILE_ALREADY_EXISTS);
+  }
+  if (file.size > MAX_FILE_SIZE) {
+    throw new httpErrors.BadRequest(FILE_TOO_BIG);
+  }
+  const validationError = validateFilename(file.name);
+  if (validationError) {
+    throw new httpErrors.BadRequest(validationError);
+  }
+  const content: ReadableStream<Uint8Array> = file.stream();
+  await writeFile(join(getFilesFolderPath(), file.name), content);
+}
+
+export async function updateText(req: Request, _res: Response): Promise<void> {
+  const reqBody: string = await req.body.text();
+  Store.setText(reqBody);
 }
 
 export async function renameFile(

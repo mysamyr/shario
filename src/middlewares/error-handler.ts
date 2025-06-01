@@ -1,10 +1,10 @@
 import { isHttpError } from '@oak/commons/http_errors';
 import { Context, Next, Status } from '@oak/oak';
-import * as config from './../config.ts';
+import { ENV } from './../config.ts';
 import { INTERNAL_SERVER_ERROR } from '../constants/errors.ts';
 
 function isDevelopmentMode(): boolean {
-  return config.ENV === 'development';
+  return ENV === 'development';
 }
 
 export default async (ctx: Context, next: Next): Promise<void> => {

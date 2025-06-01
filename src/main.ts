@@ -30,11 +30,11 @@ app.use(async (context: Context, next: Next) => {
 });
 
 app.addEventListener('error', (evt): void => {
-  console.log(evt.error);
+  console.error(evt.error);
 });
 
 app.addEventListener('listen', ({ port }): void => {
-  console.log('Start listening on http://localhost:' + port);
+  console.info('Start listening on http://localhost:' + port);
   if (ENV === 'production') {
     openUrlInBrowser(`http://localhost:${port}`);
   }

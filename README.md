@@ -52,6 +52,6 @@ This project uses Deno's default linting and formatting tools.
 
 ## TODOs
 
-- Test compile scripts for Win, macOS and Linux
-- Rework the files uploading to call API for upload separate file with its own
-  progress bar and display progress bar for each file
+- Add polling or WebSocket for update file list
+- Add filename validation before upload
+

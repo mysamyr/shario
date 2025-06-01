@@ -1,5 +1,5 @@
 import { ApiError, InputModalProps } from '../types.ts';
-import { Div, Header, Input } from '../components.ts';
+import { Div, Header, Input, Paragraph } from '../components.ts';
 import modal from './modal.ts';
 import snackbar from './snackbar.ts';
 import { updateHeader } from './header.ts';
@@ -48,7 +48,7 @@ function inputModal({
       text: submitText,
       onClick: () =>
         onSubmit(
-          inputs.map((input: HTMLInputElement) => input.value),
+          inputs,
           filenames[0].trim(),
         ),
     }),
@@ -64,7 +64,7 @@ function inputModal({
     input.addEventListener('keypress', (e: KeyboardEvent): void => {
       if (e.key === 'Enter') {
         onSubmit(
-          inputs.map((input: HTMLInputElement) => input.value),
+          inputs,
           filenames[0].trim(),
         );
       }
@@ -75,7 +75,7 @@ function inputModal({
 
 function uploadFileModal(
   files: File[],
-  onSubmit: (param1: string[]) => void,
+  onSubmit: (param1: HTMLInputElement[]) => void,
 ): HTMLDivElement {
   return inputModal({
     headerText: "Uploaded file's name:",
@@ -87,7 +87,7 @@ function uploadFileModal(
 
 function renameFileModal(
   filename: string,
-  onSubmit: (param1: string[], param2: string) => void,
+  onSubmit: (param1: HTMLInputElement[], param2: string) => void,
 ): HTMLDivElement {
   return inputModal({
     headerText: 'Rename file:',
@@ -97,19 +97,18 @@ function renameFileModal(
   });
 }
 
-async function uploadFile(files: FormDataEntryValue[]): Promise<void> {
+async function uploadFile(
+  file: FormDataEntryValue,
+  input: HTMLInputElement,
+): Promise<void> {
+  if (input.disabled) return;
   const formData: FormData = new FormData();
-  for (const file of files) {
-    formData.append('file', file);
-  }
+  formData.append('file', file);
 
-  const progressBar = document.getElementById(
-    'upload-progress',
-  ) as HTMLDivElement;
-  const bar = document.getElementById('upload-bar') as HTMLDivElement;
-
-  progressBar.style.display = 'block';
-  bar.style.width = '0';
+  const progress = Paragraph({
+    text: '0%',
+  });
+  input.after(progress);
 
   try {
     await new Promise<void>((resolve, reject): void => {
@@ -118,16 +117,13 @@ async function uploadFile(files: FormDataEntryValue[]): Promise<void> {
       xhr.upload.onprogress = (event: ProgressEvent<EventTarget>): void => {
         if (event.lengthComputable) {
           const percent: number = (event.loaded / event.total) * 100;
-          bar.style.width = percent + '%';
+          progress.innerText = Math.round(percent) + '%';
         }
       };
       xhr.onload = (): void => {
-        progressBar.style.display = 'none';
+        progress.remove();
         if (xhr.status >= 200 && xhr.status < 300) {
-          snackbar.displayMsg(
-            files.length > 1 ? FILES_UPLOADED : FILE_UPLOADED,
-          );
-          modal.hideModal();
+          input.disabled = true;
           resolve();
         } else {
           const { status, message }: ApiError = JSON.parse(xhr.responseText);
@@ -137,7 +133,7 @@ async function uploadFile(files: FormDataEntryValue[]): Promise<void> {
         }
       };
       xhr.onerror = (): void => {
-        progressBar.style.display = 'none';
+        progress.remove();
         snackbar.displayMsg(UPLOAD_ERROR);
         reject(new Error(UPLOAD_ERROR));
       };
@@ -158,8 +154,11 @@ export function askForUpload(files: File[]): void {
     );
     return;
   }
-  const onSubmit = async (filenames: string[]): Promise<void> => {
+  const onSubmit = async (inputs: HTMLInputElement[]): Promise<void> => {
     // todo highlight inputs with errors
+    const filenames: string[] = inputs.map((input: HTMLInputElement): string =>
+      input.value.trim()
+    );
     const error: (string | undefined)[] = filenames.map((newFilename: string) =>
       validateFilename(newFilename)
     );
@@ -169,21 +168,33 @@ export function askForUpload(files: File[]): void {
       );
       return;
     }
-    const filesToUpload: File[] = files.map((file: File, idx: number): File =>
-      file.name === filenames[idx]
-        ? file
-        : new File([file], filenames[idx], { type: file.type })
+    await Promise.all(
+      files.map((file: File, idx: number): Promise<void> =>
+        uploadFile(
+          file.name === filenames[idx]
+            ? file
+            : new File([file], filenames[idx], { type: file.type }),
+          inputs[idx],
+        )
+      ),
     );
-    await uploadFile(filesToUpload);
+    if (inputs.every((input: HTMLInputElement): boolean => input.disabled)) {
+      snackbar.displayMsg(
+        files.length > 1 ? FILES_UPLOADED : FILE_UPLOADED,
+      );
+      modal.hideModal();
+    }
+
     updateHeader();
   };
   modal.showModal(uploadFileModal(files, onSubmit));
 }
 
 async function renameFile(
-  [newValue]: string[],
+  [input]: HTMLInputElement[],
   oldValue: string,
 ): Promise<void> {
+  const newValue: string = input.value.trim();
   const error: string | undefined = validateFilename(newValue);
   if (error) {
     snackbar.displayMsg(error);

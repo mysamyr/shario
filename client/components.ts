@@ -52,6 +52,22 @@ export function Paragraph(props: {
   return p;
 }
 
+export function Span(props: {
+  id?: string;
+  text?: string;
+  className?: string;
+}): HTMLSpanElement {
+  const span: HTMLSpanElement = document.createElement('span');
+  if (!props) return span;
+  if (props.className) {
+    span.classList.add(...props.className.split(' ').filter(Boolean));
+  }
+  if (props.text) span.innerHTML = props.text;
+  if (props.id) span.id = props.id;
+
+  return span;
+}
+
 export function Input(props: {
   id?: string;
   type?: string;

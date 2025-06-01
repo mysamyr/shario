@@ -38,6 +38,7 @@
 - `GET /qrcodes/:file` - Get QR code for a specific file
 - `GET /files/:file/check` - Check if a file exists
 - `POST /` - Upload a file or text
+- `PUT /text` - Upload text
 - `PUT /:file` - Rename a file
 - `DELETE /:file` - Delete a specific file
 

@@ -73,8 +73,8 @@ input[type='file'] {
 }
 
 input[type='text'] {
-    /*style file upload input - bigger, round*/
     width: 100%;
+    min-width: 250px;
     padding: 6px 3px;
     border: 1px solid var(--grey);
     border-radius: 4px;

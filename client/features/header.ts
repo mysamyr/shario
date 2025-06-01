@@ -25,16 +25,16 @@ function getLocationContainer(location: string, port: number): HTMLDivElement {
   return container;
 }
 
-function renderFile(file: string): void {
+function renderFile(filename: string): void {
   const container: HTMLDivElement = Div({
     className: 'file',
   });
   container.classList.add('file');
   const fileLink: HTMLAnchorElement = Link({
     className: 'file-link',
-    href: `/files/${file}`,
+    href: `/files/${filename}`,
     target: '_blank',
-    text: file,
+    text: filename,
     title: 'Open file',
   });
   const buttonsContainer: HTMLDivElement = Div({
@@ -42,8 +42,8 @@ function renderFile(file: string): void {
   });
   const downloadLink: HTMLAnchorElement = Link({
     className: 'btn file-btn',
-    href: `/files/${file}`,
-    download: file,
+    href: `/files/${filename}`,
+    download: filename,
     text: '&#x2193;',
     title: 'Download file',
   });
@@ -51,13 +51,13 @@ function renderFile(file: string): void {
     className: 'btn file-btn',
     text: '&#9998;',
     title: 'Rename file',
-    onClick: (e: MouseEvent) => handleRenameFile(e, file),
+    onClick: (e: MouseEvent) => handleRenameFile(e, filename),
   });
   const deleteLink: HTMLDivElement = Div({
     className: 'delete btn file-btn',
     text: '&#10005;',
     title: 'Delete file',
-    onClick: (e: MouseEvent) => deleteFile(e, file),
+    onClick: (e: MouseEvent) => deleteFile(e, filename),
   });
   buttonsContainer.append(downloadLink, renameBtn, deleteLink);
   container.append(fileLink, buttonsContainer);

@@ -43,7 +43,7 @@ router.post('/', async (ctx: Context): Promise<void> => {
   ctx.response.status = Status.Created;
 });
 
-router.post('/text', async (ctx: Context): Promise<void> => {
+router.put('/text', async (ctx: Context): Promise<void> => {
   if (!ctx.request.hasBody) {
     ctx.throw(Status.BadRequest, NO_BODY);
   }

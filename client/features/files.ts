@@ -1,5 +1,5 @@
-import { ApiError, InputModalProps } from '../types.ts';
-import { Div, Header, Input, Paragraph } from '../components.ts';
+import { ApiError } from '../types.ts';
+import { Div, Header, Input, Paragraph, Span } from '../components.ts';
 import modal from './modal.ts';
 import snackbar from './snackbar.ts';
 import { updateHeader } from './header.ts';
@@ -18,32 +18,57 @@ import {
 } from '../constants/messages.ts';
 import { MAX_FILE_SIZE } from '../constants/index.ts';
 
-function inputModal({
-  headerText,
-  submitText,
-  filenames,
-  onSubmit,
-}: InputModalProps): HTMLDivElement {
+function showInputError(input: HTMLInputElement, message: string): void {
+  input.classList.add('input-error');
+
+  const next: HTMLSpanElement | null = input
+      .nextElementSibling as HTMLSpanElement;
+  if (next && next.classList.contains('error-message')) {
+    next.remove();
+  }
+
+  const errorMsg: HTMLSpanElement = Span({
+    className: 'error-message',
+    text: message,
+  });
+  input.after(errorMsg);
+}
+
+function hideInputError(input: HTMLInputElement): void {
+  input.classList.remove('input-error');
+  const next: HTMLSpanElement | null = input
+      .nextElementSibling as HTMLSpanElement;
+  if (next && next.classList.contains('error-message')) {
+    next.remove();
+  }
+}
+
+function uploadFilesModal(
+  files: File[],
+  onSubmit: (inputs: HTMLInputElement[]) => void,
+): HTMLDivElement {
   const container: HTMLDivElement = Div({
     className: 'container modal-container',
   });
 
+  const filenames: string[] = files.map((file: File): string => file.name);
+
   const header: HTMLHeadingElement = Header({
     lvl: 2,
-    text: headerText,
+    text: 'Uploaded file names:',
   });
 
   const buttons: HTMLDivElement = Div({
     className: 'buttons',
   });
   // todo add delete input action
-  const inputs: HTMLInputElement[] = filenames.map((filename) =>
+  const inputs: HTMLInputElement[] = filenames.map((filename: string) =>
     Input({
       type: 'text',
       value: filename,
     })
   );
-  const wrappedInputs = inputs.map(
+  const wrappedInputs: HTMLDivElement[] = inputs.map(
     (input: HTMLInputElement): HTMLDivElement => {
       const wrapper: HTMLDivElement = Div({
         className: 'input-wrapper',
@@ -55,11 +80,10 @@ function inputModal({
   buttons.append(
     Div({
       className: 'btn',
-      text: submitText,
+      text: 'Upload',
       onClick: () =>
         onSubmit(
           inputs,
-          filenames[0].trim(),
         ),
     }),
     Div({
@@ -75,7 +99,6 @@ function inputModal({
       if (e.key === 'Enter') {
         onSubmit(
           inputs,
-          filenames[0].trim(),
         );
       }
     });
@@ -83,28 +106,58 @@ function inputModal({
   return container;
 }
 
-function uploadFileModal(
-  files: File[],
-  onSubmit: (param1: HTMLInputElement[]) => void,
-): HTMLDivElement {
-  return inputModal({
-    headerText: "Uploaded file's name:",
-    submitText: 'Upload',
-    filenames: files.map((file: File): string => file.name),
-    onSubmit,
-  });
-}
-
 function renameFileModal(
   filename: string,
-  onSubmit: (param1: HTMLInputElement[], param2: string) => void,
+  onSubmit: (inputs: HTMLInputElement, originFilename: string) => void,
 ): HTMLDivElement {
-  return inputModal({
-    headerText: 'Rename file:',
-    submitText: 'Rename',
-    filenames: [filename],
-    onSubmit,
+  const container: HTMLDivElement = Div({
+    className: 'container modal-container',
   });
+
+  const header: HTMLHeadingElement = Header({
+    lvl: 2,
+    text: 'Rename file:',
+  });
+
+  const buttons: HTMLDivElement = Div({
+    className: 'buttons',
+  });
+  const input: HTMLInputElement = Input({
+    type: 'text',
+    value: filename,
+  });
+  const wrappedInput: HTMLDivElement = Div({
+    className: 'input-wrapper',
+  });
+  wrappedInput.appendChild(input);
+
+  buttons.append(
+    Div({
+      className: 'btn',
+      text: 'Rename',
+      onClick: () =>
+        onSubmit(
+          input,
+          filename.trim(),
+        ),
+    }),
+    Div({
+      className: 'btn',
+      text: 'Cancel',
+      onClick: () => modal.hideModal(),
+    }),
+  );
+  container.append(header, wrappedInput, buttons);
+  input.focus();
+  input.addEventListener('keypress', (e: KeyboardEvent): void => {
+    if (e.key === 'Enter') {
+      onSubmit(
+        input,
+        filename.trim(),
+      );
+    }
+  });
+  return container;
 }
 
 async function uploadFile(
@@ -154,47 +207,57 @@ async function uploadFile(
   }
 }
 
-function showInputError(input: HTMLInputElement, message: string) {
-  input.classList.add('input-error');
-
-  const next = input.nextElementSibling;
-  if (next && next.classList.contains('error-message')) {
-    next.remove();
+async function renameFile(
+  oldValue: string,
+  newValue: string,
+): Promise<void> {
+  const res: Response = await fetch(`/${oldValue}`, {
+    method: 'PUT',
+    body: JSON.stringify({ name: newValue }),
+  });
+  if (res.ok) {
+    snackbar.displayMsg(FILE_RENAMED);
+    modal.hideModal();
+    updateHeader();
+  } else {
+    const { status, message }: ApiError = await res
+      .json();
+    snackbar.displayMsg(API_ERROR_$(status, message));
   }
-
-  const errorMsg = document.createElement('span');
-  errorMsg.className = 'error-message';
-  errorMsg.innerText = message;
-  input.after(errorMsg);
 }
 
-export function askForUpload(files: File[]): void {
-  const bigFiles: File[] = files.filter((file: File): boolean =>
-    file.size > MAX_FILE_SIZE
-  );
-  if (bigFiles.length) {
-    snackbar.displayMsg(
-      FILES_TOO_BIG(bigFiles.map((file: File): string => file.name).join(', ')),
-    );
-    return;
-  }
-  const onSubmit = async (inputs: HTMLInputElement[]): Promise<void> => {
+function onRenameSubmit(oldValue: string) {
+  return (input: HTMLInputElement): void => {
+    const newValue: string = input.value.trim();
+    const error: string | undefined = validateFilename(newValue);
+    if (error) {
+      showInputError(input, error);
+      return;
+    } else {
+      hideInputError(input);
+    }
+    if (newValue.toLocaleLowerCase() === oldValue.toLocaleLowerCase()) {
+      showInputError(input, NAME_WAS_NOT_CHANGED);
+      return;
+    }
+    renameFile(oldValue, newValue);
+  };
+}
+
+function onUploadSubmit(files: File[]) {
+  return async (inputs: HTMLInputElement[]): Promise<void> => {
     const filenames: string[] = inputs.map((input: HTMLInputElement): string =>
       input.value.trim()
     );
-    const error: (string | undefined)[] = filenames.map((newFilename: string) =>
-      validateFilename(newFilename)
-    );
-    if (error.some((err: string | undefined): boolean => !!err)) {
+    const errors: (string | undefined)[] = filenames.map((
+      newFilename: string,
+    ) => validateFilename(newFilename));
+    if (errors.some((err: string | undefined): boolean => !!err)) {
       inputs.forEach((input: HTMLInputElement, idx: number): void => {
-        if (error[idx]) {
-          showInputError(input, error[idx] as string);
+        if (errors[idx]) {
+          showInputError(input, errors[idx] as string);
         } else {
-          input.classList.remove('input-error');
-          const next = input.nextElementSibling;
-          if (next && next.classList.contains('error-message')) {
-            next.remove();
-          }
+          hideInputError(input);
         }
       });
       return;
@@ -218,41 +281,25 @@ export function askForUpload(files: File[]): void {
 
     updateHeader();
   };
-  modal.showModal(uploadFileModal(files, onSubmit));
 }
 
-async function renameFile(
-  [input]: HTMLInputElement[],
-  oldValue: string,
-): Promise<void> {
-  const newValue: string = input.value.trim();
-  const error: string | undefined = validateFilename(newValue);
-  if (error) {
-    snackbar.displayMsg(error);
+export function askForUpload(files: File[]): void {
+  const bigFiles: File[] = files.filter((file: File): boolean =>
+    file.size > MAX_FILE_SIZE
+  );
+  if (bigFiles.length) {
+    snackbar.displayMsg(
+      FILES_TOO_BIG(bigFiles.map((file: File): string => file.name).join(', ')),
+    );
     return;
   }
-  if (newValue.toLocaleLowerCase() === oldValue.toLocaleLowerCase()) {
-    snackbar.displayMsg(NAME_WAS_NOT_CHANGED);
-    return;
-  }
-  const res: Response = await fetch(`/${oldValue}`, {
-    method: 'PUT',
-    body: JSON.stringify({ name: newValue }),
-  });
-  if (res.ok) {
-    snackbar.displayMsg(FILE_RENAMED);
-    modal.hideModal();
-    updateHeader();
-  } else {
-    const { status, message }: ApiError = await res
-      .json();
-    snackbar.displayMsg(API_ERROR_$(status, message));
-  }
+
+  modal.showModal(uploadFilesModal(files, onUploadSubmit(files)));
 }
 
-export async function deleteFile(e: Event, file: string): Promise<void> {
+export async function deleteFile(e: Event, filename: string): Promise<void> {
   e.preventDefault();
-  const res: Response = await fetch(`/${file}`, {
+  const res: Response = await fetch(`/${filename}`, {
     method: 'DELETE',
   });
   if (!res.ok) {
@@ -265,8 +312,8 @@ export async function deleteFile(e: Event, file: string): Promise<void> {
   updateHeader();
 }
 
-export function handleRenameFile(e: Event, file: string): void {
+export function handleRenameFile(e: Event, filename: string): void {
   e.preventDefault();
 
-  modal.showModal(renameFileModal(file, renameFile));
+  modal.showModal(renameFileModal(filename, onRenameSubmit(filename)));
 }

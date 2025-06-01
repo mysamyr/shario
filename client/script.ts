@@ -18,8 +18,8 @@ const textarea: HTMLTextAreaElement = document.querySelector(
 async function uploadText(value: string): Promise<void> {
   try {
     const res: Response = await fetch('/text', {
-      method: 'POST',
-      body: value.trim(),
+      method: 'PUT',
+      body: value,
     });
     if (!res.ok) {
       const { status, message }: ApiError = await res

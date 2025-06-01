@@ -53,5 +53,4 @@ This project uses Deno's default linting and formatting tools.
 ## TODOs
 
 - Add polling or WebSocket for update file list
-- Add filename validation before upload
-
+- Add delete action for inputs on files upload

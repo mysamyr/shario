@@ -9,7 +9,7 @@ import {
   updateText,
 } from './controller.ts';
 import { RenameFileBody } from './types.ts';
-import {NO_BODY, NO_FILENAME_PROVIDED} from './constants/errors.ts';
+import { NO_BODY, NO_FILENAME_PROVIDED } from './constants/errors.ts';
 
 const router: Router = new Router();
 

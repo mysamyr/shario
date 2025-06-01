@@ -36,11 +36,21 @@ function inputModal({
   const buttons: HTMLDivElement = Div({
     className: 'buttons',
   });
+  // todo add delete input action
   const inputs: HTMLInputElement[] = filenames.map((filename) =>
     Input({
       type: 'text',
       value: filename,
     })
+  );
+  const wrappedInputs = inputs.map(
+    (input: HTMLInputElement): HTMLDivElement => {
+      const wrapper: HTMLDivElement = Div({
+        className: 'input-wrapper',
+      });
+      wrapper.appendChild(input);
+      return wrapper;
+    },
   );
   buttons.append(
     Div({
@@ -58,7 +68,7 @@ function inputModal({
       onClick: () => modal.hideModal(),
     }),
   );
-  container.append(header, ...inputs, buttons);
+  container.append(header, ...wrappedInputs, buttons);
   inputs[0].focus();
   inputs.forEach((input: HTMLInputElement): void => {
     input.addEventListener('keypress', (e: KeyboardEvent): void => {
@@ -144,6 +154,20 @@ async function uploadFile(
   }
 }
 
+function showInputError(input: HTMLInputElement, message: string) {
+  input.classList.add('input-error');
+
+  const next = input.nextElementSibling;
+  if (next && next.classList.contains('error-message')) {
+    next.remove();
+  }
+
+  const errorMsg = document.createElement('span');
+  errorMsg.className = 'error-message';
+  errorMsg.innerText = message;
+  input.after(errorMsg);
+}
+
 export function askForUpload(files: File[]): void {
   const bigFiles: File[] = files.filter((file: File): boolean =>
     file.size > MAX_FILE_SIZE
@@ -155,7 +179,6 @@ export function askForUpload(files: File[]): void {
     return;
   }
   const onSubmit = async (inputs: HTMLInputElement[]): Promise<void> => {
-    // todo highlight inputs with errors
     const filenames: string[] = inputs.map((input: HTMLInputElement): string =>
       input.value.trim()
     );
@@ -163,9 +186,17 @@ export function askForUpload(files: File[]): void {
       validateFilename(newFilename)
     );
     if (error.some((err: string | undefined): boolean => !!err)) {
-      snackbar.displayMsg(
-        error.find((err: string | undefined): boolean => !!err) as string,
-      );
+      inputs.forEach((input: HTMLInputElement, idx: number): void => {
+        if (error[idx]) {
+          showInputError(input, error[idx] as string);
+        } else {
+          input.classList.remove('input-error');
+          const next = input.nextElementSibling;
+          if (next && next.classList.contains('error-message')) {
+            next.remove();
+          }
+        }
+      });
       return;
     }
     await Promise.all(

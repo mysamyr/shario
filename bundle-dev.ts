@@ -21,8 +21,8 @@ const ctx1 = await esbuild.context({
   platform: 'browser',
   format: 'esm',
   target: 'esnext',
-  minify: true,
-  sourcemap: false,
+  minify: false,
+  sourcemap: true,
   treeShaking: true,
 });
 
@@ -31,7 +31,7 @@ const ctx2 = await esbuild.context({
   entryPoints: ['./public/main.css'],
   outfile: './public/main.min.css',
   bundle: true,
-  minify: true,
+  minify: false,
 });
 
 await Promise.all([ctx1.watch(), ctx2.watch()]);

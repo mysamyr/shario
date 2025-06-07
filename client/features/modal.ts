@@ -19,6 +19,10 @@ class Modal {
     });
   }
 
+  isModalOpen(): boolean {
+    return this.dialog.open;
+  }
+
   showModal(modal: HTMLElement): void {
     this.dialog.innerText = '';
     this.dialog.appendChild(modal);

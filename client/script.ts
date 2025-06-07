@@ -1,4 +1,5 @@
 import snackbar from './features/snackbar.ts';
+import modal from './features/modal.ts';
 import { updateHeader } from './features/header.ts';
 import { getText } from './features/text.ts';
 import { askForUpload } from './features/files.ts';
@@ -43,16 +44,17 @@ function handleUploadBySelect(): void {
 }
 
 async function handleUploadByPaste(e: ClipboardEvent): Promise<void> {
-  e.stopPropagation();
-  e.preventDefault();
-
+  if (modal.isModalOpen()) return;
   const clipboardData: DataTransfer = e.clipboardData as DataTransfer;
 
   if (clipboardData.files.length) {
     askForUpload(Array.from(clipboardData.files));
   } else {
-    const pastedData = clipboardData.getData('text');
-    if (getText() !== pastedData) await uploadText(pastedData);
+    const pastedData: string = clipboardData.getData('text');
+    if (
+      document.activeElement?.tagName === 'BODY' &&
+      getText() !== pastedData
+    ) await uploadText(pastedData);
   }
 }
 

@@ -72,17 +72,9 @@ input[type='file'] {
     display: none;
 }
 
-input[type='text'] {
-    width: 100%;
-    min-width: 250px;
-    padding: 6px 3px;
-    border: 1px solid var(--grey);
-    border-radius: 4px;
-}
-
 .file-upload-label {
     background-color: var(--green);
-    color: #fff;
+    color: var(--white);
     border-radius: 5px;
     display: inline-block;
     padding: 10px 20px;
@@ -167,7 +159,7 @@ textarea {
 }
 
 .btn {
-    border: #fff 1px solid;
+    border: var(--white) 1px solid;
     border-radius: 5px;
     text-align: center;
     padding: 0 8px;
@@ -178,7 +170,7 @@ textarea {
 }
 
 .btn:hover {
-    background-color: #fff;
+    background-color: var(--white);
     color: var(--light-green);
 }
 
@@ -237,11 +229,39 @@ dialog::backdrop {
     padding: 8px;
 }
 
+/*UPLOAD MODAL*/
+.input-container {
+    display: flex;
+    flex-direction: row;
+    align-items: start;
+    width: 100%;
+}
+
 .input-wrapper {
     display: flex;
     flex-direction: column;
-    justify-content: left;
+    align-items: start;
     width: 100%;
+}
+
+.upload-input {
+    width: 100%;
+    min-width: 250px;
+    padding: 6px 3px;
+    border: 1px solid var(--grey);
+    border-radius: 4px;
+}
+
+.upload-input:disabled {
+    background-color: var(--light-green);
+    color: var(--green);
+    cursor: not-allowed;
+}
+
+.file-upload-delete-btn {
+    color: var(--white);
+    padding: 3px 8px;
+    font-size: 1.2rem;
 }
 
 .input-error {

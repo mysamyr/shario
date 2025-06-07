@@ -1,5 +1,5 @@
 import { ApiError } from '../types.ts';
-import { Div, Header, Input, Paragraph, Span } from '../components.ts';
+import { Paragraph } from '../components.ts';
 import modal from './modal.ts';
 import snackbar from './snackbar.ts';
 import { updateHeader } from './header.ts';
@@ -8,6 +8,7 @@ import {
   API_ERROR_$,
   FILES_TOO_BIG,
   NAME_WAS_NOT_CHANGED,
+  NO_FILES_TO_UPLOAD,
   UPLOAD_ERROR,
 } from '../constants/errors.ts';
 import {
@@ -17,154 +18,16 @@ import {
   FILES_UPLOADED,
 } from '../constants/messages.ts';
 import { MAX_FILE_SIZE } from '../constants/index.ts';
-
-function showInputError(input: HTMLInputElement, message: string): void {
-  input.classList.add('input-error');
-
-  const next: HTMLSpanElement | null = input
-      .nextElementSibling as HTMLSpanElement;
-  if (next && next.classList.contains('error-message')) {
-    next.remove();
-  }
-
-  const errorMsg: HTMLSpanElement = Span({
-    className: 'error-message',
-    text: message,
-  });
-  input.after(errorMsg);
-}
-
-function hideInputError(input: HTMLInputElement): void {
-  input.classList.remove('input-error');
-  const next: HTMLSpanElement | null = input
-      .nextElementSibling as HTMLSpanElement;
-  if (next && next.classList.contains('error-message')) {
-    next.remove();
-  }
-}
-
-function uploadFilesModal(
-  files: File[],
-  onSubmit: (inputs: HTMLInputElement[]) => void,
-): HTMLDivElement {
-  const container: HTMLDivElement = Div({
-    className: 'container modal-container',
-  });
-
-  const filenames: string[] = files.map((file: File): string => file.name);
-
-  const header: HTMLHeadingElement = Header({
-    lvl: 2,
-    text: 'Uploaded file names:',
-  });
-
-  const buttons: HTMLDivElement = Div({
-    className: 'buttons',
-  });
-  // todo add delete input action
-  const inputs: HTMLInputElement[] = filenames.map((filename: string) =>
-    Input({
-      type: 'text',
-      value: filename,
-    })
-  );
-  const wrappedInputs: HTMLDivElement[] = inputs.map(
-    (input: HTMLInputElement): HTMLDivElement => {
-      const wrapper: HTMLDivElement = Div({
-        className: 'input-wrapper',
-      });
-      wrapper.appendChild(input);
-      return wrapper;
-    },
-  );
-  buttons.append(
-    Div({
-      className: 'btn',
-      text: 'Upload',
-      onClick: () =>
-        onSubmit(
-          inputs,
-        ),
-    }),
-    Div({
-      className: 'btn',
-      text: 'Cancel',
-      onClick: () => modal.hideModal(),
-    }),
-  );
-  container.append(header, ...wrappedInputs, buttons);
-  inputs[0].focus();
-  inputs.forEach((input: HTMLInputElement): void => {
-    input.addEventListener('keypress', (e: KeyboardEvent): void => {
-      if (e.key === 'Enter') {
-        onSubmit(
-          inputs,
-        );
-      }
-    });
-  });
-  return container;
-}
-
-function renameFileModal(
-  filename: string,
-  onSubmit: (inputs: HTMLInputElement, originFilename: string) => void,
-): HTMLDivElement {
-  const container: HTMLDivElement = Div({
-    className: 'container modal-container',
-  });
-
-  const header: HTMLHeadingElement = Header({
-    lvl: 2,
-    text: 'Rename file:',
-  });
-
-  const buttons: HTMLDivElement = Div({
-    className: 'buttons',
-  });
-  const input: HTMLInputElement = Input({
-    type: 'text',
-    value: filename,
-  });
-  const wrappedInput: HTMLDivElement = Div({
-    className: 'input-wrapper',
-  });
-  wrappedInput.appendChild(input);
-
-  buttons.append(
-    Div({
-      className: 'btn',
-      text: 'Rename',
-      onClick: () =>
-        onSubmit(
-          input,
-          filename.trim(),
-        ),
-    }),
-    Div({
-      className: 'btn',
-      text: 'Cancel',
-      onClick: () => modal.hideModal(),
-    }),
-  );
-  container.append(header, wrappedInput, buttons);
-  input.focus();
-  input.addEventListener('keypress', (e: KeyboardEvent): void => {
-    if (e.key === 'Enter') {
-      onSubmit(
-        input,
-        filename.trim(),
-      );
-    }
-  });
-  return container;
-}
+import uploadFilesModal, {
+  hideInputError,
+  showInputError,
+} from '../modals/upload-files-modal.ts';
+import renameFileModal from '../modals/rename-file-modal.ts';
 
 async function uploadFile(
   file: FormDataEntryValue,
   input: HTMLInputElement,
 ): Promise<void> {
-  if (input.disabled) return;
   const formData: FormData = new FormData();
   formData.append('file', file);
 
@@ -202,7 +65,9 @@ async function uploadFile(
       };
       xhr.send(formData);
     });
-  } catch (error) {
+    // @ts-ignore-next-line
+  } catch (error: Error) {
+    showInputError(input, error.message);
     console.error(error);
   }
 }
@@ -244,31 +109,48 @@ function onRenameSubmit(oldValue: string) {
   };
 }
 
+type FileListItem = {
+  name: string;
+  input: HTMLInputElement;
+  file: File;
+  error?: string;
+};
+
 function onUploadSubmit(files: File[]) {
   return async (inputs: HTMLInputElement[]): Promise<void> => {
-    const filenames: string[] = inputs.map((input: HTMLInputElement): string =>
-      input.value.trim()
+    const fileList: FileListItem[] = inputs.map(
+      (input: HTMLInputElement, idx: number): FileListItem => {
+        const name: string = input.value.trim();
+        return {
+          name,
+          input,
+          file: files[idx],
+          error: validateFilename(name),
+        };
+      },
     );
-    const errors: (string | undefined)[] = filenames.map((
-      newFilename: string,
-    ) => validateFilename(newFilename));
-    if (errors.some((err: string | undefined): boolean => !!err)) {
-      inputs.forEach((input: HTMLInputElement, idx: number): void => {
-        if (errors[idx]) {
-          showInputError(input, errors[idx] as string);
+
+    const filesToUpload: FileListItem[] = fileList.filter(
+      ({ error, input }: FileListItem): boolean => {
+        if (error) {
+          showInputError(input, error);
         } else {
           hideInputError(input);
         }
-      });
+        return !error && !input.disabled;
+      },
+    );
+
+    if (!filesToUpload.length) {
+      snackbar.displayMsg(NO_FILES_TO_UPLOAD);
       return;
     }
+
     await Promise.all(
-      files.map((file: File, idx: number): Promise<void> =>
+      filesToUpload.map(({ input, file, name }: FileListItem): Promise<void> =>
         uploadFile(
-          file.name === filenames[idx]
-            ? file
-            : new File([file], filenames[idx], { type: file.type }),
-          inputs[idx],
+          new File([file], name, { type: file.type }),
+          input,
         )
       ),
     );

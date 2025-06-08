@@ -101,14 +101,14 @@ input[type='file'] {
 }
 
 /*SHARED TEXT*/
-#copy-text {
+.header-action {
     margin-left: 1rem;
     padding: 0 0.4rem;
     font-size: 1.4rem;
     cursor: default;
 }
 
-#copy-text:hover {
+.header-action:hover {
     background-color: var(--light-green);
     border-radius: 5px;
 }

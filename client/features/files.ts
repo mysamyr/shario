@@ -15,6 +15,7 @@ import {
   FILE_DELETED,
   FILE_RENAMED,
   FILE_UPLOADED,
+  FILES_DELETED,
   FILES_UPLOADED,
 } from '../constants/messages.ts';
 import { MAX_FILE_SIZE } from '../constants/index.ts';
@@ -23,6 +24,7 @@ import uploadFilesModal, {
   showInputError,
 } from '../modals/upload-files-modal.ts';
 import renameFileModal from '../modals/rename-file-modal.ts';
+import clearAllFilesModal from '../modals/clear-files-modal.ts';
 
 async function uploadFile(
   file: FormDataEntryValue,
@@ -89,6 +91,37 @@ async function renameFile(
       .json();
     snackbar.displayMsg(API_ERROR_$(status, message));
   }
+}
+
+export async function deleteFile(e: Event, filename: string): Promise<void> {
+  e.preventDefault();
+  const res: Response = await fetch(`/${filename}`, {
+    method: 'DELETE',
+  });
+  if (!res.ok) {
+    const { status, message }: ApiError = await res
+      .json();
+    snackbar.displayMsg(API_ERROR_$(status, message));
+  } else {
+    snackbar.displayMsg(FILE_DELETED);
+  }
+  updateHeader();
+}
+
+async function clearFiles(e: Event): Promise<void> {
+  e.preventDefault();
+  const res: Response = await fetch('/', {
+    method: 'DELETE',
+  });
+  if (!res.ok) {
+    const { status, message }: ApiError = await res
+      .json();
+    snackbar.displayMsg(API_ERROR_$(status, message));
+    modal.hideModal();
+  } else {
+    snackbar.displayMsg(FILES_DELETED);
+  }
+  updateHeader();
 }
 
 function onRenameSubmit(oldValue: string) {
@@ -165,7 +198,7 @@ function onUploadSubmit(files: File[]) {
   };
 }
 
-export function askForUpload(files: File[]): void {
+export function handleFilesUpload(files: File[]): void {
   const bigFiles: File[] = files.filter((file: File): boolean =>
     file.size > MAX_FILE_SIZE
   );
@@ -179,23 +212,12 @@ export function askForUpload(files: File[]): void {
   modal.showModal(uploadFilesModal(files, onUploadSubmit(files)));
 }
 
-export async function deleteFile(e: Event, filename: string): Promise<void> {
-  e.preventDefault();
-  const res: Response = await fetch(`/${filename}`, {
-    method: 'DELETE',
-  });
-  if (!res.ok) {
-    const { status, message }: ApiError = await res
-      .json();
-    snackbar.displayMsg(API_ERROR_$(status, message));
-  } else {
-    snackbar.displayMsg(FILE_DELETED);
-  }
-  updateHeader();
-}
-
 export function handleRenameFile(e: Event, filename: string): void {
   e.preventDefault();
 
   modal.showModal(renameFileModal(filename, onRenameSubmit(filename)));
+}
+
+export function handleClearAllFiles(): void {
+  modal.showModal(clearAllFilesModal(clearFiles));
 }

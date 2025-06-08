@@ -1,6 +1,7 @@
 import { Context, Router, Status } from '@oak/oak';
 import {
   deleteFile,
+  deleteFiles,
   getFile,
   getInfo,
   getQRCode,
@@ -66,6 +67,11 @@ router.put('/:file', async (ctx: Context): Promise<void> => {
     ctx.throw(Status.BadRequest, NO_FILENAME_PROVIDED);
   }
   await renameFile(filename, newFilename);
+  ctx.response.status = Status.NoContent;
+});
+
+router.delete('/', async (ctx: Context): Promise<void> => {
+  await deleteFiles();
   ctx.response.status = Status.NoContent;
 });
 

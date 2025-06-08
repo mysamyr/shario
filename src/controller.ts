@@ -9,6 +9,7 @@ import {
 } from './constants/errors.ts';
 import { MAX_FILE_SIZE } from './constants/index.ts';
 import {
+  deleteFolder,
   generateQRCodes,
   getFiles,
   getFilesFolderPath,
@@ -81,6 +82,10 @@ export async function renameFile(
     join(getFilesFolderPath(), filename),
     join(getFilesFolderPath(), newFilename),
   );
+}
+
+export async function deleteFiles(): Promise<void> {
+  await deleteFolder(join(getFilesFolderPath()));
 }
 
 export async function deleteFile(filename: string): Promise<void> {

@@ -2,7 +2,7 @@ import snackbar from './features/snackbar.ts';
 import modal from './features/modal.ts';
 import { updateHeader } from './features/header.ts';
 import { getText } from './features/text.ts';
-import { askForUpload } from './features/files.ts';
+import { handleClearAllFiles, handleFilesUpload } from './features/files.ts';
 import { API_ERROR_$ } from './constants/errors.ts';
 import { ApiError } from './types.ts';
 
@@ -11,6 +11,9 @@ const uploadFileInput: HTMLInputElement = document.getElementById(
 ) as HTMLInputElement;
 const copyTextBtn: HTMLParagraphElement = document.getElementById(
   'copy-text',
+) as HTMLParagraphElement;
+const clearFilesBtn: HTMLParagraphElement = document.getElementById(
+  'clear-files',
 ) as HTMLParagraphElement;
 const textarea: HTMLTextAreaElement = document.querySelector(
   'textarea',
@@ -37,7 +40,7 @@ async function uploadText(value: string): Promise<void> {
 function handleUploadBySelect(): void {
   const files: FileList = uploadFileInput.files as FileList;
   if (files[0]) {
-    askForUpload(Array.from(files));
+    handleFilesUpload(Array.from(files));
 
     uploadFileInput.value = '';
   }
@@ -48,7 +51,7 @@ async function handleUploadByPaste(e: ClipboardEvent): Promise<void> {
   const clipboardData: DataTransfer = e.clipboardData as DataTransfer;
 
   if (clipboardData.files.length) {
-    askForUpload(Array.from(clipboardData.files));
+    handleFilesUpload(Array.from(clipboardData.files));
   } else {
     const pastedData: string = clipboardData.getData('text');
     if (
@@ -78,6 +81,11 @@ function initTextarea(): void {
       await navigator.clipboard.writeText(textarea.value);
     },
   );
+
+  clearFilesBtn.addEventListener(
+    'click',
+    handleClearAllFiles,
+  );
 }
 
 function initDragAndDrop(): void {
@@ -92,6 +100,8 @@ function initDragAndDrop(): void {
   document.addEventListener('dragenter', (e: DragEvent): void => {
     e.preventDefault();
     e.stopPropagation();
+
+    if (modal.isModalOpen()) return;
     dragCounter++;
     uploadButton.innerText = 'Release to upload';
     dragOverlay.style.display = 'block';
@@ -105,6 +115,7 @@ function initDragAndDrop(): void {
   document.addEventListener('dragleave', (e: DragEvent): void => {
     e.preventDefault();
     e.stopPropagation();
+
     dragCounter--;
     if (dragCounter === 0) {
       uploadButton.innerText = 'Select File';
@@ -116,6 +127,7 @@ function initDragAndDrop(): void {
   document.addEventListener('drop', async (e: DragEvent): Promise<void> => {
     e.preventDefault();
     e.stopPropagation();
+    if (modal.isModalOpen()) return;
     uploadButton.innerText = 'Select File';
     uploadButton.classList.remove('upload-label-drag');
     dragOverlay.style.display = 'none';
@@ -123,7 +135,7 @@ function initDragAndDrop(): void {
     const dragData: DataTransfer = e.dataTransfer as DataTransfer;
 
     if (dragData.files.length) {
-      askForUpload(Array.from(dragData.files));
+      handleFilesUpload(Array.from(dragData.files));
     } else {
       const pastedData = dragData.getData('text');
       if (getText() !== pastedData) await uploadText(pastedData);

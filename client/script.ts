@@ -1,7 +1,7 @@
 import snackbar from './features/snackbar.ts';
 import modal from './features/modal.ts';
 import { updateHeader } from './features/header.ts';
-import { getText } from './features/text.ts';
+import { getText, setText } from './features/text.ts';
 import { handleClearAllFiles, handleFilesUpload } from './features/files.ts';
 import { API_ERROR_$ } from './constants/errors.ts';
 import { ApiError } from './types.ts';
@@ -9,6 +9,9 @@ import { ApiError } from './types.ts';
 const uploadFileInput: HTMLInputElement = document.getElementById(
   'file-upload',
 ) as HTMLInputElement;
+const clearTextBtn: HTMLParagraphElement = document.getElementById(
+  'clear-text',
+) as HTMLParagraphElement;
 const copyTextBtn: HTMLParagraphElement = document.getElementById(
   'copy-text',
 ) as HTMLParagraphElement;
@@ -73,12 +76,25 @@ function initTextarea(): void {
     if (getText() !== textarea.value) await uploadText(textarea.value);
   });
 
+  clearTextBtn.addEventListener(
+    'click',
+    async (): Promise<void> => {
+      if (getText() !== '') {
+        await uploadText('');
+        setText('');
+        textarea.value = '';
+      }
+    },
+  );
+
   copyTextBtn.addEventListener(
     'click',
     async (): Promise<void> => {
-      textarea.focus();
-      textarea.select();
-      await navigator.clipboard.writeText(textarea.value);
+      if (getText() !== '') {
+        textarea.focus();
+        textarea.select();
+        await navigator.clipboard.writeText(textarea.value);
+      }
     },
   );
 

@@ -8,6 +8,7 @@ import {
   API_ERROR_$,
   FILES_TOO_BIG,
   NAME_WAS_NOT_CHANGED,
+  NO_FILES_TO_CLEAR,
   NO_FILES_TO_UPLOAD,
   UPLOAD_ERROR,
 } from '../constants/errors.ts';
@@ -212,5 +213,9 @@ export function handleRenameFile(e: Event, filename: string): void {
 }
 
 export function handleClearAllFiles(): void {
+  if (!document.querySelector('.file')) {
+    snackbar.displayMsg(NO_FILES_TO_CLEAR);
+    return;
+  }
   modal.showModal(clearAllFilesModal(clearFiles));
 }

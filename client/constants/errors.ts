@@ -24,5 +24,6 @@ export const FILES_TOO_BIG = (files: string): string =>
   `Files ${files} size exceeds 10GB`;
 export const UPLOAD_ERROR: string = 'Error while uploading file.';
 export const NO_FILES_TO_UPLOAD: string = 'No valid files to upload';
+export const NO_FILES_TO_CLEAR: string = 'There are no files to delete';
 export const API_ERROR_$ = (status: number, message: string): string =>
   `Error with status ${status} and message ${message}`;

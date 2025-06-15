@@ -51,4 +51,4 @@ This project uses Deno's default linting and formatting tools.
 ## TODO
 
 - Add polling or WebSocket for update file list
-- Add clear action for textarea
+- Add ukrainian language support

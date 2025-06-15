@@ -101,9 +101,14 @@ input[type='file'] {
 }
 
 /*SHARED TEXT*/
-.header-action {
+.header-action-container {
     margin-left: 1rem;
-    padding: 0 0.4rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.header-action {
+    padding: 0 0.3rem;
     font-size: 1.4rem;
     cursor: default;
 }

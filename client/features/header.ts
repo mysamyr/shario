@@ -9,8 +9,8 @@ const locationsContainer: HTMLDivElement = document.getElementById(
 const filesContainer: HTMLDivElement = document.getElementById(
   'files',
 ) as HTMLDivElement;
-const textarea: HTMLTextAreaElement = document.querySelector(
-  'textarea',
+const textarea: HTMLTextAreaElement = document.getElementById(
+  'share-text',
 ) as HTMLTextAreaElement;
 
 function getLocationContainer(location: string, port: number): HTMLDivElement {

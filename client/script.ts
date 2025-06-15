@@ -15,8 +15,8 @@ const copyTextBtn: HTMLParagraphElement = document.getElementById(
 const clearFilesBtn: HTMLParagraphElement = document.getElementById(
   'clear-files',
 ) as HTMLParagraphElement;
-const textarea: HTMLTextAreaElement = document.querySelector(
-  'textarea',
+const textarea: HTMLTextAreaElement = document.getElementById(
+  'share-text',
 ) as HTMLTextAreaElement;
 
 async function uploadText(value: string): Promise<void> {

@@ -1,4 +1,4 @@
-import { ApiError } from '../types.ts';
+import { ApiError, FileListItem } from '../types.ts';
 import { Paragraph } from '../components.ts';
 import modal from './modal.ts';
 import snackbar from './snackbar.ts';
@@ -141,13 +141,6 @@ function onRenameSubmit(oldValue: string) {
     renameFile(oldValue, newValue);
   };
 }
-
-type FileListItem = {
-  name: string;
-  input: HTMLInputElement;
-  file: File;
-  error?: string;
-};
 
 function onUploadSubmit(files: File[]) {
   return async (inputs: HTMLInputElement[]): Promise<void> => {

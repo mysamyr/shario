@@ -113,7 +113,7 @@ input[type='file'] {
     border-radius: 5px;
 }
 
-textarea {
+#share-text {
     padding: 4px;
     outline: none;
     min-width: 340px;

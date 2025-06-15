@@ -6,3 +6,10 @@ export type Info = {
 };
 
 export type ApiError = { status: number; message: string };
+
+export type FileListItem = {
+  name: string;
+  input: HTMLInputElement;
+  file: File;
+  error?: string;
+};

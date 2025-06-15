@@ -1,29 +1,48 @@
-import { ensureDirSync, existsSync } from '@std/fs';
+import { ensureDirSync, ensureFileSync, existsSync } from '@std/fs';
 import { dirname, join } from '@std/path';
 import { qrPng } from '@sigmasd/qrpng';
 import { getAddresses } from './addresses.ts';
 import { ENV, PORT } from '../config.ts';
+import { SHARED_TEXT_FILENAME } from '../constants/index.ts';
 
 export function getRootPath(): string {
   if (ENV !== 'production') return Deno.cwd();
-  const execPath = Deno.execPath(); // application file path or deno executable path
+  const execPath: string = Deno.execPath(); // application file path or deno executable path
   return dirname(execPath);
 }
 
 export function getFilesFolderPath(): string {
-  const filesDir = join(getRootPath(), 'files');
+  const filesDir: string = join(getRootPath(), 'files');
   ensureDirSync(filesDir);
   return filesDir;
 }
 
 export function getQRCodesFolderPath(): string {
-  const filesDir = join(getRootPath(), 'qrcodes');
+  const filesDir: string = join(getRootPath(), 'qrcodes');
   ensureDirSync(filesDir);
   return filesDir;
 }
 
+export function getSharedContentFilePath(): string {
+  return join(getFilesFolderPath(), SHARED_TEXT_FILENAME);
+}
+
 export function isFileExists(name: string): boolean {
   return existsSync(join(getFilesFolderPath(), name));
+}
+
+export function getSharedContent(): string {
+  const sharedContentFile: string = getSharedContentFilePath();
+  ensureFileSync(sharedContentFile);
+  const decoder: TextDecoder = new TextDecoder('utf-8');
+  const data: Uint8Array = Deno.readFileSync(sharedContentFile);
+  return decoder.decode(data);
+}
+
+export function setSharedContent(content: string): void {
+  const sharedContentFile: string = getSharedContentFilePath();
+  const encoder: TextEncoder = new TextEncoder();
+  writeFile(sharedContentFile, encoder.encode(content));
 }
 
 export function readFile(name: string): Uint8Array {
@@ -35,10 +54,12 @@ export function readQRCode(name: string): Uint8Array {
 }
 
 export function getFiles(): string[] {
-  const entries = Deno.readDirSync(getFilesFolderPath());
+  const entries: IteratorObject<Deno.DirEntry> = Deno.readDirSync(
+    getFilesFolderPath(),
+  );
   const files: string[] = [];
   for (const entry of entries) {
-    if (entry.isFile) {
+    if (entry.isFile && entry.name !== SHARED_TEXT_FILENAME) {
       files.push(entry.name);
     }
   }

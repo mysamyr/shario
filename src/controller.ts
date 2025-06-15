@@ -13,22 +13,23 @@ import {
   generateQRCodes,
   getFiles,
   getFilesFolderPath,
+  getSharedContent,
   isFileExists,
   moveFile,
   readFile,
   readQRCode,
   removeFile,
+  setSharedContent,
   writeFile,
 } from './services/files.ts';
 import { PORT } from './config.ts';
 import { mapInfo } from './mappers.ts';
-import Store from './store.ts';
 import { validateFilename } from './helpers.ts';
 import { getAddresses } from './services/addresses.ts';
 
 export function getInfo(): Info {
   generateQRCodes();
-  return mapInfo(getAddresses(), PORT, getFiles(), Store.getText());
+  return mapInfo(getAddresses(), PORT, getFiles(), getSharedContent());
 }
 
 export function getFile(filename: string): Uint8Array {
@@ -64,7 +65,7 @@ export async function saveFile(req: Request, _res: Response): Promise<void> {
 
 export async function updateText(req: Request, _res: Response): Promise<void> {
   const reqBody: string = await req.body.text();
-  Store.setText(reqBody);
+  setSharedContent(reqBody);
 }
 
 export async function renameFile(

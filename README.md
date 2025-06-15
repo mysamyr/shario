@@ -37,7 +37,7 @@
 - `PUT /text` - Upload text
 - `PUT /:file` - Rename a file
 - `DELETE /` - Delete all uploaded files
-- `DELETE /:file` - Delete a specific file
+- `DELETE /:file` - Delete specific file
 
 ## Linting and formatting
 
@@ -48,6 +48,7 @@ This project uses Deno's default linting and formatting tools.
   deno task format
   ```
 
-## TODOs
+## TODO
 
 - Add polling or WebSocket for update file list
+- Add clear action for textarea

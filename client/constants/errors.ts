@@ -1,29 +1,42 @@
-export const NO_FILENAME_PROVIDED: string = 'No filename provided';
-export const FILENAME_SLASHES: string = 'Filename cannot contain slashes';
-export const FILENAME_BACKSLASHES: string =
-  'Filename cannot contain backslashes';
-export const FILENAME_COLONS: string = 'Filename cannot contain colons';
-export const FILENAME_ASTERISKS: string = 'Filename cannot contain asterisks';
-export const FILENAME_QUESTION_MARKS: string =
-  'Filename cannot contain question marks';
-export const FILENAME_DOUBLE_QUOTES: string =
-  'Filename cannot contain double quotes';
-export const FILENAME_LESS_THAN: string =
-  'Filename cannot contain less than signs';
-export const FILENAME_GREATER_THAN: string =
-  'Filename cannot contain greater than signs';
-export const FILENAME_PIPES: string = 'Filename cannot contain pipes';
-export const FILENAME_TOO_LONG: string =
-  'Filename cannot be longer than 255 characters';
-export const FILENAME_TOO_SHORT: string =
-  'Filename cannot be less than 3 characters';
-export const FILENAME_STARTS_DOT: string = 'Filename cannot start with a dot';
-export const FILENAME_ENDS_DOT: string = 'Filename cannot end with a dot';
-export const NAME_WAS_NOT_CHANGED: string = 'Name was not changed';
-export const FILES_TOO_BIG = (files: string): string =>
-  `Files ${files} size exceeds 10GB`;
-export const UPLOAD_ERROR: string = 'Error while uploading file.';
-export const NO_FILES_TO_UPLOAD: string = 'No valid files to upload';
-export const NO_FILES_TO_CLEAR: string = 'There are no files to delete';
-export const API_ERROR_$ = (status: number, message: string): string =>
-  `Error with status ${status} and message ${message}`;
+import { getLanguage, translations } from '../features/language.ts';
+
+export const NO_FILENAME_PROVIDED: () => string = () =>
+  translations[getLanguage()].errorMessages.noFilenameProvided;
+export const FILENAME_SLASHES: () => string = () =>
+  translations[getLanguage()].errorMessages.filenameSlashes;
+export const FILENAME_BACKSLASHES: () => string = () =>
+  translations[getLanguage()].errorMessages.filenameBackslashes;
+export const FILENAME_COLONS: () => string = () =>
+  translations[getLanguage()].errorMessages.filenameColons;
+export const FILENAME_ASTERISKS: () => string = () =>
+  translations[getLanguage()].errorMessages.filenameAsterisks;
+export const FILENAME_QUESTION_MARKS: () => string = () =>
+  translations[getLanguage()].errorMessages.filenameQuestionMarks;
+export const FILENAME_DOUBLE_QUOTES: () => string = () =>
+  translations[getLanguage()].errorMessages.filenameDoubleQuotes;
+export const FILENAME_LESS_THAN: () => string = () =>
+  translations[getLanguage()].errorMessages.filenameLessThan;
+export const FILENAME_GREATER_THAN: () => string = () =>
+  translations[getLanguage()].errorMessages.filenameGreaterThan;
+export const FILENAME_PIPES: () => string = () =>
+  translations[getLanguage()].errorMessages.filenamePipes;
+export const FILENAME_TOO_LONG: () => string = () =>
+  translations[getLanguage()].errorMessages.filenameTooLong;
+export const FILENAME_TOO_SHORT: () => string = () =>
+  translations[getLanguage()].errorMessages.filenameTooShort;
+export const FILENAME_STARTS_DOT: () => string = () =>
+  translations[getLanguage()].errorMessages.filenameStartsDot;
+export const FILENAME_ENDS_DOT: () => string = () =>
+  translations[getLanguage()].errorMessages.filenameEndsDot;
+export const NAME_WAS_NOT_CHANGED: () => string = () =>
+  translations[getLanguage()].errorMessages.nameWasNotChanged;
+export const FILES_TOO_BIG: (files: string) => string =
+  translations[getLanguage()].errorMessages.filesTooBig;
+export const UPLOAD_ERROR: () => string = () =>
+  translations[getLanguage()].errorMessages.uploadError;
+export const NO_FILES_TO_UPLOAD: () => string = () =>
+  translations[getLanguage()].errorMessages.noFilesToUpload;
+export const NO_FILES_TO_CLEAR: () => string = () =>
+  translations[getLanguage()].errorMessages.noFilesToClear;
+export const API_ERROR_$: (status: number, message: string) => string =
+  translations[getLanguage()].errorMessages.apiError;

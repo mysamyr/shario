@@ -4,23 +4,19 @@ import { updateHeader } from './features/header.ts';
 import { getText, setText } from './features/text.ts';
 import { handleClearAllFiles, handleFilesUpload } from './features/files.ts';
 import { API_ERROR_$ } from './constants/errors.ts';
-import { ApiError } from './types.ts';
+import { ApiError, Language } from './types.ts';
+import {
+  applyLanguage,
+  getLanguage,
+  setLanguage,
+  translations,
+} from './features/language.ts';
+import { LANGUAGES_CONFIG } from './constants/index.ts';
+import { Paragraph } from './components.ts';
 
 const uploadFileInput: HTMLInputElement = document.getElementById(
   'file-upload',
 ) as HTMLInputElement;
-const clearTextBtn: HTMLParagraphElement = document.getElementById(
-  'clear-text',
-) as HTMLParagraphElement;
-const copyTextBtn: HTMLParagraphElement = document.getElementById(
-  'copy-text',
-) as HTMLParagraphElement;
-const clearFilesBtn: HTMLParagraphElement = document.getElementById(
-  'clear-files',
-) as HTMLParagraphElement;
-const textarea: HTMLTextAreaElement = document.getElementById(
-  'share-text',
-) as HTMLTextAreaElement;
 
 async function uploadText(value: string): Promise<void> {
   try {
@@ -65,6 +61,19 @@ async function handleUploadByPaste(e: ClipboardEvent): Promise<void> {
 }
 
 function initTextarea(): void {
+  const textarea: HTMLTextAreaElement = document.getElementById(
+    'share-text',
+  ) as HTMLTextAreaElement;
+  const clearTextBtn: HTMLParagraphElement = document.getElementById(
+    'clear-text',
+  ) as HTMLParagraphElement;
+  const copyTextBtn: HTMLParagraphElement = document.getElementById(
+    'copy-text',
+  ) as HTMLParagraphElement;
+  const clearFilesBtn: HTMLParagraphElement = document.getElementById(
+    'clear-files',
+  ) as HTMLParagraphElement;
+
   textarea.addEventListener('input', function (): void {
     textarea.style.height = 'auto';
     textarea.style.height = textarea.scrollHeight > 240
@@ -105,8 +114,8 @@ function initTextarea(): void {
 }
 
 function initDragAndDrop(): void {
-  const uploadButton: HTMLLabelElement = document.querySelector(
-    '.file-upload-label',
+  const uploadButton: HTMLLabelElement = document.getElementById(
+    'file-upload-label',
   ) as HTMLLabelElement;
   const dragOverlay: HTMLDivElement = document.getElementById(
     'overlay',
@@ -119,7 +128,7 @@ function initDragAndDrop(): void {
 
     if (modal.isModalOpen()) return;
     dragCounter++;
-    uploadButton.innerText = 'Release to upload';
+    uploadButton.innerText = translations[getLanguage()].releaseToUpload;
     dragOverlay.style.display = 'block';
     uploadButton.classList.add('upload-label-drag');
   });
@@ -134,7 +143,7 @@ function initDragAndDrop(): void {
 
     dragCounter--;
     if (dragCounter === 0) {
-      uploadButton.innerText = 'Select File';
+      uploadButton.innerText = translations[getLanguage()].uploadBtn;
       uploadButton.classList.remove('upload-label-drag');
       dragOverlay.style.display = 'none';
     }
@@ -144,7 +153,7 @@ function initDragAndDrop(): void {
     e.preventDefault();
     e.stopPropagation();
     if (modal.isModalOpen()) return;
-    uploadButton.innerText = 'Select File';
+    uploadButton.innerText = translations[getLanguage()].uploadBtn;
     uploadButton.classList.remove('upload-label-drag');
     dragOverlay.style.display = 'none';
 
@@ -159,6 +168,27 @@ function initDragAndDrop(): void {
   });
 }
 
+function initLanguage(): void {
+  const languageContainer: HTMLDivElement = document.getElementById(
+    'language',
+  ) as HTMLDivElement;
+  languageContainer.innerHTML = '';
+  LANGUAGES_CONFIG.forEach((language: Language): void => {
+    const isActive: boolean = language.code === getLanguage();
+    const languageBtn: HTMLParagraphElement = Paragraph({
+      className: `language-btn ${isActive ? 'active' : ''}`,
+      text: language.name,
+      onClick: () => {
+        if (isActive) return;
+        setLanguage(language.code);
+        applyLanguage(language.code);
+        initLanguage();
+      },
+    });
+    languageContainer.appendChild(languageBtn);
+  });
+}
+
 uploadFileInput.addEventListener(
   'change',
   handleUploadBySelect,
@@ -169,5 +199,9 @@ globalThis.addEventListener('paste', handleUploadByPaste);
 initTextarea();
 
 initDragAndDrop();
+
+applyLanguage();
+
+initLanguage();
 
 updateHeader();

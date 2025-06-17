@@ -1,5 +1,6 @@
 import { Div, Header, Input, Span } from '../components.ts';
 import modal from '../features/modal.ts';
+import { getLanguage, translations } from '../features/language.ts';
 
 export function showInputError(input: HTMLInputElement, message: string): void {
   input.classList.add('input-error');
@@ -36,7 +37,7 @@ export default function uploadFilesModal(
 
   const header: HTMLHeadingElement = Header({
     lvl: 2,
-    text: 'Uploaded file names:',
+    text: translations[getLanguage()].modals.uploadFiles.title,
   });
 
   const buttons: HTMLDivElement = Div({
@@ -82,7 +83,7 @@ export default function uploadFilesModal(
   buttons.append(
     Div({
       className: 'btn',
-      text: 'Upload',
+      text: translations[getLanguage()].modals.uploadFiles.buttons.submit,
       onClick: () =>
         onSubmit(
           inputs,
@@ -90,7 +91,7 @@ export default function uploadFilesModal(
     }),
     Div({
       className: 'btn',
-      text: 'Cancel',
+      text: translations[getLanguage()].modals.uploadFiles.buttons.cancel,
       onClick: () => modal.hideModal(),
     }),
   );

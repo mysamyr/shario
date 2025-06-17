@@ -2,6 +2,7 @@ import { Info } from '../types.ts';
 import { Div, Image, Link, Paragraph } from '../components.ts';
 import { setText } from './text.ts';
 import { deleteFile, handleRenameFile } from './files.ts';
+import { getLanguage, translations } from './language.ts';
 
 const locationsContainer: HTMLDivElement = document.getElementById(
   'locations',
@@ -35,7 +36,7 @@ function renderFile(filename: string): void {
     href: `/files/${filename}`,
     target: '_blank',
     text: filename,
-    title: 'Open file',
+    title: translations[getLanguage()].titles.openFile,
   });
   const buttonsContainer: HTMLDivElement = Div({
     className: 'buttons',
@@ -45,18 +46,18 @@ function renderFile(filename: string): void {
     href: `/files/${filename}`,
     download: filename,
     text: '&#x2193;',
-    title: 'Download file',
+    title: translations[getLanguage()].titles.downloadFile,
   });
   const renameBtn: HTMLDivElement = Div({
     className: 'btn file-btn',
     text: '&#9998;',
-    title: 'Rename file',
+    title: translations[getLanguage()].titles.renameFile,
     onClick: (e: MouseEvent) => handleRenameFile(e, filename),
   });
   const deleteLink: HTMLDivElement = Div({
     className: 'delete btn file-btn',
     text: '&#10005;',
-    title: 'Delete file',
+    title: translations[getLanguage()].titles.deleteFile,
     onClick: (e: MouseEvent) => deleteFile(e, filename),
   });
   buttonsContainer.append(downloadLink, renameBtn, deleteLink);
@@ -70,7 +71,7 @@ function renderFiles(files: string[]): void {
     files.forEach(renderFile);
   } else {
     const container: HTMLParagraphElement = Paragraph({
-      text: 'No files uploaded yet',
+      text: translations[getLanguage()].noFilesUploaded,
     });
     filesContainer.appendChild(container);
   }

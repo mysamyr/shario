@@ -1,5 +1,6 @@
 import { Div, Header, Input } from '../components.ts';
 import modal from '../features/modal.ts';
+import { getLanguage, translations } from '../features/language.ts';
 
 export default function renameFileModal(
   filename: string,
@@ -11,7 +12,7 @@ export default function renameFileModal(
 
   const header: HTMLHeadingElement = Header({
     lvl: 2,
-    text: 'Rename file:',
+    text: translations[getLanguage()].modals.renameFile.title,
   });
 
   const buttons: HTMLDivElement = Div({
@@ -30,7 +31,7 @@ export default function renameFileModal(
   buttons.append(
     Div({
       className: 'btn',
-      text: 'Rename',
+      text: translations[getLanguage()].modals.renameFile.buttons.submit,
       onClick: () =>
         onSubmit(
           input,
@@ -39,7 +40,7 @@ export default function renameFileModal(
     }),
     Div({
       className: 'btn',
-      text: 'Cancel',
+      text: translations[getLanguage()].modals.renameFile.buttons.cancel,
       onClick: () => modal.hideModal(),
     }),
   );

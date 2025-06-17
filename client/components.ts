@@ -40,6 +40,7 @@ export function Paragraph(props: {
   id?: string;
   text?: string;
   className?: string;
+  onClick?: (this: HTMLParagraphElement, ev: MouseEvent) => void;
 }): HTMLParagraphElement {
   const p: HTMLParagraphElement = document.createElement('p');
   if (!props) return p;
@@ -48,6 +49,7 @@ export function Paragraph(props: {
   }
   if (props.text) p.innerHTML = props.text;
   if (props.id) p.id = props.id;
+  if (props.onClick) p.addEventListener('click', props.onClick);
 
   return p;
 }

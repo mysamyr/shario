@@ -72,16 +72,16 @@ input[type='file'] {
     display: none;
 }
 
-.file-upload-label {
+#file-upload-label {
     background-color: var(--green);
     color: var(--white);
     border-radius: 5px;
     display: inline-block;
     padding: 10px 20px;
-    font-size: 2rem;
+    font-size: 1.7rem;
 }
 
-.file-upload-label:hover {
+#file-upload-label:hover {
     background-color: var(--light-green);
 }
 
@@ -276,4 +276,24 @@ dialog::backdrop {
 .error-message {
     color: red;
     font-size: 0.7em;
+}
+
+.active {
+    color: var(--green);
+    text-decoration: underline;
+}
+
+footer {
+    margin-top: 2rem;
+}
+
+#language {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.language-btn {
+    cursor: pointer;
 }

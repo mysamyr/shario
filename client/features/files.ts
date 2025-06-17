@@ -63,8 +63,8 @@ async function uploadFile(
       };
       xhr.onerror = (): void => {
         progress.remove();
-        snackbar.displayMsg(UPLOAD_ERROR);
-        reject(new Error(UPLOAD_ERROR));
+        snackbar.displayMsg(UPLOAD_ERROR());
+        reject(new Error(UPLOAD_ERROR()));
       };
       xhr.send(formData);
     });
@@ -84,7 +84,7 @@ async function renameFile(
     body: JSON.stringify({ name: newValue }),
   });
   if (res.ok) {
-    snackbar.displayMsg(FILE_RENAMED);
+    snackbar.displayMsg(FILE_RENAMED());
     modal.hideModal();
     updateHeader();
   } else {
@@ -104,7 +104,7 @@ export async function deleteFile(e: Event, filename: string): Promise<void> {
       .json();
     snackbar.displayMsg(API_ERROR_$(status, message));
   } else {
-    snackbar.displayMsg(FILE_DELETED);
+    snackbar.displayMsg(FILE_DELETED());
   }
   updateHeader();
 }
@@ -120,7 +120,7 @@ async function clearFiles(e: Event): Promise<void> {
     snackbar.displayMsg(API_ERROR_$(status, message));
     modal.hideModal();
   } else {
-    snackbar.displayMsg(FILES_DELETED);
+    snackbar.displayMsg(FILES_DELETED());
   }
   updateHeader();
 }
@@ -136,7 +136,7 @@ function onRenameSubmit(oldValue: string) {
       hideInputError(input);
     }
     if (newValue.toLocaleLowerCase() === oldValue.toLocaleLowerCase()) {
-      showInputError(input, NAME_WAS_NOT_CHANGED);
+      showInputError(input, NAME_WAS_NOT_CHANGED());
       return;
     }
     renameFile(oldValue, newValue);
@@ -169,7 +169,7 @@ function onUploadSubmit(files: File[]) {
     );
 
     if (!filesToUpload.length) {
-      snackbar.displayMsg(NO_FILES_TO_UPLOAD);
+      snackbar.displayMsg(NO_FILES_TO_UPLOAD());
       return;
     }
 
@@ -183,7 +183,7 @@ function onUploadSubmit(files: File[]) {
     );
     if (inputs.every((input: HTMLInputElement): boolean => input.disabled)) {
       snackbar.displayMsg(
-        files.length > 1 ? FILES_UPLOADED : FILE_UPLOADED,
+        files.length > 1 ? FILES_UPLOADED() : FILE_UPLOADED(),
       );
       modal.hideModal();
     }
@@ -214,7 +214,7 @@ export function handleRenameFile(e: Event, filename: string): void {
 
 export function handleClearAllFiles(): void {
   if (!document.querySelector('.file')) {
-    snackbar.displayMsg(NO_FILES_TO_CLEAR);
+    snackbar.displayMsg(NO_FILES_TO_CLEAR());
     return;
   }
   modal.showModal(clearAllFilesModal(clearFiles));

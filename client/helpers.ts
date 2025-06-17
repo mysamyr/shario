@@ -20,45 +20,45 @@ export function validateFilename(
   filename: string,
 ): string | undefined {
   if (!filename) {
-    return NO_FILENAME_PROVIDED;
+    return NO_FILENAME_PROVIDED();
   }
   if (filename.includes('/')) {
-    return FILENAME_SLASHES;
+    return FILENAME_SLASHES();
   }
   if (filename.includes('\\')) {
-    return FILENAME_BACKSLASHES;
+    return FILENAME_BACKSLASHES();
   }
   if (filename.includes(':')) {
-    return FILENAME_COLONS;
+    return FILENAME_COLONS();
   }
   if (filename.includes('*')) {
-    return FILENAME_ASTERISKS;
+    return FILENAME_ASTERISKS();
   }
   if (filename.includes('?')) {
-    return FILENAME_QUESTION_MARKS;
+    return FILENAME_QUESTION_MARKS();
   }
   if (filename.includes('"')) {
-    return FILENAME_DOUBLE_QUOTES;
+    return FILENAME_DOUBLE_QUOTES();
   }
   if (filename.includes('<')) {
-    return FILENAME_LESS_THAN;
+    return FILENAME_LESS_THAN();
   }
   if (filename.includes('>')) {
-    return FILENAME_GREATER_THAN;
+    return FILENAME_GREATER_THAN();
   }
   if (filename.includes('|')) {
-    return FILENAME_PIPES;
+    return FILENAME_PIPES();
   }
   if (filename.length > MAX_FILENAME_LENGTH) {
-    return FILENAME_TOO_LONG;
+    return FILENAME_TOO_LONG();
   }
   if (filename.length < MIN_FILENAME_LENGTH) {
-    return FILENAME_TOO_SHORT;
+    return FILENAME_TOO_SHORT();
   }
   if (filename.startsWith('.')) {
-    return FILENAME_STARTS_DOT;
+    return FILENAME_STARTS_DOT();
   }
   if (filename.endsWith('.')) {
-    return FILENAME_ENDS_DOT;
+    return FILENAME_ENDS_DOT();
   }
 }

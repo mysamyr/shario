@@ -1,5 +1,6 @@
 import { Div, Header, Paragraph } from '../components.ts';
 import modal from '../features/modal.ts';
+import { getLanguage, translations } from '../features/language.ts';
 
 export default function clearAllFilesModal(
   onSubmit: (e: Event) => Promise<void>,
@@ -10,12 +11,11 @@ export default function clearAllFilesModal(
 
   const header: HTMLHeadingElement = Header({
     lvl: 2,
-    text: 'Clear all files:',
+    text: translations[getLanguage()].modals.clearFiles.title,
   });
 
   const subHeader: HTMLHeadingElement = Paragraph({
-    text:
-      'Are you sure you want to clear all files? This action cannot be undone.',
+    text: translations[getLanguage()].modals.clearFiles.text,
   });
 
   const buttons: HTMLDivElement = Div({
@@ -25,12 +25,12 @@ export default function clearAllFilesModal(
   buttons.append(
     Div({
       className: 'btn',
-      text: 'Clear',
+      text: translations[getLanguage()].modals.clearFiles.buttons.submit,
       onClick: onSubmit,
     }),
     Div({
       className: 'btn',
-      text: 'Cancel',
+      text: translations[getLanguage()].modals.clearFiles.buttons.cancel,
       onClick: () => modal.hideModal(),
     }),
   );

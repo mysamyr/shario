@@ -34,6 +34,14 @@ h1, h2 {
     user-select: none;
 }
 
+h1 {
+    font-size: 1.7rem;
+}
+
+h2 {
+    font-size: 1.6rem;
+}
+
 .container {
     display: flex;
     flex-direction: column;
@@ -251,7 +259,6 @@ dialog::backdrop {
 
 .upload-input {
     width: 100%;
-    min-width: 250px;
     padding: 6px 3px;
     border: 1px solid var(--grey);
     border-radius: 4px;

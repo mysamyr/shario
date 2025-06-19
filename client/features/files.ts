@@ -118,10 +118,10 @@ async function clearFiles(e: Event): Promise<void> {
     const { status, message }: ApiError = await res
       .json();
     snackbar.displayMsg(API_ERROR_$(status, message));
-    modal.hideModal();
   } else {
     snackbar.displayMsg(FILES_DELETED());
   }
+  modal.hideModal();
   updateHeader();
 }
 

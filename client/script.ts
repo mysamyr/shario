@@ -176,7 +176,7 @@ function initLanguage(): void {
   LANGUAGES_CONFIG.forEach((language: Language): void => {
     const isActive: boolean = language.code === getLanguage();
     const languageBtn: HTMLParagraphElement = Paragraph({
-      className: `language-btn ${isActive ? 'active' : ''}`,
+      className: `language-btn ${isActive ? '' : 'active'}`,
       text: language.name,
       onClick: () => {
         if (isActive) return;

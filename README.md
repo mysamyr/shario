@@ -52,3 +52,4 @@ This project uses Deno's default linting and formatting tools.
 
 - Add polling or WebSocket for update file list
 - Add theme change
+- Add button with help modal

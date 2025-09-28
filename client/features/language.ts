@@ -162,7 +162,6 @@ export const translations: Translations = {
 };
 
 export function getLanguage(): string {
-  console.log(localStorage.getItem('language'));
   return localStorage.getItem('language') || 'en';
 }
 

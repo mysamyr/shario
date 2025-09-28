@@ -8,3 +8,11 @@ export type Info = {
 export type RenameFileBody = {
   name: string;
 };
+
+export type FileEntry = {
+  name: string;
+  size: number;
+  type: string;
+  created: number | null;
+  modified: number | null;
+}

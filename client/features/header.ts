@@ -1,4 +1,4 @@
-import { Info } from '../types.ts';
+import {FileEntry, Info} from '../types.ts';
 import { Div, Image, Link, Paragraph } from '../components.ts';
 import { setText } from './text.ts';
 import { deleteFile, handleRenameFile } from './files.ts';
@@ -26,16 +26,17 @@ function getLocationContainer(location: string, port: number): HTMLDivElement {
   return container;
 }
 
-function renderFile(filename: string): void {
+function renderFile(file: FileEntry): void {
   const container: HTMLDivElement = Div({
     className: 'file',
   });
   container.classList.add('file');
+  // todo table row
   const fileLink: HTMLAnchorElement = Link({
     className: 'file-link',
-    href: `/files/${filename}`,
+    href: `/files/${file.name}`,
     target: '_blank',
-    text: filename,
+    text: file.name,
     title: translations[getLanguage()].titles.openFile,
   });
   const buttonsContainer: HTMLDivElement = Div({
@@ -43,8 +44,8 @@ function renderFile(filename: string): void {
   });
   const downloadLink: HTMLAnchorElement = Link({
     className: 'btn file-btn',
-    href: `/files/${filename}`,
-    download: filename,
+    href: `/files/${file.name}`,
+    download: file.name,
     text: '&#x2193;',
     title: translations[getLanguage()].titles.downloadFile,
   });
@@ -52,20 +53,20 @@ function renderFile(filename: string): void {
     className: 'btn file-btn',
     text: '&#9998;',
     title: translations[getLanguage()].titles.renameFile,
-    onClick: (e: MouseEvent) => handleRenameFile(e, filename),
+    onClick: (e: MouseEvent) => handleRenameFile(e, file.name),
   });
   const deleteLink: HTMLDivElement = Div({
     className: 'delete btn file-btn',
     text: '&#10005;',
     title: translations[getLanguage()].titles.deleteFile,
-    onClick: (e: MouseEvent) => deleteFile(e, filename),
+    onClick: (e: MouseEvent) => deleteFile(e, file.name),
   });
   buttonsContainer.append(downloadLink, renameBtn, deleteLink);
   container.append(fileLink, buttonsContainer);
   filesContainer.appendChild(container);
 }
 
-function renderFiles(files: string[]): void {
+function renderFiles(files: FileEntry[]): void {
   filesContainer.innerText = '';
   if (files.length) {
     files.forEach(renderFile);

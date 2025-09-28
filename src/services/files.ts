@@ -4,6 +4,7 @@ import { qrPng } from '@sigmasd/qrpng';
 import { getAddresses } from './addresses.ts';
 import { ENV, PORT } from '../config.ts';
 import { SHARED_TEXT_FILENAME } from '../constants/index.ts';
+import { FileEntry } from '../types.ts';
 
 export function getRootPath(): string {
   if (ENV !== 'production') return Deno.cwd();
@@ -53,14 +54,25 @@ export function readQRCode(name: string): Uint8Array {
   return Deno.readFileSync(join(getQRCodesFolderPath(), name));
 }
 
-export function getFiles(): string[] {
+export function getFiles(): FileEntry[] {
   const entries: IteratorObject<Deno.DirEntry> = Deno.readDirSync(
     getFilesFolderPath(),
   );
-  const files: string[] = [];
+  const files: FileEntry[] = [];
   for (const entry of entries) {
     if (entry.isFile && entry.name !== SHARED_TEXT_FILENAME) {
-      files.push(entry.name);
+      const info: Deno.FileInfo = Deno.statSync(
+        join(getFilesFolderPath(), entry.name),
+      );
+      files.push({
+        name: entry.name,
+        size: info.size,
+        type: 'todo',
+        created: info.birthtime
+          ? Date.parse(info.birthtime.toUTCString())
+          : null,
+        modified: info.mtime ? Date.parse(info.mtime.toUTCString()) : null,
+      });
     }
   }
   return files;

@@ -13,6 +13,7 @@ export const translations: Translations = {
     sharedTextPlaceholder: 'Write something here to share',
     filesTitle: 'Files:',
     releaseToUpload: 'Release to upload',
+    noLocations: 'You are not connected to any network',
     noFilesUploaded: 'No files uploaded yet',
     titles: {
       upload: 'Upload file from disk',
@@ -89,6 +90,7 @@ export const translations: Translations = {
     sharedTextPlaceholder: 'Напишіть щось для спільного використання',
     filesTitle: 'Файли:',
     releaseToUpload: 'Відпустіть, щоб завантажити',
+    noLocations: 'Ви не підключені до жодної мережі',
     noFilesUploaded: 'Файли ще не завантажені',
     titles: {
       upload: 'Завантажити файл з диска',

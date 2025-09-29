@@ -92,6 +92,7 @@ export type Translation = {
   sharedTextPlaceholder: string;
   filesTitle: string;
   releaseToUpload: string;
+  noLocations: string;
   noFilesUploaded: string;
   titles: Titles;
   messages: Messages;

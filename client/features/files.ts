@@ -96,7 +96,10 @@ async function renameFile(
 
 export async function deleteFile(e: Event, filename: string): Promise<void> {
   e.preventDefault();
-  const res: Response = await fetch(`/${filename}`, {
+  const queryParams: string = new URLSearchParams({
+    file: filename,
+  }).toString();
+  const res: Response = await fetch(`/?${queryParams}`, {
     method: 'DELETE',
   });
   if (!res.ok) {
@@ -109,9 +112,19 @@ export async function deleteFile(e: Event, filename: string): Promise<void> {
   updateHeader();
 }
 
-async function clearFiles(e: Event): Promise<void> {
+async function deleteFiles(e: Event): Promise<void> {
   e.preventDefault();
-  const res: Response = await fetch('/', {
+  const files: NodeListOf<HTMLAnchorElement> = document.querySelectorAll(
+    '.file-link',
+  );
+  const filenames: string[] = [];
+  files.forEach((i: HTMLAnchorElement): void => {
+    filenames.push(i.textContent);
+  });
+  const queryParams: string = new URLSearchParams({
+    file: filenames.join(','),
+  }).toString();
+  const res: Response = await fetch(`/?${queryParams}`, {
     method: 'DELETE',
   });
   if (!res.ok) {
@@ -217,5 +230,5 @@ export function handleClearAllFiles(): void {
     snackbar.displayMsg(NO_FILES_TO_CLEAR());
     return;
   }
-  modal.showModal(clearAllFilesModal(clearFiles));
+  modal.showModal(clearAllFilesModal(deleteFiles));
 }

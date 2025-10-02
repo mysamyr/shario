@@ -33,7 +33,10 @@
       "dom.iterable",
       "esnext",
       "deno.ns"
-    ]
+    ],
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "strict": true
   },
   "fmt": {
     "indentWidth": 2,

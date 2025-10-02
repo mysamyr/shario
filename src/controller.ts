@@ -1,6 +1,6 @@
 import { join } from '@std/path';
 import { httpErrors, Request, Response } from '@oak/oak';
-import { Info } from './types.ts';
+import { DeleteFilesBody, Info } from './types.ts';
 import {
   FILE_ALREADY_EXISTS,
   FILE_TOO_BIG,
@@ -9,7 +9,6 @@ import {
 } from './constants/errors.ts';
 import { MAX_FILE_SIZE } from './constants/index.ts';
 import {
-  deleteFolder,
   generateQRCodes,
   getFiles,
   getFilesFolderPath,
@@ -32,11 +31,24 @@ export function getInfo(): Info {
   return mapInfo(getAddresses(), PORT, getFiles(), getSharedContent());
 }
 
-export function getFile(filename: string): Uint8Array {
+export function downloadFile(filename: string): Uint8Array {
   if (!isFileExists(filename)) {
     throw new httpErrors.BadRequest(NOT_EXISTING_FILE);
   }
   return readFile(filename);
+}
+
+export function downloadFiles(filenames: string[]): Uint8Array[] {
+  if (!filenames.every((filename: string) => isFileExists(filename))) {
+    throw new httpErrors.BadRequest(NOT_EXISTING_FILE);
+  }
+  const result: Uint8Array[] = [];
+  for (const filename of filenames) {
+    result.push(readFile(filename));
+  }
+  // todo: rework to zip
+
+  return result;
 }
 
 export function getQRCode(filename: string): Uint8Array {
@@ -85,13 +97,11 @@ export async function renameFile(
   );
 }
 
-export async function deleteFiles(): Promise<void> {
-  await deleteFolder(join(getFilesFolderPath()));
-}
-
-export async function deleteFile(filename: string): Promise<void> {
-  if (!isFileExists(filename)) {
+export async function deleteFiles(filenames: DeleteFilesBody): Promise<void> {
+  if (!filenames.every((filename: string) => isFileExists(filename))) {
     throw new httpErrors.BadRequest(NOT_EXISTING_FILE);
   }
-  await removeFile(join(getFilesFolderPath(), filename));
+  for (const filename of filenames) {
+    await removeFile(join(getFilesFolderPath(), filename));
+  }
 }

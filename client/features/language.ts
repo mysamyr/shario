@@ -217,4 +217,12 @@ export function applyLanguage(lang: string = getLanguage()): void {
     'clear-files',
   ) as HTMLParagraphElement;
   clearFiles.title = langTranslations.titles.clearFiles;
+
+  const noFiles: HTMLParagraphElement | null = document.getElementById(
+    'no-files',
+  );
+  if (noFiles) {
+    noFiles.title = langTranslations.noFilesUploaded;
+    noFiles.textContent = langTranslations.noFilesUploaded;
+  }
 }

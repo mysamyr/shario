@@ -84,6 +84,7 @@ function renderFiles(files: FileEntry[]): void {
     files.forEach(renderFile);
   } else {
     const container: HTMLParagraphElement = Paragraph({
+      id: 'no-files',
       text: translations[getLanguage()].noFilesUploaded,
     });
     filesContainer.appendChild(container);

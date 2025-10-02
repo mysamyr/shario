@@ -1,8 +1,8 @@
 import { Context, Router, Status } from '@oak/oak';
 import {
-  deleteFile,
   deleteFiles,
-  getFile,
+  downloadFile,
+  downloadFiles,
   getInfo,
   getQRCode,
   renameFile,
@@ -19,16 +19,23 @@ router.get('/info', (ctx: Context): void => {
 });
 
 router.get('/files/:file', (ctx: Context): void => {
-  // @ts-ignore-next-line
   const filename: string = ctx.params.file;
-  if (!filename) {
-    ctx.throw(Status.BadRequest, NO_FILENAME_PROVIDED);
-  }
-  ctx.response.body = getFile(filename);
+  if (!filename) ctx.throw(Status.BadRequest, NO_FILENAME_PROVIDED);
+
+  ctx.response.body = downloadFile(filename);
+});
+
+// todo: rework to download as zip, unused now
+router.get('/files', (ctx: Context): void => {
+  const filenamesString: string = ctx.request.url.searchParams.get('file');
+  if (!filenamesString) ctx.throw(Status.BadRequest, NO_FILENAME_PROVIDED);
+
+  const filenames: string[] = filenamesString.split(',');
+
+  ctx.response.body = downloadFiles(filenames);
 });
 
 router.get('/qrcodes/:file', (ctx: Context): void => {
-  // @ts-ignore-next-line
   const filename: string = ctx.params.file;
   if (!filename) {
     ctx.throw(Status.BadRequest, NO_FILENAME_PROVIDED);
@@ -53,7 +60,6 @@ router.put('/text', async (ctx: Context): Promise<void> => {
 });
 
 router.put('/:file', async (ctx: Context): Promise<void> => {
-  // @ts-ignore-next-line
   const filename: string = ctx.params.file;
   if (!filename) {
     ctx.throw(Status.BadRequest, NO_FILENAME_PROVIDED);
@@ -70,19 +76,18 @@ router.put('/:file', async (ctx: Context): Promise<void> => {
   ctx.response.status = Status.NoContent;
 });
 
-// todo convert to POST with list of files
 router.delete('/', async (ctx: Context): Promise<void> => {
-  await deleteFiles();
-  ctx.response.status = Status.NoContent;
-});
-
-router.delete('/:file', async (ctx: Context): Promise<void> => {
-  // @ts-ignore-next-line
-  const filename: string = ctx.params.file;
-  if (!filename) {
+  if (!ctx.request.hasBody) {
     ctx.throw(Status.BadRequest, NO_FILENAME_PROVIDED);
   }
-  await deleteFile(filename);
+  const filenamesString: string = ctx.request.url.searchParams.get('file');
+
+  if (!filenamesString) {
+    ctx.throw(Status.BadRequest, NO_FILENAME_PROVIDED);
+  }
+  const filenames: string[] = filenamesString.split(',');
+
+  await deleteFiles(filenames);
   ctx.response.status = Status.NoContent;
 });
 

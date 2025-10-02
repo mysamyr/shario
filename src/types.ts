@@ -15,4 +15,4 @@ export type FileEntry = {
   type: string;
   created: number | null;
   modified: number | null;
-}
+};

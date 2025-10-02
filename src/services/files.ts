@@ -25,7 +25,7 @@ export function getQRCodesFolderPath(): string {
 }
 
 export function getSharedContentFilePath(): string {
-  return join(getFilesFolderPath(), SHARED_TEXT_FILENAME);
+  return join(getRootPath(), SHARED_TEXT_FILENAME);
 }
 
 export function isFileExists(name: string): boolean {

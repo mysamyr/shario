@@ -70,6 +70,7 @@ router.put('/:file', async (ctx: Context): Promise<void> => {
   ctx.response.status = Status.NoContent;
 });
 
+// todo convert to POST with list of files
 router.delete('/', async (ctx: Context): Promise<void> => {
   await deleteFiles();
   ctx.response.status = Status.NoContent;

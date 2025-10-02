@@ -6,7 +6,6 @@ type Translations = {
 
 export const translations: Translations = {
   en: {
-    mainTitle: 'LAN File Sharing',
     uploadBtnTitle: 'Upload files:',
     uploadBtn: 'Select Files',
     sharedTextTitle: 'Shared text:',
@@ -83,7 +82,6 @@ export const translations: Translations = {
     },
   },
   uk: {
-    mainTitle: 'Обмін файлами по LAN',
     uploadBtnTitle: 'Завантажити файли:',
     uploadBtn: 'Вибрати файли',
     sharedTextTitle: 'Спільний текст:',
@@ -177,7 +175,7 @@ export function applyLanguage(lang: string = getLanguage()): void {
   const h1: HTMLHeadingElement = document.querySelector(
     'h1',
   ) as HTMLHeadingElement;
-  h1.textContent = langTranslations.mainTitle;
+  h1.textContent = 'Shario';
 
   const filesUploadTitle: HTMLHeadingElement = document.getElementById(
     'files-upload-title',

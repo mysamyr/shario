@@ -85,7 +85,6 @@ type Modals = {
 };
 
 export type Translation = {
-  mainTitle: string;
   uploadBtnTitle: string;
   uploadBtn: string;
   sharedTextTitle: string;

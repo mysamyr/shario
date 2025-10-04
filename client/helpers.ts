@@ -15,10 +15,13 @@ import {
   NO_FILENAME_PROVIDED,
 } from './constants/errors.ts';
 import { MAX_FILENAME_LENGTH, MIN_FILENAME_LENGTH } from './constants/index.ts';
+import { COLUMN_KEYS } from './constants/table.ts';
+import { Span } from './components.ts';
+import { FileEntry } from './types.ts';
 
-export function validateFilename(
+export const validateFilename = (
   filename: string,
-): string | undefined {
+): string | undefined => {
   if (!filename) {
     return NO_FILENAME_PROVIDED();
   }
@@ -61,4 +64,72 @@ export function validateFilename(
   if (filename.endsWith('.')) {
     return FILENAME_ENDS_DOT();
   }
+};
+
+export const showInputError = (
+  input: HTMLInputElement,
+  message: string,
+): void => {
+  input.classList.add('input-error');
+
+  const next: HTMLSpanElement | null = input
+    .nextElementSibling;
+  if (next && next.classList.contains('error-message')) {
+    next.remove();
+  }
+
+  const errorMsg: HTMLSpanElement = Span({
+    className: 'error-message',
+    text: message,
+  });
+  input.after(errorMsg);
+};
+
+export const hideInputError = (input: HTMLInputElement): void => {
+  input.classList.remove('input-error');
+  const next: HTMLSpanElement | null = input
+    .nextElementSibling;
+  if (next && next.classList.contains('error-message')) {
+    next.remove();
+  }
+};
+
+export const sortFiles = (
+  files: FileEntry[],
+  sortKey: string,
+  sortAsc: boolean,
+): FileEntry[] =>
+  files.toSorted((a: FileEntry, b: FileEntry): number => {
+    let valA = a[sortKey];
+    let valB = b[sortKey];
+
+    if (valA == null) valA = '';
+    if (valB == null) valB = '';
+
+    if (sortKey === COLUMN_KEYS.SIZE) {
+      valA = Number(valA);
+      valB = Number(valB);
+      return sortAsc ? valA - valB : valB - valA;
+    } else if (sortKey === COLUMN_KEYS.CREATED) {
+      valA = new Date(valA).getTime();
+      valB = new Date(valB).getTime();
+      return sortAsc ? valA - valB : valB - valA;
+    } else {
+      return sortAsc
+        ? String(valA).localeCompare(String(valB))
+        : String(valB).localeCompare(String(valA));
+    }
+  });
+
+export const formatBytes = (bytes: number): string => {
+  if (!bytes) return '0 Bytes';
+  const k: number = 1024;
+  const sizes: string[] = [
+    'Bytes',
+    'KB',
+    'MB',
+    'GB',
+  ];
+  const i: number = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }

@@ -1,9 +1,8 @@
 export type FileEntry = {
   name: string;
   size: number;
-  type: string;
+  type: string | null;
   created: number | null;
-  modified: number | null;
 };
 
 export type Info = {
@@ -27,15 +26,27 @@ export type Language = {
   code: string;
 };
 
-type Titles = {
-  upload: string;
-  clearText: string;
+export type Titles = {
+  changeLanguage: string;
+  showQRs: string;
+  showHelp: string;
+  uploadFiles: string;
+  downloadFiles: string;
+  deleteFiles: string;
+  saveNote: string;
   copyText: string;
-  clearFiles: string;
+  clearText: string;
   openFile: string;
   downloadFile: string;
   renameFile: string;
   deleteFile: string;
+};
+
+export type TableLabels = {
+  name: string;
+  size: string;
+  type: string;
+  created: string;
 };
 
 type Messages = {
@@ -65,7 +76,8 @@ type ErrorMessages = {
   filesTooBig: (files: string) => string;
   uploadError: string;
   noFilesToUpload: string;
-  noFilesToClear: string;
+  noFilesSelected: string;
+  nothingToSave: string;
   apiError: (status: number, message: string) => string;
 };
 
@@ -85,16 +97,19 @@ type Modals = {
 };
 
 export type Translation = {
-  uploadBtnTitle: string;
-  uploadBtn: string;
-  sharedTextTitle: string;
+  filesHeader: string;
+  noteHeader: string;
   sharedTextPlaceholder: string;
-  filesTitle: string;
-  releaseToUpload: string;
   noLocations: string;
-  noFilesUploaded: string;
   titles: Titles;
+  table: TableLabels;
   messages: Messages;
   errorMessages: ErrorMessages;
   modals: Modals;
+};
+
+export type TableColumn = {
+  key: string;
+  sortable?: boolean;
+  minWidth?: string;
 };

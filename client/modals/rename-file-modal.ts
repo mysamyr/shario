@@ -7,7 +7,7 @@ export default function renameFileModal(
   onSubmit: (inputs: HTMLInputElement, originFilename: string) => void,
 ): HTMLDivElement {
   const container: HTMLDivElement = Div({
-    className: 'container modal-container',
+    className: 'modal-container',
   });
 
   const header: HTMLHeadingElement = Header({

@@ -1,6 +1,6 @@
 import { join } from '@std/path';
 import { httpErrors, Request, Response } from '@oak/oak';
-import { DeleteFilesBody, Info } from './types.ts';
+import { Info } from './types.ts';
 import {
   FILE_ALREADY_EXISTS,
   FILE_TOO_BIG,
@@ -25,6 +25,7 @@ import { PORT } from './config.ts';
 import { mapInfo } from './mappers.ts';
 import { validateFilename } from './helpers.ts';
 import { getAddresses } from './services/addresses.ts';
+import { compressFiles } from './services/compress.ts';
 
 export function getInfo(): Info {
   generateQRCodes();
@@ -38,17 +39,11 @@ export function downloadFile(filename: string): Uint8Array {
   return readFile(filename);
 }
 
-export function downloadFiles(filenames: string[]): Uint8Array[] {
+export function archiveFiles(filenames: string[]): Promise<Uint8Array> {
   if (!filenames.every((filename: string) => isFileExists(filename))) {
     throw new httpErrors.BadRequest(NOT_EXISTING_FILE);
   }
-  const result: Uint8Array[] = [];
-  for (const filename of filenames) {
-    result.push(readFile(filename));
-  }
-  // todo: rework to zip
-
-  return result;
+  return compressFiles(filenames);
 }
 
 export function getQRCode(filename: string): Uint8Array {
@@ -97,7 +92,7 @@ export async function renameFile(
   );
 }
 
-export async function deleteFiles(filenames: DeleteFilesBody): Promise<void> {
+export async function deleteFiles(filenames: string[]): Promise<void> {
   if (!filenames.every((filename: string) => isFileExists(filename))) {
     throw new httpErrors.BadRequest(NOT_EXISTING_FILE);
   }

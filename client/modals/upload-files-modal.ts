@@ -1,38 +1,14 @@
-import { Div, Header, Input, Span } from '../components.ts';
+import { Div, Header, Input } from '../components.ts';
 import modal from '../features/modal.ts';
 import { getLanguage, translations } from '../features/language.ts';
+import { hideInputError } from '../helpers.ts';
 
-export function showInputError(input: HTMLInputElement, message: string): void {
-  input.classList.add('input-error');
-
-  const next: HTMLSpanElement | null = input
-    .nextElementSibling as HTMLSpanElement;
-  if (next && next.classList.contains('error-message')) {
-    next.remove();
-  }
-
-  const errorMsg: HTMLSpanElement = Span({
-    className: 'error-message',
-    text: message,
-  });
-  input.after(errorMsg);
-}
-
-export function hideInputError(input: HTMLInputElement): void {
-  input.classList.remove('input-error');
-  const next: HTMLSpanElement | null = input
-    .nextElementSibling as HTMLSpanElement;
-  if (next && next.classList.contains('error-message')) {
-    next.remove();
-  }
-}
-
-export default function uploadFilesModal(
+export default (
   files: File[],
   onSubmit: (inputs: HTMLInputElement[]) => void,
-): HTMLDivElement {
+): HTMLDivElement => {
   const container: HTMLDivElement = Div({
-    className: 'container modal-container',
+    className: 'modal-container',
   });
 
   const header: HTMLHeadingElement = Header({
@@ -50,7 +26,7 @@ export default function uploadFilesModal(
       className: 'upload-input',
     })
   );
-  const wrappedInputs: HTMLDivElement[] = inputs.map(
+  const inputRows: HTMLDivElement[] = inputs.map(
     (input: HTMLInputElement): HTMLDivElement => {
       const container: HTMLDivElement = Div({
         className: 'input-container',
@@ -60,7 +36,7 @@ export default function uploadFilesModal(
       });
       inputWrapper.appendChild(input);
       const deleteBtn: HTMLDivElement = Div({
-        className: 'delete btn file-upload-delete-btn',
+        className: 'btn file-upload-delete-btn',
         text: '&#10005;',
         title: 'Delete input',
         onClick: (e: MouseEvent): void => {
@@ -95,7 +71,7 @@ export default function uploadFilesModal(
       onClick: () => modal.hideModal(),
     }),
   );
-  container.append(header, ...wrappedInputs, buttons);
+  container.append(header, ...inputRows, buttons);
   inputs[0].focus();
   inputs.forEach((input: HTMLInputElement): void => {
     input.addEventListener('keypress', (e: KeyboardEvent): void => {
@@ -107,4 +83,4 @@ export default function uploadFilesModal(
     });
   });
   return container;
-}
+};

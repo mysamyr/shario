@@ -1,6 +1,6 @@
 import { join } from '@std/path';
 import { httpErrors, Request, Response } from '@oak/oak';
-import { DeleteFilesBody, Info } from './types.ts';
+import { Info } from './types.ts';
 import {
   FILE_ALREADY_EXISTS,
   FILE_TOO_BIG,
@@ -25,37 +25,32 @@ import { PORT } from './config.ts';
 import { mapInfo } from './mappers.ts';
 import { validateFilename } from './helpers.ts';
 import { getAddresses } from './services/addresses.ts';
+import { compressFiles } from './services/compress.ts';
 
-export function getInfo(): Info {
+export const getInfo = (): Info => {
   generateQRCodes();
   return mapInfo(getAddresses(), PORT, getFiles(), getSharedContent());
-}
+};
 
-export function downloadFile(filename: string): Uint8Array {
+export const downloadFile = (filename: string): Uint8Array => {
   if (!isFileExists(filename)) {
     throw new httpErrors.BadRequest(NOT_EXISTING_FILE);
   }
   return readFile(filename);
-}
+};
 
-export function downloadFiles(filenames: string[]): Uint8Array[] {
+export const archiveFiles = (filenames: string[]): Promise<Uint8Array> => {
   if (!filenames.every((filename: string) => isFileExists(filename))) {
     throw new httpErrors.BadRequest(NOT_EXISTING_FILE);
   }
-  const result: Uint8Array[] = [];
-  for (const filename of filenames) {
-    result.push(readFile(filename));
-  }
-  // todo: rework to zip
+  return compressFiles(filenames);
+};
 
-  return result;
-}
-
-export function getQRCode(filename: string): Uint8Array {
+export const getQRCode = (filename: string): Uint8Array => {
   return readQRCode(filename);
-}
+};
 
-export async function saveFile(req: Request, _res: Response): Promise<void> {
+export const saveFile = async (req: Request, _res: Response): Promise<void> => {
   const reqBody: FormData = await req.body.formData();
   const file: FormDataEntryValue | null = reqBody.get('file');
   if (!file || !(file instanceof File)) {
@@ -73,17 +68,20 @@ export async function saveFile(req: Request, _res: Response): Promise<void> {
   }
   const content: ReadableStream<Uint8Array> = file.stream();
   await writeFile(join(getFilesFolderPath(), file.name), content);
-}
+};
 
-export async function updateText(req: Request, _res: Response): Promise<void> {
+export const updateText = async (
+  req: Request,
+  _res: Response,
+): Promise<void> => {
   const reqBody: string = await req.body.text();
-  setSharedContent(reqBody);
-}
+  await setSharedContent(reqBody);
+};
 
-export async function renameFile(
+export const renameFile = async (
   filename: string,
   newFilename: string,
-): Promise<void> {
+): Promise<void> => {
   if (!isFileExists(filename)) {
     throw new httpErrors.BadRequest(NOT_EXISTING_FILE);
   }
@@ -95,13 +93,13 @@ export async function renameFile(
     join(getFilesFolderPath(), filename),
     join(getFilesFolderPath(), newFilename),
   );
-}
+};
 
-export async function deleteFiles(filenames: DeleteFilesBody): Promise<void> {
+export const deleteFiles = async (filenames: string[]): Promise<void> => {
   if (!filenames.every((filename: string) => isFileExists(filename))) {
     throw new httpErrors.BadRequest(NOT_EXISTING_FILE);
   }
   for (const filename of filenames) {
     await removeFile(join(getFilesFolderPath(), filename));
   }
-}
+};

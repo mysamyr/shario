@@ -2,12 +2,12 @@ import { Div, Header, Input } from '../components.ts';
 import modal from '../features/modal.ts';
 import { getLanguage, translations } from '../features/language.ts';
 
-export default function renameFileModal(
+export default (
   filename: string,
   onSubmit: (inputs: HTMLInputElement, originFilename: string) => void,
-): HTMLDivElement {
+): HTMLDivElement => {
   const container: HTMLDivElement = Div({
-    className: 'container modal-container',
+    className: 'modal-container',
   });
 
   const header: HTMLHeadingElement = Header({
@@ -55,4 +55,4 @@ export default function renameFileModal(
     }
   });
   return container;
-}
+};

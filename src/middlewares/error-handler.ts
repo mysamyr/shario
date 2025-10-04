@@ -3,9 +3,7 @@ import { Context, Next, Status } from '@oak/oak';
 import { ENV } from './../config.ts';
 import { INTERNAL_SERVER_ERROR } from '../constants/errors.ts';
 
-function isDevelopmentMode(): boolean {
-  return ENV === 'development';
-}
+const isDevelopmentMode = (): boolean => ENV === 'development';
 
 export default async (ctx: Context, next: Next): Promise<void> => {
   try {

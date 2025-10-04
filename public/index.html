@@ -10,38 +10,45 @@
   <link rel="stylesheet" type="text/css" href="main.min.css">
 </head>
 <body>
-<h1></h1>
-<div id="locations"></div>
-
-<div class="container">
-  <h2 id="files-upload-title"></h2>
-  <label for="file-upload" id="file-upload-label"></label>
-  <input id="file-upload" type="file" multiple/>
-</div>
-
-<div class="container">
+<header>
+  <h1>Shario</h1>
   <div class="row">
-    <h2 id="share-text-title"></h2>
-    <div class="header-action-container">
-      <p id="clear-text" class="header-action">&#129529;</p>
-      <p id="copy-text" class="header-action">&#128203;</p>
-    </div>
+    <div class="header-action" id="language">&#127760;</div>
+    <div class="header-action" id="qr">&#128247;</div>
+    <div class="header-action" id="help">&#10067;</div>
   </div>
-  <textarea id="share-text"></textarea>
+</header>
+
+<div id="content">
+  <section id="files-section">
+    <div class="section-header">
+      <h2 id="files-header"></h2>
+      <div class="row">
+        <div class="header-action" id="upload-files">&#x2795;</div>
+        <div class="header-action" id="download-files">&#x2B07;</div>
+        <div class="header-action" id="delete-files">&#x1F5D1;</div>
+      </div>
+    </div>
+    <input id="file-upload" type="file" multiple hidden/>
+    <table></table>
+  </section>
+
+  <section id="notes-section">
+    <div class="section-header">
+      <h2 id="note-header"></h2>
+      <div class="row">
+        <div class="header-action" id="save-as-file">&#x1F4BE;</div>
+        <div class="header-action" id="copy-text">&#x1F4CB;</div>
+        <div class="header-action" id="clear-text">&#x1F9F9;</div>
+      </div>
+    </div>
+    <textarea></textarea>
+  </section>
 </div>
 
-<div class="container">
-  <div class="row">
-    <h2 id="files-title"></h2>
-    <div class="header-action-container">
-      <p id="clear-files" class="header-action">&#128465;</p>
-    </div>
-  </div>
-  <div id="files"></div>
-</div>
-
-<footer class="row">
-  <div id="language"></div>
+<footer>
+  <div class="fooler-link"></div>
+  <div class="fooler-link"></div>
 </footer>
 
 <dialog></dialog>

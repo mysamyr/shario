@@ -1,10 +1,10 @@
-export function Div(props: {
+export const Div = (props: {
   id?: string;
   text?: string;
   title?: string;
   className?: string;
   onClick?: (this: HTMLDivElement, ev: MouseEvent) => void;
-}): HTMLDivElement {
+}): HTMLDivElement => {
   const div: HTMLDivElement = document.createElement('div');
   if (!props) return div;
   if (props.className) {
@@ -16,14 +16,14 @@ export function Div(props: {
   if (props.onClick) div.addEventListener('click', props.onClick);
 
   return div;
-}
+};
 
-export function Header(props: {
+export const Header = (props: {
   lvl: number;
   id?: string;
   text?: string;
   className?: string;
-}): HTMLHeadingElement {
+}): HTMLHeadingElement => {
   const h: HTMLHeadingElement = document.createElement(
     `h${props.lvl}`,
   ) as HTMLHeadingElement;
@@ -34,14 +34,14 @@ export function Header(props: {
   if (props.id) h.id = props.id;
 
   return h;
-}
+};
 
-export function Paragraph(props: {
+export const Paragraph = (props: {
   id?: string;
   text?: string;
   className?: string;
   onClick?: (this: HTMLParagraphElement, ev: MouseEvent) => void;
-}): HTMLParagraphElement {
+}): HTMLParagraphElement => {
   const p: HTMLParagraphElement = document.createElement('p');
   if (!props) return p;
   if (props.className) {
@@ -52,13 +52,13 @@ export function Paragraph(props: {
   if (props.onClick) p.addEventListener('click', props.onClick);
 
   return p;
-}
+};
 
-export function Span(props: {
+export const Span = (props: {
   id?: string;
   text?: string;
   className?: string;
-}): HTMLSpanElement {
+}): HTMLSpanElement => {
   const span: HTMLSpanElement = document.createElement('span');
   if (!props) return span;
   if (props.className) {
@@ -68,9 +68,9 @@ export function Span(props: {
   if (props.id) span.id = props.id;
 
   return span;
-}
+};
 
-export function Input(props: {
+export const Input = (props: {
   id?: string;
   type?: string;
   value?: string;
@@ -78,7 +78,7 @@ export function Input(props: {
   className?: string;
   onClick?: (this: HTMLInputElement, ev: MouseEvent) => void;
   onChange?: (this: HTMLInputElement, ev: Event) => void;
-}): HTMLInputElement {
+}): HTMLInputElement => {
   const input: HTMLInputElement = document.createElement('input');
   if (!props) return input;
   if (props.className) {
@@ -92,17 +92,18 @@ export function Input(props: {
   if (props.onChange) input.addEventListener('change', props.onChange);
 
   return input;
-}
-export function Link(props: {
+};
+export const Link = (props: {
   id?: string;
   text?: string;
   href?: string;
   target?: string;
   title?: string;
   download?: string;
+  rel?: string;
   className?: string;
   onClick?: (this: HTMLAnchorElement, ev: MouseEvent) => void;
-}): HTMLAnchorElement {
+}): HTMLAnchorElement => {
   const a: HTMLAnchorElement = document.createElement('a');
   if (!props) return a;
   if (props.className) {
@@ -114,18 +115,19 @@ export function Link(props: {
   if (props.target) a.target = props.target;
   if (props.title) a.title = props.title;
   if (props.download) a.download = props.download;
+  if (props.rel) a.rel = props.rel;
   if (props.onClick) a.addEventListener('click', props.onClick);
 
   return a;
-}
+};
 
-export function Image(props: {
+export const Image = (props: {
   id?: string;
   src?: string;
   title?: string;
   className?: string;
   onClick?: (this: HTMLImageElement, ev: MouseEvent) => void;
-}): HTMLImageElement {
+}): HTMLImageElement => {
   const img: HTMLImageElement = document.createElement('img');
   if (!props) return img;
   if (props.className) {
@@ -137,4 +139,74 @@ export function Image(props: {
   if (props.onClick) img.addEventListener('click', props.onClick);
 
   return img;
-}
+};
+
+export const TableHeader = (props: {
+  id?: string;
+  className?: string;
+}): HTMLTableSectionElement => {
+  const thead: HTMLTableSectionElement = document.createElement('thead');
+  if (!props) return thead;
+  if (props.className) {
+    thead.classList.add(...props.className.split(' ').filter(Boolean));
+  }
+  if (props.id) thead.id = props.id;
+
+  return thead;
+};
+export const TableBody = (props: {
+  id?: string;
+  className?: string;
+}): HTMLTableSectionElement => {
+  const tbody: HTMLTableSectionElement = document.createElement('tbody');
+  if (!props) return tbody;
+  if (props.className) {
+    tbody.classList.add(...props.className.split(' ').filter(Boolean));
+  }
+  if (props.id) tbody.id = props.id;
+
+  return tbody;
+};
+export const TableHeaderCell = (props: {
+  id?: string;
+  className?: string;
+  text?: string;
+}): HTMLTableCellElement => {
+  const th: HTMLTableCellElement = document.createElement('th');
+  if (!props) return th;
+  if (props.className) {
+    th.classList.add(...props.className.split(' ').filter(Boolean));
+  }
+  if (props.id) th.id = props.id;
+  if (props.text) th.innerHTML = props.text;
+
+  return th;
+};
+export const TableRow = (props: {
+  id?: string;
+  className?: string;
+}): HTMLTableRowElement => {
+  const tr: HTMLTableRowElement = document.createElement('tr');
+  if (!props) return tr;
+  if (props.className) {
+    tr.classList.add(...props.className.split(' ').filter(Boolean));
+  }
+  if (props.id) tr.id = props.id;
+
+  return tr;
+};
+export const TableData = (props: {
+  id?: string;
+  className?: string;
+  text?: string;
+}): HTMLTableCellElement => {
+  const td: HTMLTableCellElement = document.createElement('td');
+  if (!props) return td;
+  if (props.className) {
+    td.classList.add(...props.className.split(' ').filter(Boolean));
+  }
+  if (props.id) td.id = props.id;
+  if (props.text) td.innerHTML = props.text;
+
+  return td;
+};

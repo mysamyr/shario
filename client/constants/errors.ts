@@ -36,7 +36,9 @@ export const UPLOAD_ERROR: () => string = () =>
   translations[getLanguage()].errorMessages.uploadError;
 export const NO_FILES_TO_UPLOAD: () => string = () =>
   translations[getLanguage()].errorMessages.noFilesToUpload;
-export const NO_FILES_TO_CLEAR: () => string = () =>
-  translations[getLanguage()].errorMessages.noFilesToClear;
+export const NO_FILES_SELECTED: () => string = () =>
+  translations[getLanguage()].errorMessages.noFilesSelected;
+export const NOTHING_TO_SAVE: () => string = () =>
+  translations[getLanguage()].errorMessages.nothingToSave;
 export const API_ERROR_$: (status: number, message: string) => string =
   translations[getLanguage()].errorMessages.apiError;

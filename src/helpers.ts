@@ -16,9 +16,9 @@ import {
 } from './constants/errors.ts';
 import { MAX_FILENAME_LENGTH, MIN_FILENAME_LENGTH } from './constants/index.ts';
 
-export function validateFilename(
+export const validateFilename = (
   filename: string,
-): string | undefined {
+): string | undefined => {
   if (!filename) {
     return NO_FILENAME_PROVIDED;
   }
@@ -61,4 +61,4 @@ export function validateFilename(
   if (filename.endsWith('.')) {
     return FILENAME_ENDS_DOT;
   }
-}
+};

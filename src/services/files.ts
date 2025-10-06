@@ -67,11 +67,10 @@ export function getFiles(): FileEntry[] {
       files.push({
         name: entry.name,
         size: info.size,
-        type: 'todo',
+        type: entry.name.split('.').pop() || null,
         created: info.birthtime
           ? Date.parse(info.birthtime.toUTCString())
           : null,
-        modified: info.mtime ? Date.parse(info.mtime.toUTCString()) : null,
       });
     }
   }

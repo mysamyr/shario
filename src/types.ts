@@ -12,7 +12,6 @@ export type RenameFileBody = {
 export type FileEntry = {
   name: string;
   size: number;
-  type: string;
+  type: string | null;
   created: number | null;
-  modified: number | null;
 };

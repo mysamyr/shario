@@ -11,7 +11,9 @@
 - Share files over LAN
 - Generate QR codes for file sharing
 - Manage files (upload, view, download, delete, rename)
+- Compress multiple files into a ZIP archive for download
 - Share text
+- Save text as a file
 - Supports paste (Ctrl/Cmd + V) for text and file
 - Supports Drag&Drop for text and file
 
@@ -26,18 +28,25 @@
    ```sh
    deno task start
    ```
+4. For development with auto-reload:
+   ```sh
+   deno task dev
+   ```
+   and
+   ```sh
+   deno task build:dev
+   ```
 
 ## API Endpoints
 
 - `GET /info` - Retrieve server information
 - `GET /files/:file` - Download a specific file
-- `GET /qrcodes/:file` - Get QR code for a specific file
-- `GET /files/:file/check` - Check if a file exists
+- `GET /files?file={file1,file2}` - Download archive with files
+- `GET /qrcodes/:file` - Get QR code for a specific ip
 - `POST /` - Upload a file
 - `PUT /text` - Upload text
 - `PUT /:file` - Rename a file
-- `DELETE /` - Delete all uploaded files
-- `DELETE /:file` - Delete specific file
+- `DELETE /?file={file1,file2}` - Delete files
 
 ## Linting and formatting
 
@@ -47,11 +56,15 @@ This project uses Deno's default linting and formatting tools.
   ```sh
   deno task format
   ```
+- To lint the code:
+  ```sh
+  deno task lint
+  ```
 
 ## TODO
 
 - Add polling or WebSocket for update file list
 - Add theme change
-- Add button with help modal
-- Add download all button
-- Hide QR codes on mobile
+- Add help modal content
+- Positioning QR codes on mobile
+- edit API endpoints

@@ -1,8 +1,8 @@
 import { Context, Router, Status } from '@oak/oak';
 import {
+  archiveFiles,
   deleteFiles,
   downloadFile,
-  downloadFiles,
   getInfo,
   getQRCode,
   renameFile,
@@ -25,14 +25,13 @@ router.get('/files/:file', (ctx: Context): void => {
   ctx.response.body = downloadFile(filename);
 });
 
-// todo: rework to download as zip, unused now
-router.get('/files', (ctx: Context): void => {
+router.get('/files', async (ctx: Context): Promise<void> => {
   const filenamesString: string = ctx.request.url.searchParams.get('file');
   if (!filenamesString) ctx.throw(Status.BadRequest, NO_FILENAME_PROVIDED);
 
   const filenames: string[] = filenamesString.split(',');
 
-  ctx.response.body = downloadFiles(filenames);
+  ctx.response.body = await archiveFiles(filenames);
 });
 
 router.get('/qrcodes/:file', (ctx: Context): void => {
@@ -77,9 +76,6 @@ router.put('/:file', async (ctx: Context): Promise<void> => {
 });
 
 router.delete('/', async (ctx: Context): Promise<void> => {
-  if (!ctx.request.hasBody) {
-    ctx.throw(Status.BadRequest, NO_FILENAME_PROVIDED);
-  }
   const filenamesString: string = ctx.request.url.searchParams.get('file');
 
   if (!filenamesString) {

@@ -100,6 +100,7 @@ export function Link(props: {
   target?: string;
   title?: string;
   download?: string;
+  rel?: string;
   className?: string;
   onClick?: (this: HTMLAnchorElement, ev: MouseEvent) => void;
 }): HTMLAnchorElement {
@@ -114,6 +115,7 @@ export function Link(props: {
   if (props.target) a.target = props.target;
   if (props.title) a.title = props.title;
   if (props.download) a.download = props.download;
+  if (props.rel) a.rel = props.rel;
   if (props.onClick) a.addEventListener('click', props.onClick);
 
   return a;
@@ -137,4 +139,74 @@ export function Image(props: {
   if (props.onClick) img.addEventListener('click', props.onClick);
 
   return img;
+}
+
+export function TableHeader(props: {
+  id?: string;
+  className?: string;
+}): HTMLTableSectionElement {
+  const thead: HTMLTableSectionElement = document.createElement('thead');
+  if (!props) return thead;
+  if (props.className) {
+    thead.classList.add(...props.className.split(' ').filter(Boolean));
+  }
+  if (props.id) thead.id = props.id;
+
+  return thead;
+}
+export function TableBody(props: {
+  id?: string;
+  className?: string;
+}): HTMLTableSectionElement {
+  const tbody: HTMLTableSectionElement = document.createElement('tbody');
+  if (!props) return tbody;
+  if (props.className) {
+    tbody.classList.add(...props.className.split(' ').filter(Boolean));
+  }
+  if (props.id) tbody.id = props.id;
+
+  return tbody;
+}
+export function TableHeaderCell(props: {
+  id?: string;
+  className?: string;
+  text?: string;
+}): HTMLTableCellElement {
+  const th: HTMLTableCellElement = document.createElement('th');
+  if (!props) return th;
+  if (props.className) {
+    th.classList.add(...props.className.split(' ').filter(Boolean));
+  }
+  if (props.id) th.id = props.id;
+  if (props.text) th.innerHTML = props.text;
+
+  return th;
+}
+export function TableRow(props: {
+  id?: string;
+  className?: string;
+}): HTMLTableRowElement {
+  const tr: HTMLTableRowElement = document.createElement('tr');
+  if (!props) return tr;
+  if (props.className) {
+    tr.classList.add(...props.className.split(' ').filter(Boolean));
+  }
+  if (props.id) tr.id = props.id;
+
+  return tr;
+}
+export function TableData(props: {
+  id?: string;
+  className?: string;
+  text?: string;
+}): HTMLTableCellElement {
+  const td: HTMLTableCellElement = document.createElement('td');
+  if (!props) return td;
+  if (props.className) {
+    td.classList.add(...props.className.split(' ').filter(Boolean));
+  }
+  if (props.id) td.id = props.id;
+  if (props.text) td.innerHTML = props.text;
+
+  return td;
 }

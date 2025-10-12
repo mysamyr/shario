@@ -1,6 +1,7 @@
 import { Div, Header, Input } from '../components.ts';
 import modal from '../features/modal.ts';
-import { getLanguage, translations } from '../features/language.ts';
+import { getLanguage } from '../features/language.ts';
+import translations from '../constants/language.ts';
 import { hideInputError } from '../helpers.ts';
 
 export default (

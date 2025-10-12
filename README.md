@@ -67,4 +67,3 @@ This project uses Deno's default linting and formatting tools.
 - Add theme change
 - Add help modal content
 - Positioning QR codes on mobile
-- edit API endpoints

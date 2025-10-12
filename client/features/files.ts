@@ -1,13 +1,11 @@
-import { ApiError, FileListItem } from '../types.ts';
-import { Link, Paragraph } from '../components.ts';
-import modal from './modal.ts';
-import snackbar from './snackbar.ts';
-import { reloadPage } from './api.ts';
+import { MAX_FILE_SIZE } from '../constants/index.ts';
 import {
-  hideInputError,
-  showInputError,
-  validateFilename,
-} from '../helpers.ts';
+  FILE_DELETED,
+  FILE_RENAMED,
+  FILE_UPLOADED,
+  FILES_DELETED,
+  FILES_UPLOADED,
+} from '../constants/messages.ts';
 import {
   API_ERROR_$,
   FILES_TOO_BIG,
@@ -16,17 +14,27 @@ import {
   NO_FILES_TO_UPLOAD,
   UPLOAD_ERROR,
 } from '../constants/errors.ts';
-import {
-  FILE_DELETED,
-  FILE_RENAMED,
-  FILE_UPLOADED,
-  FILES_DELETED,
-  FILES_UPLOADED,
-} from '../constants/messages.ts';
-import { MAX_FILE_SIZE } from '../constants/index.ts';
+import { Link, Paragraph } from '../components.ts';
+import modal from './modal.ts';
+import snackbar from './snackbar.ts';
+import { reloadPage } from './api.ts';
 import uploadFilesModal from '../modals/upload-files-modal.ts';
 import renameFileModal from '../modals/rename-file-modal.ts';
 import { getSelectedFiles } from '../state/files.ts';
+import {
+  hideInputError,
+  showInputError,
+  validateFilename,
+} from '../helpers.ts';
+
+import type { ApiError } from '../types.ts';
+
+type FileListItem = {
+  name: string;
+  input: HTMLInputElement;
+  file: File;
+  error?: string;
+};
 
 const download = (blob: Blob, filename: string): void => {
   const url: string = globalThis.URL.createObjectURL(blob);
@@ -56,7 +64,7 @@ const uploadFile = async (
     await new Promise<void>((resolve, reject): void => {
       const xhr: XMLHttpRequest = new XMLHttpRequest();
       xhr.open('POST', '/');
-      xhr.upload.onprogress = (event: ProgressEvent<EventTarget>): void => {
+      xhr.upload.onprogress = (event: ProgressEvent): void => {
         if (event.lengthComputable) {
           const percent: number = (event.loaded / event.total) * 100;
           progress.innerText = Math.round(percent) + '%';

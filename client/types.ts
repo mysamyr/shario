@@ -5,6 +5,16 @@ export type FileEntry = {
   created: number | null;
 };
 
+export type TableColumnConfig = {
+  key: string;
+  minWidth?: string;
+  sortable?: boolean;
+  headerCellClassName?: string;
+  bodyCellClassName?: string;
+  renderColumnData: (file: FileEntry) => HTMLTableCellElement;
+  renderHeaderData?: () => HTMLTableCellElement;
+};
+
 export type Info = {
   locations: string[];
   port: number;
@@ -13,13 +23,6 @@ export type Info = {
 };
 
 export type ApiError = { status: number; message: string };
-
-export type FileListItem = {
-  name: string;
-  input: HTMLInputElement;
-  file: File;
-  error?: string;
-};
 
 export type Language = {
   name: string;
@@ -91,7 +94,6 @@ type Modal = {
 };
 
 type Modals = {
-  clearFiles: Modal;
   renameFile: Modal;
   uploadFiles: Modal;
 };
@@ -106,10 +108,4 @@ export type Translation = {
   messages: Messages;
   errorMessages: ErrorMessages;
   modals: Modals;
-};
-
-export type TableColumn = {
-  key: string;
-  sortable?: boolean;
-  minWidth?: string;
 };

@@ -1,4 +1,5 @@
-import { getLanguage, translations } from '../features/language.ts';
+import { getLanguage } from '../features/language.ts';
+import translations from '../constants/language.ts';
 
 export const NO_FILENAME_PROVIDED: () => string = () =>
   translations[getLanguage()].errorMessages.noFilenameProvided;

@@ -1,5 +1,6 @@
 import { Div, Image, Paragraph } from '../components.ts';
-import { getLanguage, translations } from '../features/language.ts';
+import { getLanguage } from '../features/language.ts';
+import translations from '../constants/language.ts';
 import { getQRs } from '../state/qrs.ts';
 
 export default (): HTMLDivElement => {

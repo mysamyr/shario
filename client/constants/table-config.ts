@@ -1,6 +1,10 @@
 import { COLUMN_KEYS } from './table.ts';
 import { formatBytes } from '../helpers.ts';
-import { downloadFile, handleRenameFile } from '../features/files.ts';
+import {
+  deleteFiles,
+  downloadFile,
+  handleRenameFile,
+} from '../features/files.ts';
 import { handleRowSelect, handleSelectAll } from '../state/files.ts';
 import { Div, Input, Link, TableData } from '../components.ts';
 
@@ -9,24 +13,22 @@ import type { FileEntry, TableColumnConfig } from '../types.ts';
 const TABLE_CONFIG: TableColumnConfig[] = [
   {
     key: COLUMN_KEYS.CHECKBOX,
-    minWidth: '32px',
-    headerCellClassName: 'checkbox-cell',
-    bodyCellClassName: 'checkbox-cell',
     renderHeaderData: (): HTMLElement =>
       Input({
         type: 'checkbox',
         id: 'select-all-checkbox',
         onChange: (e: Event): void => {
+          const target: HTMLInputElement = e.target as HTMLInputElement;
           const checkboxes: NodeListOf<HTMLInputElement> = document
             .querySelectorAll<HTMLInputElement>(
               'input[type=checkbox].row-select',
             );
           checkboxes.forEach((cb: HTMLInputElement): void => {
-            cb.checked = e.target.checked;
+            cb.checked = target.checked;
           });
           handleSelectAll(
             Array.from(checkboxes).map((cb) => cb.dataset.filename!),
-            e.target.checked,
+            target.checked,
           );
         },
       }),
@@ -36,7 +38,9 @@ const TABLE_CONFIG: TableColumnConfig[] = [
         type: 'checkbox',
         className: 'row-select',
         onChange: (): void => {
-          const allCheckbox: HTMLInputElement = document.getElementById(
+          const allCheckbox: HTMLInputElement = document.getElementById<
+            HTMLInputElement
+          >(
             'select-all-checkbox',
           );
           const checkboxes: NodeListOf<HTMLInputElement> = document
@@ -55,6 +59,8 @@ const TABLE_CONFIG: TableColumnConfig[] = [
   {
     key: COLUMN_KEYS.NAME,
     sortable: true,
+    grow: true,
+    minWidth: '200px',
     renderColumnData: (file: FileEntry): HTMLTableCellElement => {
       const td: HTMLTableCellElement = TableData();
       td.appendChild(Link({
@@ -70,7 +76,7 @@ const TABLE_CONFIG: TableColumnConfig[] = [
   {
     key: COLUMN_KEYS.SIZE,
     sortable: true,
-    minWidth: '75px',
+    minWidth: '100px',
     renderColumnData: (file: FileEntry): HTMLTableCellElement =>
       TableData({ text: formatBytes(file.size || 0) }),
   },
@@ -84,7 +90,7 @@ const TABLE_CONFIG: TableColumnConfig[] = [
   {
     key: COLUMN_KEYS.CREATED,
     sortable: true,
-    minWidth: '162px',
+    minWidth: '200px',
     renderColumnData: (file: FileEntry): HTMLTableCellElement =>
       TableData({
         text: file.created ? new Date(file.created).toLocaleString() : '—',

@@ -6,6 +6,7 @@ import { initNotes, uploadText } from './features/notes.ts';
 import initActions from './features/actions.ts';
 import { reloadPage } from './features/api.ts';
 import { initTable } from './features/table.ts';
+import { initMobileView } from './features/mobile-view.ts';
 
 const initDragAndDrop = (): void => {
   const dragOverlay: HTMLDivElement = document.getElementById<HTMLDivElement>(
@@ -101,5 +102,6 @@ initFileSelect();
 initDragAndDrop();
 initGlobalPaste();
 applyLanguage();
+initMobileView();
 
 reloadPage();

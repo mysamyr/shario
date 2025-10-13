@@ -9,10 +9,11 @@ export type TableColumnConfig = {
   key: string;
   minWidth?: string;
   sortable?: boolean;
+  grow?: boolean;
   headerCellClassName?: string;
   bodyCellClassName?: string;
   renderColumnData: (file: FileEntry) => HTMLTableCellElement;
-  renderHeaderData?: () => HTMLTableCellElement;
+  renderHeaderData?: () => HTMLElement;
 };
 
 export type Info = {

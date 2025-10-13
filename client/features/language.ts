@@ -82,12 +82,24 @@ const applyTableLabels = (labels: TableLabels): void => {
   });
 };
 
+const applyFooter = (lang: Translation): void => {
+  const filesFooterLink: HTMLTableCellElement = document.getElementById<
+    HTMLDivElement
+  >('files-footer-link');
+  filesFooterLink.innerText = lang.filesHeader;
+  const notesFooterLink: HTMLTableCellElement = document.getElementById<
+    HTMLDivElement
+  >('notes-footer-link');
+  notesFooterLink.innerText = lang.noteHeader;
+};
+
 export const applyLanguage = (lang: string = getLanguage()): void => {
   const langTranslations: Translation = translations[lang];
 
   applyHeaders(langTranslations);
   applyTitles(langTranslations.titles);
   applyTableLabels(langTranslations.table);
+  applyFooter(langTranslations);
 
   const textarea: HTMLTextAreaElement = document.querySelector<
     HTMLTextAreaElement

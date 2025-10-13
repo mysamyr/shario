@@ -147,7 +147,7 @@ const translations: Record<LanguageCode, Translation> = {
         `Розмір файлів ${files} перевищує 10 ГБ`,
       uploadError: 'Помилка при завантаженні файлу.',
       noFilesToUpload: 'Немає дійсних файлів для завантаження',
-      noFilesToClear: 'Не вибрано жодного файлу',
+      noFilesSelected: 'Не вибрано жодного файлу',
       nothingToSave: 'Нічого зберігати',
       apiError: (status: number, message: string): string =>
         `Помилка з кодом ${status} та повідомленням ${message}`,

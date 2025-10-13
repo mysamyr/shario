@@ -43,6 +43,7 @@ export const renderFiles = (
       if (col.bodyCellClassName) {
         columnData.classList.add(...col.bodyCellClassName.split(' '));
       }
+      if (col.grow) columnData.classList.add('grow');
       tr.appendChild(columnData);
     });
     tbody.appendChild(tr);
@@ -90,10 +91,13 @@ export const initTable = (
         });
       th.appendChild(headerData);
 
-      if (col.minWidth) th.style.width = col.minWidth;
+      if (col.minWidth) th.style.minWidth = col.minWidth;
+      if (col.grow) th.style.width = '100%';
+
       if (col.headerCellClassName) {
         th.classList.add(...col.headerCellClassName.split(' '));
       }
+
       if (col.sortable) {
         th.addEventListener('click', handleSortClick);
         if (sortKey === col.key) {

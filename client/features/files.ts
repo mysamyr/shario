@@ -133,7 +133,7 @@ const downloadFiles = async (filenames: string[]): Promise<void> => {
   }
 };
 
-const deleteFiles = async (filenames: string[]): Promise<void> => {
+export const deleteFiles = async (filenames: string[]): Promise<void> => {
   const queryParams: string = new URLSearchParams({
     file: filenames.join(','),
   }).toString();

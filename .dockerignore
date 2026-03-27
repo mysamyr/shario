@@ -9,7 +9,6 @@
 .env
 .env.example
 .env.prod
-bundle-api.ts
 bundle-dev.ts
 docker-compose.yml
 Dockerfile

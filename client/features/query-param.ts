@@ -8,9 +8,3 @@ export const setQueryParam = (key: string, value: string): void => {
   url.searchParams.set(key, value);
   history.replaceState(null, '', url.toString());
 };
-
-export const clearUrlViewKey = (key: string): void => {
-  const url = new URL(globalThis.location.href);
-  url.searchParams.delete(key);
-  history.replaceState(null, '', url.toString());
-};

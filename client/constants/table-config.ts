@@ -7,6 +7,8 @@ import {
 } from '../features/files.ts';
 import { handleRowSelect, handleSelectAll } from '../state/files.ts';
 import { Div, Input, Link, TableData } from '../components.ts';
+import translations from './language.ts';
+import { getLanguage } from '../features/language.ts';
 
 import type { FileEntry, TableColumnConfig } from '../types.ts';
 
@@ -83,7 +85,7 @@ const TABLE_CONFIG: TableColumnConfig[] = [
   {
     key: COLUMN_KEYS.TYPE,
     sortable: true,
-    minWidth: '56px',
+    minWidth: '76px',
     renderColumnData: (file: FileEntry): HTMLTableCellElement =>
       TableData({ text: file.size ? file.type : '—' }),
   },
@@ -104,17 +106,20 @@ const TABLE_CONFIG: TableColumnConfig[] = [
       const buttonContainer: HTMLDivElement = Div({ className: 'buttons' });
       const downloadBtn: HTMLDivElement = Div({
         className: 'btn',
-        text: '&#x2B07;',
+        text: '<img src="/assets/download.svg" class="icon" alt="download">',
+        title: translations[getLanguage()].titles.downloadFile,
         onClick: (): void => downloadFile(file.name),
       });
       const renameBtn: HTMLDivElement = Div({
         className: 'btn',
-        text: '&#9998;',
+        text: '<img src="/assets/pencil.svg" class="icon" alt="rename">',
+        title: translations[getLanguage()].titles.renameFile,
         onClick: (): void => handleRenameFile(file.name),
       });
       const deleteBtn: HTMLDivElement = Div({
         className: 'btn',
-        text: '&#x1F5D1;',
+        text: '<img src="/assets/trash.svg" class="icon" alt="delete">',
+        title: translations[getLanguage()].titles.deleteFile,
         onClick: (): void => deleteFiles([file.name]),
       });
       buttonContainer.append(downloadBtn, renameBtn, deleteBtn);

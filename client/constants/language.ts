@@ -91,6 +91,53 @@ const translations: Record<LanguageCode, Translation> = {
         },
       },
     },
+    help: {
+      title: 'Help',
+      sections: [
+        {
+          title: 'Files — Uploading',
+          items: [
+            'Click the + button to open the file picker and select one or more files.',
+            'Drag & drop any files onto the page to upload them.',
+            'Copy a file and press Ctrl+V anywhere on the page to upload it from the clipboard.',
+          ],
+        },
+        {
+          title: 'Files — Downloading',
+          items: [
+            'Click the download icon in a file row to download that individual file.',
+            'Select files using the checkboxes, then click the ↓ button in the header to download all selected files as a single ZIP archive.',
+          ],
+        },
+        {
+          title: 'Files — Managing',
+          items: [
+            'Click the pencil icon in a file row to rename the file.',
+            'Click the trash icon in a file row to delete that file.',
+            'Select files using the checkboxes, then click the trash button in the header to delete all selected files at once.',
+            'Click any sortable column header (Name, Size, Type, Created) to sort the table by that column. Click again to reverse the order.',
+          ],
+        },
+        {
+          title: 'Notes',
+          items: [
+            'The notes area is shared — anything typed here is visible to all connected devices in real time.',
+            'Click the disk icon to save the current note as a text file.',
+            'Click the copy icon to copy the entire note to the clipboard.',
+            'Click the broom icon to clear the note.',
+            'Press Ctrl+V while the page (not the textarea) is focused to paste text directly into the shared note.',
+          ],
+        },
+        {
+          title: 'General',
+          items: [
+            'Click the QR icon in the header to show QR codes for all network addresses — scan from a mobile device to connect instantly.',
+            'Click the globe icon to change the display language.',
+            'Use the footer tabs to switch between the Files and Notes views.',
+          ],
+        },
+      ],
+    },
   },
   [LanguageCode.UK]: {
     filesHeader: 'Файли',
@@ -167,6 +214,53 @@ const translations: Record<LanguageCode, Translation> = {
           cancel: 'Скасувати',
         },
       },
+    },
+    help: {
+      title: 'Довідка',
+      sections: [
+        {
+          title: 'Файли — Завантаження',
+          items: [
+            'Натисніть кнопку +, щоб відкрити файловий менеджер і вибрати один або кілька файлів.',
+            'Перетягніть файли на сторінку, щоб завантажити їх.',
+            'Скопіюйте файл і натисніть Ctrl+V будь-де на сторінці, щоб завантажити його з буфера обміну.',
+          ],
+        },
+        {
+          title: 'Файли — Скачування',
+          items: [
+            'Натисніть значок завантаження у рядку файлу, щоб скачати окремий файл.',
+            'Виберіть файли за допомогою прапорців, а потім натисніть кнопку ↓ в заголовку, щоб скачати всі вибрані файли як один ZIP-архів.',
+          ],
+        },
+        {
+          title: 'Файли — Керування',
+          items: [
+            'Натисніть значок олівця у рядку файлу, щоб перейменувати файл.',
+            'Натисніть значок кошика у рядку файлу, щоб видалити цей файл.',
+            'Виберіть файли за допомогою прапорців, а потім натисніть кнопку кошика в заголовку, щоб видалити всі вибрані файли одразу.',
+            'Натисніть на заголовок будь-якого стовпця (Назва, Розмір, Тип, Файл створено), щоб сортувати таблицю за цим стовпцем. Натисніть ще раз, щоб змінити порядок на зворотний.',
+          ],
+        },
+        {
+          title: 'Нотатки',
+          items: [
+            'Область нотаток є спільною — все, що ви вводите, одразу видно всім підключеним пристроям.',
+            'Натисніть значок дискети, щоб зберегти поточну нотатку як текстовий файл.',
+            'Натисніть значок копіювання, щоб скопіювати всю нотатку в буфер обміну.',
+            'Натисніть значок мітли, щоб очистити нотатку.',
+            'Натисніть Ctrl+V, коли фокус знаходиться на сторінці (а не в текстовому полі), щоб вставити текст безпосередньо в спільну нотатку.',
+          ],
+        },
+        {
+          title: 'Загальне',
+          items: [
+            'Натисніть значок QR у заголовку, щоб переглянути QR-коди для всіх мережевих адрес — відскануйте з мобільного пристрою для миттєвого підключення.',
+            'Натисніть значок глобуса, щоб змінити мову інтерфейсу.',
+            'Використовуйте вкладки внизу сторінки для перемикання між виглядами Файли та Нотатки.',
+          ],
+        },
+      ],
     },
   },
 };

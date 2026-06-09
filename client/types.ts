@@ -99,6 +99,16 @@ type Modals = {
   uploadFiles: Modal;
 };
 
+type HelpSection = {
+  title: string;
+  items: string[];
+};
+
+type Help = {
+  title: string;
+  sections: HelpSection[];
+};
+
 export type Translation = {
   filesHeader: string;
   noteHeader: string;
@@ -109,4 +119,5 @@ export type Translation = {
   messages: Messages;
   errorMessages: ErrorMessages;
   modals: Modals;
+  help: Help;
 };

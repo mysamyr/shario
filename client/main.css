@@ -17,9 +17,13 @@
 }
 
 body {
-  font-family: sans-serif;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  font-family:
+    ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    Roboto, sans-serif;
   font-size: 16px;
-  min-height: 100vh;
   background-color: var(--light-grey);
 }
 
@@ -36,13 +40,6 @@ h2 {
   font-size: 1.5rem;
 }
 
-.column {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.8rem;
-}
-
 .row {
   display: flex;
   flex-direction: row;
@@ -56,16 +53,18 @@ header {
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  width: 100%;
   height: 8vh;
   padding: 0 1rem;
   background-color: var(--green);
 }
 
 .header-action {
-  padding: 0 0.3rem;
+  padding: 0.3rem;
   font-size: 1.4rem;
   cursor: default;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .header-action:hover {
@@ -93,16 +92,13 @@ header {
 
 /*CONTENT*/
 #content {
+  flex: 1;
+  min-height: 0;
   display: flex;
-  flex-direction: row;
-  align-items: stretch;
-  width: 100%;
-  height: 100%;
 }
 
 section {
   width: 100%;
-  height: 92vh;
   border: 1px solid var(--green);
   overflow: hidden;
   display: flex;
@@ -120,23 +116,13 @@ section {
   flex-shrink: 0;
 }
 
-.section-header-actions {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 0.5rem;
-}
-
 /*FILES*/
-#files-section {
-  flex: 2;
-}
-
 .files-table-container {
   flex: 1 1 auto;
   width: 100%;
   overflow: auto;
   display: flex;
+  align-items: flex-start;
 }
 
 table {
@@ -163,6 +149,7 @@ th, td {
 
 tr.file {
   height: 40px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 .buttons {
@@ -174,11 +161,14 @@ tr.file {
 .btn {
   border-radius: 5px;
   text-align: center;
-  padding: 0 8px;
+  padding: 8px;
   text-decoration: none;
   -webkit-user-select: none;
   user-select: none;
   cursor: default;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .btn:hover {
@@ -187,10 +177,6 @@ tr.file {
 }
 
 /*NOTES*/
-#notes-section {
-  flex: 1;
-}
-
 #notes-section textarea {
   flex: 1 1 auto;
   width: 100%;
@@ -205,7 +191,12 @@ tr.file {
 
 /*FOOTER*/
 footer {
-  display: none;
+  display: flex;
+  flex-shrink: 0;
+  align-items: stretch;
+  height: 8vh;
+  background-color: var(--green);
+  color: var(--white);
 }
 
 .footer-link {
@@ -247,12 +238,24 @@ img {
   -webkit-user-drag: none;
 }
 
+.icon {
+  width: 20px;
+  height: 20px;
+  display: block;
+  pointer-events: none;
+}
+
 /*DIALOG*/
 dialog:modal {
   margin: auto;
+  min-width: 320px;
   max-width: 80%;
+  overflow-y: auto;
   color: var(--black);
   background-color: var(--white);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+  border: none;
+  border-radius: 8px;
 }
 
 dialog::backdrop {
@@ -265,6 +268,7 @@ dialog::backdrop {
   align-items: center;
   gap: 20px;
   padding: 16px;
+  width: 100%;
 }
 
 /*SNACKBAR*/
@@ -297,12 +301,34 @@ dialog::backdrop {
   padding: 8px;
 }
 
+/*HELP MODAL*/
+.help-section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.help-section h3 {
+  font-size: 0.95rem;
+  padding-left: 10px;
+  color: var(--green);
+  padding-bottom: 4px;
+}
+
+.help-item {
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: #333;
+}
+
 /*UPLOAD MODAL*/
 .input-container {
   display: flex;
   flex-direction: row;
-  align-items: start;
+  align-items: center;
   width: 100%;
+  gap: 10px;
 }
 
 .input-wrapper {
@@ -328,14 +354,19 @@ dialog::backdrop {
 .file-upload-delete-btn {
   border: 1px solid var(--white);
   background-color: var(--red);
-  color: var(--white);
-  padding: 3px 8px;
+  padding: 8px;
   font-size: 1.2rem;
 }
 
 .file-upload-delete-btn:hover {
-  border-color: var(--red);
-  color: var(--red);
+  background-color: #a82e2e;
+  border-color: var(--white);
+  color: var(--white);
+}
+
+.file-upload-delete-btn img {
+  /* Invert the colors of the image to make it visible on the red background */
+  filter: brightness(0) invert(1);
 }
 
 .input-error {
@@ -343,32 +374,6 @@ dialog::backdrop {
 }
 
 .error-message {
-  color: red;
+  color: var(--red);
   font-size: 0.7em;
-}
-
-/*MEDIA*/
-@media screen and (max-width: 676px) {
-  footer {
-    display: flex;
-    align-items: stretch;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    height: 8vh;
-    background-color: var(--green);
-    color: var(--white);
-  }
-
-  #files-section {
-    display: none;
-  }
-
-  #notes-section {
-    display: none;
-  }
-
-  section {
-    height: calc(100vh - 8vh);
-  }
 }

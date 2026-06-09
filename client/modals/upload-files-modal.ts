@@ -38,7 +38,7 @@ export default (
       inputWrapper.appendChild(input);
       const deleteBtn: HTMLDivElement = Div({
         className: 'btn file-upload-delete-btn',
-        text: '&#10005;',
+        text: '<img src="/assets/trash.svg" class="icon" alt="delete">',
         title: 'Delete input',
         onClick: (e: MouseEvent): void => {
           e.stopPropagation();

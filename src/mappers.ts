@@ -1,9 +1,9 @@
-import type { Info } from './types.ts';
+import type { FileEntry, Info } from './types.ts';
 
 export const mapInfo = (
   locations: string[],
   port: number,
-  files: string[],
+  files: FileEntry[],
   text: string,
 ): Info => ({
   locations,

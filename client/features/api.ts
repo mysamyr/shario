@@ -12,5 +12,5 @@ export const reloadPage = async (): Promise<void> => {
   setFiles(info.files);
 
   updateNote(info.text);
-  renderFiles({});
+  renderFiles();
 };

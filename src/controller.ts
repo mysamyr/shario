@@ -18,9 +18,9 @@ import {
   readFile,
   readQRCode,
   removeFile,
-  setSharedContent,
   writeFile,
 } from './services/files.ts';
+import { broadcastFiles } from './services/ws.ts';
 import { PORT } from './config.ts';
 import { mapInfo } from './mappers.ts';
 import { validateFilename } from './helpers.ts';
@@ -68,14 +68,7 @@ export const saveFile = async (req: Request, _res: Response): Promise<void> => {
   }
   const content: ReadableStream<Uint8Array> = file.stream();
   await writeFile(join(getFilesFolderPath(), file.name), content);
-};
-
-export const updateText = async (
-  req: Request,
-  _res: Response,
-): Promise<void> => {
-  const reqBody: string = await req.body.text();
-  await setSharedContent(reqBody);
+  broadcastFiles(getFiles());
 };
 
 export const renameFile = async (
@@ -93,6 +86,7 @@ export const renameFile = async (
     join(getFilesFolderPath(), filename),
     join(getFilesFolderPath(), newFilename),
   );
+  broadcastFiles(getFiles());
 };
 
 export const deleteFiles = async (filenames: string[]): Promise<void> => {
@@ -102,4 +96,5 @@ export const deleteFiles = async (filenames: string[]): Promise<void> => {
   for (const filename of filenames) {
     await removeFile(join(getFilesFolderPath(), filename));
   }
+  broadcastFiles(getFiles());
 };

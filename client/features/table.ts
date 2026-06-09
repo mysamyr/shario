@@ -27,7 +27,7 @@ export const renderFiles = (
     columns = TABLE_CONFIG,
     sortKey = TABLE_CONFIG[1].key,
     sortAsc = true,
-  },
+  } = {},
 ): void => {
   const tbody: HTMLTableSectionElement = document.querySelector<'tbody'>(
     'tbody',

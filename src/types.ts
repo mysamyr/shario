@@ -1,7 +1,7 @@
 export type Info = {
   locations: string[];
   port: number;
-  files: string[];
+  files: FileEntry[];
   text: string;
 };
 

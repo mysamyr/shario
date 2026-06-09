@@ -17,7 +17,6 @@ import {
 import { Link, Paragraph } from '../components.ts';
 import modal from './modal.ts';
 import snackbar from './snackbar.ts';
-import { reloadPage } from './api.ts';
 import uploadFilesModal from '../modals/upload-files-modal.ts';
 import renameFileModal from '../modals/rename-file-modal.ts';
 import { getSelectedFiles } from '../state/files.ts';
@@ -107,7 +106,6 @@ const renameFile = async (
   if (res.ok) {
     snackbar.displayMsg(FILE_RENAMED());
     modal.hideModal();
-    reloadPage();
   } else {
     const { status, message }: ApiError = await res
       .json();
@@ -125,7 +123,6 @@ const downloadFiles = async (filenames: string[]): Promise<void> => {
   if (res.ok) {
     const blob: Blob = await res.blob();
     download(blob, 'files.zip');
-    reloadPage();
   } else {
     const { status, message }: ApiError = await res
       .json();
@@ -149,7 +146,6 @@ export const deleteFiles = async (filenames: string[]): Promise<void> => {
       .json();
     snackbar.displayMsg(API_ERROR_$(status, message));
   }
-  reloadPage();
 };
 
 const onRenameSubmit =
@@ -213,8 +209,6 @@ const onUploadSubmit =
       );
       modal.hideModal();
     }
-
-    reloadPage();
   };
 
 export const downloadFile = async (file: string): Promise<void> => {
@@ -224,7 +218,6 @@ export const downloadFile = async (file: string): Promise<void> => {
   if (res.ok) {
     const blob: Blob = await res.blob();
     download(blob, file);
-    reloadPage();
   } else {
     const { status, message }: ApiError = await res
       .json();

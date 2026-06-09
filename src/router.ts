@@ -7,12 +7,17 @@ import {
   getQRCode,
   renameFile,
   saveFile,
-  updateText,
 } from './controller.ts';
 import { RenameFileBody } from './types.ts';
 import { NO_BODY, NO_FILENAME_PROVIDED } from './constants/errors.ts';
+import { addClient } from './services/ws.ts';
 
 const router: Router = new Router();
+
+router.get('/ws', (ctx: Context): void => {
+  const ws: WebSocket = ctx.upgrade();
+  addClient(ws);
+});
 
 router.get('/info', (ctx: Context): void => {
   ctx.response.body = getInfo();
@@ -47,14 +52,6 @@ router.post('/', async (ctx: Context): Promise<void> => {
     ctx.throw(Status.BadRequest, NO_BODY);
   }
   await saveFile(ctx.request, ctx.response);
-  ctx.response.status = Status.Created;
-});
-
-router.put('/text', async (ctx: Context): Promise<void> => {
-  if (!ctx.request.hasBody) {
-    ctx.throw(Status.BadRequest, NO_BODY);
-  }
-  await updateText(ctx.request, ctx.response);
   ctx.response.status = Status.Created;
 });
 

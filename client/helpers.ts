@@ -73,7 +73,7 @@ export const showInputError = (
   input.classList.add('input-error');
 
   const next: HTMLSpanElement | null = input
-    .nextElementSibling;
+    .nextElementSibling as HTMLSpanElement;
   if (next && next.classList.contains('error-message')) {
     next.remove();
   }
@@ -88,7 +88,7 @@ export const showInputError = (
 export const hideInputError = (input: HTMLInputElement): void => {
   input.classList.remove('input-error');
   const next: HTMLSpanElement | null = input
-    .nextElementSibling;
+    .nextElementSibling as HTMLSpanElement;
   if (next && next.classList.contains('error-message')) {
     next.remove();
   }
@@ -100,8 +100,8 @@ export const sortFiles = (
   sortAsc: boolean,
 ): FileEntry[] =>
   files.toSorted((a: FileEntry, b: FileEntry): number => {
-    let valA = a[sortKey];
-    let valB = b[sortKey];
+    let valA = a[sortKey as keyof FileEntry];
+    let valB = b[sortKey as keyof FileEntry];
 
     if (valA == null) valA = '';
     if (valB == null) valB = '';
@@ -132,4 +132,15 @@ export const formatBytes = (bytes: number): string => {
   ];
   const i: number = Math.floor(Math.log(bytes) / Math.log(k));
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+};
+
+export const debounce = <T extends unknown[]>(
+  fn: (...args: T) => void,
+  delay: number,
+): (...args: T) => void => {
+  let timer: ReturnType<typeof setTimeout>;
+  return (...args: T): void => {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn(...args), delay);
+  };
 };

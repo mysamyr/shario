@@ -1,37 +1,30 @@
-import { ApiError } from '../types.ts';
 import snackbar from './snackbar.ts';
-import { API_ERROR_$, NOTHING_TO_SAVE } from '../constants/errors.ts';
+import { NOTHING_TO_SAVE } from '../constants/errors.ts';
 import { getText, setText } from '../state/text.ts';
 import { handleFilesUpload } from './files.ts';
+import { sendText } from './ws.ts';
+import { debounce } from '../helpers.ts';
 
 const textarea: HTMLTextAreaElement = document.querySelector(
   'textarea',
 ) as HTMLTextAreaElement;
 
+const debouncedSend = debounce((value: string): void => {
+  sendText(value);
+}, 400);
+
 export const initNotes = (): void => {
-  textarea.addEventListener('focusout', async (): Promise<void> => {
-    if (getText() !== textarea.value) await uploadText(textarea.value);
+  textarea.addEventListener('input', (): void => {
+    const value: string = textarea.value;
+    setText(value);
+    debouncedSend(value);
   });
-};
-
-export const uploadText = async (value: string = ''): Promise<void> => {
-  const res: Response = await fetch('/text', {
-    method: 'PUT',
-    body: value,
-  });
-  if (!res.ok) {
-    const { status, message }: ApiError = await res
-      .json();
-    snackbar.displayMsg(API_ERROR_$(status, message));
-  }
-
-  updateNote(value);
 };
 
 export const updateNote = (text: string): void => {
   if (getText() !== text) {
     textarea.value = text;
-    textarea.dispatchEvent(new Event('input'));
+    textarea.dispatchEvent(new Event('input', { bubbles: true }));
     setText(text);
   }
 };
@@ -54,8 +47,9 @@ export const copyNote = async (): Promise<void> => {
   }
 };
 
-export const clearNote = async (): Promise<void> => {
+export const clearNote = (): void => {
   if (getText()) {
-    await uploadText();
+    updateNote('');
+    sendText('');
   }
 };

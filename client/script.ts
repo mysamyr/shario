@@ -2,9 +2,9 @@ import modal from './features/modal.ts';
 import { getText } from './state/text.ts';
 import { handleFilesUpload } from './features/files.ts';
 import { applyLanguage } from './features/language.ts';
-import { initNotes, uploadText } from './features/notes.ts';
+import { initNotes, updateNote } from './features/notes.ts';
 import initActions from './features/actions.ts';
-import { reloadPage } from './features/api.ts';
+import { initWs } from './features/ws.ts';
 import { initTable } from './features/table.ts';
 import { initView } from './features/mobile-view.ts';
 
@@ -49,7 +49,7 @@ const initDragAndDrop = (): void => {
       handleFilesUpload(Array.from(dragData.files));
     } else {
       const pastedData = dragData.getData('text');
-      if (getText() !== pastedData) await uploadText(pastedData);
+      if (getText() !== pastedData) await updateNote(pastedData);
     }
   });
 };
@@ -66,7 +66,7 @@ const initGlobalPaste = (): void => {
       if (
         document.activeElement?.tagName === 'BODY' &&
         getText() !== pastedData
-      ) await uploadText(pastedData);
+      ) await updateNote(pastedData);
     }
   };
 
@@ -104,4 +104,4 @@ initGlobalPaste();
 applyLanguage();
 initView();
 
-reloadPage();
+initWs();

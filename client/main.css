@@ -1,12 +1,62 @@
 /*VARIABLES*/
-:root {
+:root,
+[data-theme^='light-'] {
   --white: #fff;
-  --black: #000;
-  --grey: #808080;
-  --light-grey: #f5f5f5;
-  --light-green: #8db48e;
-  --green: #4d724d;
-  --red: #c13737;
+  --bg-primary: #f5f5f5;
+  --bg-secondary: #fff;
+  --text-primary: #000;
+  --text-secondary: #808080;
+  --color-danger: #c13737;
+  --color-danger-dark: #a82e2e;
+  --border-color: #808080;
+  --shadow-color: rgba(0, 0, 0, 0.12);
+  --shadow-color-strong: rgba(0, 0, 0, 0.18);
+  --overlay-color: rgba(0, 0, 0, 0.06);
+  --backdrop-color: hsla(0, 0%, 0%, 0.5);
+  --hover-overlay: rgba(224, 224, 224, 0.8);
+  --table-header-bg: rgba(0, 0, 0, 0.2);
+  --active-bg: rgba(0, 0, 0, 0.3);
+  --link-color: #1a73e8;
+  --link-hover-color: #0d47a1;
+  --color-primary: #4d724d;
+  --color-primary-light: #8db48e;
+  --icon-filter: none;
+}
+
+[data-theme^='dark-'] {
+  --bg-primary: #1a1a1a;
+  --bg-secondary: #2d2d2d;
+  --text-primary: #f0f0f0;
+  --text-secondary: #a0a0a0;
+  --color-danger: #ff5555;
+  --color-danger-dark: #cc4444;
+  --border-color: #555;
+  --shadow-color: rgba(0, 0, 0, 0.3);
+  --shadow-color-strong: rgba(0, 0, 0, 0.5);
+  --overlay-color: rgba(255, 255, 255, 0.06);
+  --backdrop-color: hsla(0, 0%, 0%, 0.7);
+  --hover-overlay: rgba(100, 100, 100, 0.5);
+  --table-header-bg: rgba(255, 255, 255, 0.1);
+  --active-bg: rgba(255, 255, 255, 0.2);
+  --link-color: #64b5f6;
+  --link-hover-color: #90caf9;
+  --icon-filter: brightness(0) invert(1);
+}
+
+:root,
+[data-theme$='-green'] {
+  --color-primary: #4d724d;
+  --color-primary-light: #8db48e;
+}
+
+[data-theme$='-blue'] {
+  --color-primary: #2563eb;
+  --color-primary-light: #60a5fa;
+}
+
+[data-theme$='-red'] {
+  --color-primary: #dc2626;
+  --color-primary-light: #f87171;
 }
 
 /*COMMON*/
@@ -24,7 +74,8 @@ body {
     ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
     Roboto, sans-serif;
   font-size: 16px;
-  background-color: var(--light-grey);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
 }
 
 h1, h2 {
@@ -55,7 +106,7 @@ header {
   align-items: center;
   height: 8vh;
   padding: 0 1rem;
-  background-color: var(--green);
+  background-color: var(--color-primary);
 }
 
 .header-action {
@@ -68,26 +119,41 @@ header {
 }
 
 .header-action:hover {
-  background-color: rgba(224, 224, 224, 0.8);
+  background-color: var(--hover-overlay);
   border-radius: 5px;
 }
 
-#language-dropdown {
+.dropdown {
   position: absolute;
-  background: var(--white);
-  border: 1px solid var(--grey);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
   z-index: 2;
   min-width: 120px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 2px 8px var(--shadow-color);
 }
 
-.language-option {
+.dropdown-section-label {
+  padding: 6px 16px 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+
+.dropdown-option {
   padding: 8px 16px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.language-option:hover {
-  background-color: var(--light-green);
+.dropdown-option:hover {
+  background-color: var(--color-primary-light);
+}
+
+.dropdown-option.selected {
+  font-weight: bold;
 }
 
 /*CONTENT*/
@@ -99,7 +165,7 @@ header {
 
 section {
   width: 100%;
-  border: 1px solid var(--green);
+  border: 1px solid var(--color-primary);
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -112,7 +178,7 @@ section {
   justify-content: space-between;
   padding: 0 0.5rem;
   height: 6vh;
-  background-color: var(--light-green);
+  background-color: var(--color-primary-light);
   flex-shrink: 0;
 }
 
@@ -133,7 +199,7 @@ table {
 }
 
 thead {
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: var(--table-header-bg);
   height: 40px;
 }
 
@@ -149,7 +215,7 @@ th, td {
 
 tr.file {
   height: 40px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  border-bottom: 1px solid var(--overlay-color);
 }
 
 .buttons {
@@ -172,8 +238,17 @@ tr.file {
 }
 
 .btn:hover {
-  background-color: var(--white);
-  color: var(--light-green);
+  background-color: var(--color-primary-light);
+}
+
+table a {
+  color: var(--link-color);
+  text-decoration: none;
+}
+
+table a:hover {
+  color: var(--link-hover-color);
+  text-decoration: underline;
 }
 
 /*NOTES*/
@@ -185,7 +260,8 @@ tr.file {
   resize: none;
   padding: 10px;
   font-size: 1rem;
-  background-color: var(--light-grey);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
   overflow: auto;
 }
 
@@ -195,7 +271,7 @@ footer {
   flex-shrink: 0;
   align-items: stretch;
   height: 8vh;
-  background-color: var(--green);
+  background-color: var(--color-primary);
   color: var(--white);
 }
 
@@ -207,15 +283,20 @@ footer {
   height: 100%;
   text-align: center;
   text-decoration: none;
-  color: var(--white);
-  font-size: 0.9rem;
+  color: var(--text-primary);
   -webkit-user-select: none;
   user-select: none;
+  transition: all 0.2s ease;
 }
 
-.active {
+.footer-link:hover {
+  background-color: var(--hover-overlay);
+  transform: translateY(-2px);
+}
+
+.footer-link.active {
   font-weight: bold;
-  background-color: rgba(0, 0, 0, 0.3);
+  font-size: 1.1rem;
 }
 
 /*LOCATIONS*/
@@ -243,6 +324,7 @@ img {
   height: 20px;
   display: block;
   pointer-events: none;
+  filter: var(--icon-filter);
 }
 
 /*DIALOG*/
@@ -251,15 +333,15 @@ dialog:modal {
   min-width: 320px;
   max-width: 80%;
   overflow-y: auto;
-  color: var(--black);
-  background-color: var(--white);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+  color: var(--text-primary);
+  background-color: var(--bg-secondary);
+  box-shadow: 0 8px 32px var(--shadow-color-strong);
   border: none;
   border-radius: 8px;
 }
 
 dialog::backdrop {
-  background-color: hsla(0, 0%, 0%, 0.5);
+  background-color: var(--backdrop-color);
 }
 
 .modal-container {
@@ -274,13 +356,13 @@ dialog::backdrop {
 /*SNACKBAR*/
 .snackbar-container {
   position: fixed;
-  bottom: 5%;
+  bottom: 10%;
   right: 5%;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--green);
-  color: var(--white);
+  background: var(--color-primary);
+  color: var(--text-primary);
   padding: 4px;
   border-radius: 4px;
   overflow: hidden;
@@ -295,7 +377,7 @@ dialog::backdrop {
 }
 
 .snackbar-dismiss {
-  color: var(--red);
+  color: var(--color-danger);
   font-weight: bold;
   margin: 0 8px;
   padding: 8px;
@@ -312,21 +394,21 @@ dialog::backdrop {
 .help-section h3 {
   font-size: 0.95rem;
   padding-left: 10px;
-  color: var(--green);
+  color: var(--color-primary);
   padding-bottom: 4px;
 }
 
 .help-item {
   font-size: 0.875rem;
   line-height: 1.5;
-  color: #333;
+  color: var(--text-primary);
 }
 
 /*UPLOAD MODAL*/
 .input-container {
   display: flex;
   flex-direction: row;
-  align-items: center;
+  align-items: flex-start;
   width: 100%;
   gap: 10px;
 }
@@ -334,46 +416,38 @@ dialog::backdrop {
 .input-wrapper {
   display: flex;
   flex-direction: column;
-  align-items: start;
+  align-items: flex-start;
   width: 100%;
 }
 
 .upload-input {
   width: 100%;
   padding: 6px 3px;
-  border: 1px solid var(--grey);
+  border: 1px solid var(--border-color);
   border-radius: 4px;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
 }
 
 .upload-input:disabled {
-  background-color: var(--light-green);
-  color: var(--green);
+  background-color: var(--color-primary-light);
+  color: var(--color-primary);
   cursor: not-allowed;
 }
 
 .file-upload-delete-btn {
-  border: 1px solid var(--white);
-  background-color: var(--red);
-  padding: 8px;
-  font-size: 1.2rem;
+  background-color: var(--color-danger);
 }
 
 .file-upload-delete-btn:hover {
-  background-color: #a82e2e;
-  border-color: var(--white);
-  color: var(--white);
-}
-
-.file-upload-delete-btn img {
-  /* Invert the colors of the image to make it visible on the red background */
-  filter: brightness(0) invert(1);
+  background-color: var(--color-danger-dark);
 }
 
 .input-error {
-  border-color: var(--red) !important;
+  border-color: var(--color-danger) !important;
 }
 
 .error-message {
-  color: var(--red);
+  color: var(--color-danger);
   font-size: 0.7em;
 }

@@ -8,35 +8,35 @@ export default (
   files: File[],
   onSubmit: (inputs: HTMLInputElement[]) => void,
 ): HTMLDivElement => {
-  const container: HTMLDivElement = Div({
+  const container = Div({
     className: 'modal-container',
   });
 
-  const header: HTMLHeadingElement = Header({
+  const header = Header({
     lvl: 2,
     text: translations[getLanguage()].modals.uploadFiles.title,
   });
 
-  const buttons: HTMLDivElement = Div({
+  const buttons = Div({
     className: 'buttons',
   });
-  let inputs: HTMLInputElement[] = files.map((file: File) =>
+  let inputs = files.map((file: File) =>
     Input({
       type: 'text',
       value: file.name,
       className: 'upload-input',
     })
   );
-  const inputRows: HTMLDivElement[] = inputs.map(
+  const inputRows = inputs.map(
     (input: HTMLInputElement): HTMLDivElement => {
-      const container: HTMLDivElement = Div({
+      const container = Div({
         className: 'input-container',
       });
-      const inputWrapper: HTMLDivElement = Div({
+      const inputWrapper = Div({
         className: 'input-wrapper',
       });
       inputWrapper.appendChild(input);
-      const deleteBtn: HTMLDivElement = Div({
+      const deleteBtn = Div({
         className: 'btn file-upload-delete-btn',
         text: '<img src="/assets/trash.svg" class="icon" alt="delete">',
         title: 'Delete input',
@@ -73,13 +73,11 @@ export default (
     }),
   );
   container.append(header, ...inputRows, buttons);
-  inputs[0].focus();
+
   inputs.forEach((input: HTMLInputElement): void => {
     input.addEventListener('keypress', (e: KeyboardEvent): void => {
       if (e.key === 'Enter') {
-        onSubmit(
-          inputs,
-        );
+        onSubmit(inputs);
       }
     });
   });

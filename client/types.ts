@@ -1,3 +1,7 @@
+import type { LanguageCode } from './constants/language.ts';
+import type { COLUMN_KEYS } from './constants/table.ts';
+import type { ThemeColor, ThemeMode } from './constants/theme.ts';
+
 export type FileEntry = {
   name: string;
   size: number;
@@ -6,7 +10,7 @@ export type FileEntry = {
 };
 
 export type TableColumnConfig = {
-  key: string;
+  key: COLUMN_KEYS;
   minWidth?: string;
   sortable?: boolean;
   grow?: boolean;
@@ -27,11 +31,27 @@ export type ApiError = { status: number; message: string };
 
 export type Language = {
   name: string;
-  code: string;
+  code: LanguageCode;
+};
+
+export type ThemeLabels = {
+  theme: string;
+  color: string;
+  light: string;
+  dark: string;
+  green: string;
+  blue: string;
+  red: string;
+};
+
+export type ThemeConfig = {
+  mode: ThemeMode;
+  color: ThemeColor;
 };
 
 export type Titles = {
   changeLanguage: string;
+  changeTheme: string;
   showQRs: string;
   showHelp: string;
   uploadFiles: string;
@@ -44,13 +64,6 @@ export type Titles = {
   downloadFile: string;
   renameFile: string;
   deleteFile: string;
-};
-
-export type TableLabels = {
-  name: string;
-  size: string;
-  type: string;
-  created: string;
 };
 
 type Messages = {
@@ -115,9 +128,10 @@ export type Translation = {
   sharedTextPlaceholder: string;
   noLocations: string;
   titles: Titles;
-  table: TableLabels;
+  table: Record<COLUMN_KEYS, string>;
   messages: Messages;
   errorMessages: ErrorMessages;
   modals: Modals;
   help: Help;
+  themeLabels: ThemeLabels;
 };

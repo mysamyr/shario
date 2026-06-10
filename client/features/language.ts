@@ -1,129 +1,123 @@
-import { Div } from '../components.ts';
+import { Div, Dropdown } from '../components.ts';
 import { COLUMN_KEYS } from '../constants/table.ts';
 import translations, {
   LanguageCode,
   LANGUAGES_CONFIG,
 } from '../constants/language.ts';
 
-import type { Language, TableLabels, Titles, Translation } from '../types.ts';
+import type { Language, Titles, Translation } from '../types.ts';
 
 const LOCAL_STORAGE_LANGUAGE_KEY = 'language';
 
-export const getLanguage = (): string =>
-  localStorage.getItem(LOCAL_STORAGE_LANGUAGE_KEY) || LanguageCode.EN;
+export const getLanguage = (): LanguageCode =>
+  localStorage.getItem(LOCAL_STORAGE_LANGUAGE_KEY) as LanguageCode ||
+  LanguageCode.EN;
 
 export const setLanguage = (lang: LanguageCode): void => {
   localStorage.setItem(LOCAL_STORAGE_LANGUAGE_KEY, lang);
 };
 
 const applyHeaders = (lang: Translation): void => {
-  const filesHeader: HTMLHeadingElement = document.getElementById<
-    HTMLHeadingElement
-  >(
+  const filesHeader = document.getElementById(
     'files-header',
-  );
+  ) as HTMLHeadingElement;
   filesHeader.innerText = lang.filesHeader;
-  const noteHeader: HTMLHeadingElement = document.getElementById<
-    HTMLHeadingElement
-  >(
+  const noteHeader = document.getElementById(
     'note-header',
-  );
+  ) as HTMLHeadingElement;
   noteHeader.innerText = lang.noteHeader;
 };
 
 const applyTitles = (titles: Titles): void => {
-  const language: HTMLDivElement = document.getElementById<HTMLDivElement>(
+  const language = document.getElementById(
     'language',
-  );
+  ) as HTMLDivElement;
   language.title = titles.changeLanguage;
-  const showQRs: HTMLDivElement = document.getElementById<HTMLDivElement>(
+  const theme = document.getElementById(
+    'theme',
+  ) as HTMLDivElement;
+  theme.title = titles.changeTheme;
+  const showQRs = document.getElementById(
     'qr',
-  );
+  ) as HTMLDivElement;
   showQRs.title = titles.showQRs;
-  const showHelp: HTMLDivElement = document.getElementById<HTMLDivElement>(
+  const showHelp = document.getElementById(
     'help',
-  );
+  ) as HTMLDivElement;
   showHelp.title = titles.showHelp;
 
-  const uploadFiles: HTMLDivElement = document.getElementById<HTMLDivElement>(
+  const uploadFiles = document.getElementById(
     'upload-files',
-  );
+  ) as HTMLDivElement;
   uploadFiles.title = titles.uploadFiles;
-  const downloadFiles: HTMLDivElement = document.getElementById<HTMLDivElement>(
+  const downloadFiles = document.getElementById(
     'download-files',
-  );
+  ) as HTMLDivElement;
   downloadFiles.title = titles.downloadFiles;
-  const deleteFiles: HTMLDivElement = document.getElementById<HTMLDivElement>(
+  const deleteFiles = document.getElementById(
     'delete-files',
-  );
+  ) as HTMLDivElement;
   deleteFiles.title = titles.deleteFiles;
 
-  const saveNote: HTMLDivElement = document.getElementById<HTMLDivElement>(
+  const saveNote = document.getElementById(
     'save-as-file',
-  );
+  ) as HTMLDivElement;
   saveNote.title = titles.saveNote;
-  const copyText: HTMLDivElement = document.getElementById<HTMLDivElement>(
+  const copyText = document.getElementById(
     'copy-text',
-  );
+  ) as HTMLDivElement;
   copyText.title = titles.copyText;
-  const clearText: HTMLDivElement = document.getElementById<HTMLDivElement>(
+  const clearText = document.getElementById(
     'clear-text',
-  );
+  ) as HTMLDivElement;
   clearText.title = titles.clearText;
 };
 
-const applyTableLabels = (labels: TableLabels): void => {
-  Object.values(COLUMN_KEYS).forEach((key: string): void => {
+const applyTableLabels = (labels: Record<COLUMN_KEYS, string>): void => {
+  Object.values(COLUMN_KEYS).forEach((key): void => {
     if (!labels[key]) return;
-    const header: HTMLTableCellElement = document.getElementById<
-      HTMLTableCellElement
-    >(`file_${key}`);
+    const header = document.getElementById(
+      `file_${key}`,
+    ) as HTMLTableCellElement;
     header.innerText = labels[key];
   });
 };
 
 const applyFooter = (lang: Translation): void => {
-  const filesFooterLink: HTMLTableCellElement = document.getElementById<
-    HTMLDivElement
-  >('files-footer-link');
+  const filesFooterLink = document.getElementById(
+    'files-footer-link',
+  ) as HTMLTableCellElement;
   filesFooterLink.innerText = lang.filesHeader;
-  const notesFooterLink: HTMLTableCellElement = document.getElementById<
-    HTMLDivElement
-  >('notes-footer-link');
+  const notesFooterLink = document.getElementById(
+    'notes-footer-link',
+  ) as HTMLTableCellElement;
   notesFooterLink.innerText = lang.noteHeader;
 };
 
-export const applyLanguage = (lang: string = getLanguage()): void => {
-  const langTranslations: Translation = translations[lang];
+export const applyLanguage = (lang: LanguageCode = getLanguage()): void => {
+  const langTranslations = translations[lang];
 
   applyHeaders(langTranslations);
   applyTitles(langTranslations.titles);
   applyTableLabels(langTranslations.table);
   applyFooter(langTranslations);
 
-  const textarea: HTMLTextAreaElement = document.querySelector<
-    HTMLTextAreaElement
-  >(
+  const textarea = document.querySelector<HTMLTextAreaElement>(
     'textarea',
-  );
+  )!;
   textarea.placeholder = langTranslations.sharedTextPlaceholder;
 };
 
 export const renderLanguageDropdown = (anchor: HTMLElement) => {
-  const existing: HTMLDivElement | null = document.getElementById(
-    'language-dropdown',
-  );
-  if (existing) existing.remove();
-
-  const dropdown: HTMLDivElement = Div({
+  const dropdown: HTMLDivElement = Dropdown(anchor, {
     id: 'language-dropdown',
   });
-  dropdown.style.top = `${anchor.offsetTop + anchor.offsetHeight}px`;
-  dropdown.style.left = `${anchor.offsetLeft}px`;
+  const activeLang = getLanguage();
 
   LANGUAGES_CONFIG.forEach((lang: Language): void => {
+    const isSelected = lang.code === activeLang;
     const option: HTMLDivElement = Div({
-      className: 'language-option',
+      className: `dropdown-option${isSelected ? ' selected' : ''}`,
       text: lang.name,
       onClick: (): void => {
         if (lang.code !== getLanguage()) {
@@ -137,14 +131,4 @@ export const renderLanguageDropdown = (anchor: HTMLElement) => {
   });
 
   document.body.appendChild(dropdown);
-
-  setTimeout((): void => {
-    const handleClickOutside = (e: MouseEvent): void => {
-      if (!dropdown.contains(e.target as Node) && e.target !== anchor) {
-        dropdown.remove();
-        document.removeEventListener('mousedown', handleClickOutside);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-  }, 0);
 };

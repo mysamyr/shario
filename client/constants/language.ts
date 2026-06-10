@@ -24,6 +24,7 @@ const translations: Record<LanguageCode, Translation> = {
     noLocations: 'You are not connected to any network',
     titles: {
       changeLanguage: 'Change language',
+      changeTheme: 'Change theme',
       showQRs: 'Show QR codes',
       showHelp: 'Show help',
       uploadFiles: 'Upload files from disk',
@@ -42,6 +43,8 @@ const translations: Record<LanguageCode, Translation> = {
       size: 'Size',
       type: 'Type',
       created: 'File Created',
+      checkbox: '',
+      actions: '',
     },
     messages: {
       fileUploaded: 'File uploaded successfully.',
@@ -138,6 +141,15 @@ const translations: Record<LanguageCode, Translation> = {
         },
       ],
     },
+    themeLabels: {
+      theme: 'Theme',
+      color: 'Color',
+      light: 'Light',
+      dark: 'Dark',
+      green: 'Green',
+      blue: 'Blue',
+      red: 'Red',
+    },
   },
   [LanguageCode.UK]: {
     filesHeader: 'Файли',
@@ -146,6 +158,7 @@ const translations: Record<LanguageCode, Translation> = {
     noLocations: 'Ви не підключені до жодної мережі',
     titles: {
       changeLanguage: 'Змінити мову',
+      changeTheme: 'Змінити тему',
       showQRs: 'Показати QR-коди',
       showHelp: 'Показати довідку',
       uploadFiles: 'Завантажити файли з диска',
@@ -164,6 +177,8 @@ const translations: Record<LanguageCode, Translation> = {
       size: 'Розмір',
       type: 'Тип',
       created: 'Файл створено',
+      checkbox: '',
+      actions: '',
     },
     messages: {
       fileUploaded: 'Файл успішно завантажено.',
@@ -261,6 +276,15 @@ const translations: Record<LanguageCode, Translation> = {
           ],
         },
       ],
+    },
+    themeLabels: {
+      theme: 'Тема',
+      color: 'Колір',
+      light: 'Світла',
+      dark: 'Темна',
+      green: 'Зелений',
+      blue: 'Синій',
+      red: 'Червоний',
     },
   },
 };

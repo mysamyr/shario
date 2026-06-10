@@ -62,8 +62,3 @@ This project uses Deno's default linting and formatting tools.
   ```
 
 ## TODO
-
-- Add polling or WebSocket for update file list
-- Add theme change
-- Add help modal content
-- Positioning QR codes on mobile

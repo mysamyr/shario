@@ -72,8 +72,8 @@ export const showInputError = (
 ): void => {
   input.classList.add('input-error');
 
-  const next: HTMLSpanElement | null = input
-    .nextElementSibling as HTMLSpanElement;
+  const next = input
+    .nextElementSibling as HTMLSpanElement | null;
   if (next && next.classList.contains('error-message')) {
     next.remove();
   }
@@ -87,8 +87,8 @@ export const showInputError = (
 
 export const hideInputError = (input: HTMLInputElement): void => {
   input.classList.remove('input-error');
-  const next: HTMLSpanElement | null = input
-    .nextElementSibling as HTMLSpanElement;
+  const next = input
+    .nextElementSibling as HTMLSpanElement | null;
   if (next && next.classList.contains('error-message')) {
     next.remove();
   }
@@ -123,14 +123,14 @@ export const sortFiles = (
 
 export const formatBytes = (bytes: number): string => {
   if (!bytes) return '0 Bytes';
-  const k: number = 1024;
-  const sizes: string[] = [
+  const k = 1024;
+  const sizes = [
     'Bytes',
     'KB',
     'MB',
     'GB',
   ];
-  const i: number = Math.floor(Math.log(bytes) / Math.log(k));
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 };
 

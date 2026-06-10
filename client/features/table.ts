@@ -1,4 +1,4 @@
-import { FileEntry, type TableColumnConfig } from '../types.ts';
+import type { FileEntry, TableColumnConfig, TableColumnKey } from '../types.ts';
 import { getFiles } from '../state/files.ts';
 import {
   Span,
@@ -13,11 +13,9 @@ import { getLanguage } from './language.ts';
 import { sortFiles } from '../helpers.ts';
 
 const uncheckSelectAll = (): void => {
-  const selectAllCheckbox: HTMLInputElement = document.getElementById<
-    HTMLInputElement
-  >(
+  const selectAllCheckbox = document.getElementById(
     'select-all-checkbox',
-  );
+  ) as HTMLInputElement;
   selectAllCheckbox.checked = false;
 };
 
@@ -29,17 +27,17 @@ export const renderFiles = (
     sortAsc = true,
   } = {},
 ): void => {
-  const tbody: HTMLTableSectionElement = document.querySelector<'tbody'>(
+  const tbody = document.querySelector<'tbody'>(
     'tbody',
-  );
+  )!;
   tbody.innerHTML = '';
 
-  const sortedFiles: FileEntry[] = sortFiles(files, sortKey, sortAsc);
+  const sortedFiles = sortFiles(files, sortKey, sortAsc);
 
   sortedFiles.forEach((file: FileEntry): void => {
-    const tr: HTMLTableRowElement = TableRow({ className: 'file' });
+    const tr = TableRow({ className: 'file' });
     columns.forEach((col: TableColumnConfig): void => {
-      const columnData: HTMLTableCellElement = col.renderColumnData(file);
+      const columnData = col.renderColumnData(file);
       if (col.bodyCellClassName) {
         columnData.classList.add(...col.bodyCellClassName.split(' '));
       }
@@ -53,20 +51,20 @@ export const renderFiles = (
 };
 
 export const initTable = (
-  defaultSortKey: string = TABLE_CONFIG[1].key,
+  defaultSortKey: TableColumnKey = TABLE_CONFIG[1].key,
   tableConfig: TableColumnConfig[] = TABLE_CONFIG,
   renderData = renderFiles,
 ): void => {
-  let sortKey: string = defaultSortKey;
-  let sortAsc: boolean = true;
+  let sortKey = defaultSortKey as TableColumnKey;
+  let sortAsc = true;
 
-  const table: HTMLTableElement = document.querySelector<HTMLTableElement>(
+  const table = document.querySelector<HTMLTableElement>(
     'table',
-  );
-  const thead: HTMLTableSectionElement = TableHeader();
-  const tbody: HTMLTableSectionElement = TableBody();
+  )!;
+  const thead = TableHeader();
+  const tbody = TableBody();
 
-  const headerRow: HTMLTableRowElement = TableRow();
+  const headerRow = TableRow();
 
   const renderHeaderRow = (): void => {
     headerRow.innerHTML = '';

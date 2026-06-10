@@ -4,7 +4,7 @@ export const Div = (props: {
   title?: string;
   className?: string;
   onClick?: (this: HTMLDivElement, ev: MouseEvent) => void;
-}): HTMLDivElement => {
+} = {}): HTMLDivElement => {
   const div: HTMLDivElement = document.createElement('div');
   if (!props) return div;
   if (props.className) {
@@ -41,7 +41,7 @@ export const Paragraph = (props: {
   text?: string;
   className?: string;
   onClick?: (this: HTMLParagraphElement, ev: MouseEvent) => void;
-}): HTMLParagraphElement => {
+} = {}): HTMLParagraphElement => {
   const p: HTMLParagraphElement = document.createElement('p');
   if (!props) return p;
   if (props.className) {
@@ -58,7 +58,7 @@ export const Span = (props: {
   id?: string;
   text?: string;
   className?: string;
-}): HTMLSpanElement => {
+} = {}): HTMLSpanElement => {
   const span: HTMLSpanElement = document.createElement('span');
   if (!props) return span;
   if (props.className) {
@@ -78,7 +78,7 @@ export const Input = (props: {
   className?: string;
   onClick?: (this: HTMLInputElement, ev: MouseEvent) => void;
   onChange?: (this: HTMLInputElement, ev: Event) => void;
-}): HTMLInputElement => {
+} = {}): HTMLInputElement => {
   const input: HTMLInputElement = document.createElement('input');
   if (!props) return input;
   if (props.className) {
@@ -94,9 +94,9 @@ export const Input = (props: {
   return input;
 };
 export const Link = (props: {
+  href: string;
   id?: string;
   text?: string;
-  href?: string;
   target?: string;
   title?: string;
   download?: string;
@@ -122,9 +122,9 @@ export const Link = (props: {
 };
 
 export const Image = (props: {
+  src: string;
+  title: string;
   id?: string;
-  src?: string;
-  title?: string;
   className?: string;
   onClick?: (this: HTMLImageElement, ev: MouseEvent) => void;
 }): HTMLImageElement => {
@@ -144,7 +144,7 @@ export const Image = (props: {
 export const TableHeader = (props: {
   id?: string;
   className?: string;
-}): HTMLTableSectionElement => {
+} = {}): HTMLTableSectionElement => {
   const thead: HTMLTableSectionElement = document.createElement('thead');
   if (!props) return thead;
   if (props.className) {
@@ -157,7 +157,7 @@ export const TableHeader = (props: {
 export const TableBody = (props: {
   id?: string;
   className?: string;
-}): HTMLTableSectionElement => {
+} = {}): HTMLTableSectionElement => {
   const tbody: HTMLTableSectionElement = document.createElement('tbody');
   if (!props) return tbody;
   if (props.className) {
@@ -171,7 +171,7 @@ export const TableHeaderCell = (props: {
   id?: string;
   className?: string;
   text?: string;
-}): HTMLTableCellElement => {
+} = {}): HTMLTableCellElement => {
   const th: HTMLTableCellElement = document.createElement('th');
   if (!props) return th;
   if (props.className) {
@@ -185,7 +185,7 @@ export const TableHeaderCell = (props: {
 export const TableRow = (props: {
   id?: string;
   className?: string;
-}): HTMLTableRowElement => {
+} = {}): HTMLTableRowElement => {
   const tr: HTMLTableRowElement = document.createElement('tr');
   if (!props) return tr;
   if (props.className) {
@@ -199,7 +199,7 @@ export const TableData = (props: {
   id?: string;
   className?: string;
   text?: string;
-}): HTMLTableCellElement => {
+} = {}): HTMLTableCellElement => {
   const td: HTMLTableCellElement = document.createElement('td');
   if (!props) return td;
   if (props.className) {
@@ -209,4 +209,61 @@ export const TableData = (props: {
   if (props.text) td.innerHTML = props.text;
 
   return td;
+};
+
+export const Dropdown = (
+  anchor: HTMLElement,
+  config: {
+    id: string;
+    onClickOutside?: () => void;
+  },
+): HTMLDivElement => {
+  const existing = document.getElementById(config.id) as HTMLDivElement | null;
+  if (existing) existing.remove();
+
+  const dropdown: HTMLDivElement = Div({
+    id: config.id,
+    className: 'dropdown',
+  });
+  dropdown.style.visibility = 'hidden';
+
+  document.body.appendChild(dropdown);
+
+  setTimeout((): void => {
+    const anchorRect = anchor.getBoundingClientRect();
+    const dropdownWidth = dropdown.offsetWidth;
+    const dropdownHeight = dropdown.offsetHeight;
+    const margin = 8;
+
+    let top = anchorRect.bottom;
+    let left = anchorRect.left;
+
+    if (left + dropdownWidth + margin > globalThis.innerWidth) {
+      left = anchorRect.left - (left + dropdownWidth - globalThis.innerWidth) -
+        margin;
+    }
+
+    if (top + dropdownHeight + margin > globalThis.innerHeight) {
+      top = anchorRect.top - (top + dropdownHeight - globalThis.innerHeight) -
+        margin;
+    }
+
+    dropdown.style.top = `${top}px`;
+    dropdown.style.left = `${left}px`;
+    dropdown.style.visibility = 'visible';
+  }, 0);
+
+  const handleClickOutside = (e: MouseEvent): void => {
+    if (!dropdown.contains(e.target as Node) && e.target !== anchor) {
+      dropdown.remove();
+      document.removeEventListener('mousedown', handleClickOutside);
+      if (config.onClickOutside) {
+        config.onClickOutside();
+      }
+    }
+  };
+
+  document.addEventListener('mousedown', handleClickOutside);
+
+  return dropdown;
 };

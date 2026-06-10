@@ -1,11 +1,9 @@
 import { Div, Header, Paragraph } from '../components.ts';
 import translations from '../constants/language.ts';
 import { getLanguage } from '../features/language.ts';
-import type { Translation } from '../types.ts';
 
 export default (): HTMLDivElement => {
-  const lang = translations[getLanguage()] as Translation;
-  const { title, sections } = lang.help;
+  const { help: { title, sections } } = translations[getLanguage()];
 
   const container: HTMLDivElement = Div({ className: 'modal-container' });
   container.appendChild(Header({ lvl: 2, text: title }));

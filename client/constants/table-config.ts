@@ -40,11 +40,9 @@ const TABLE_CONFIG: TableColumnConfig[] = [
         type: 'checkbox',
         className: 'row-select',
         onChange: (): void => {
-          const allCheckbox: HTMLInputElement = document.getElementById<
-            HTMLInputElement
-          >(
+          const allCheckbox = document.getElementById(
             'select-all-checkbox',
-          );
+          ) as HTMLInputElement;
           const checkboxes: NodeListOf<HTMLInputElement> = document
             .querySelectorAll('.row-select');
           allCheckbox.checked = Array.from(checkboxes).every((
@@ -87,7 +85,7 @@ const TABLE_CONFIG: TableColumnConfig[] = [
     sortable: true,
     minWidth: '76px',
     renderColumnData: (file: FileEntry): HTMLTableCellElement =>
-      TableData({ text: file.size ? file.type : '—' }),
+      TableData({ text: file.size && file.type ? file.type : '—' }),
   },
   {
     key: COLUMN_KEYS.CREATED,
@@ -108,7 +106,7 @@ const TABLE_CONFIG: TableColumnConfig[] = [
         className: 'btn',
         text: '<img src="/assets/download.svg" class="icon" alt="download">',
         title: translations[getLanguage()].titles.downloadFile,
-        onClick: (): void => downloadFile(file.name),
+        onClick: (): Promise<void> => downloadFile(file.name),
       });
       const renameBtn: HTMLDivElement = Div({
         className: 'btn',
@@ -120,7 +118,7 @@ const TABLE_CONFIG: TableColumnConfig[] = [
         className: 'btn',
         text: '<img src="/assets/trash.svg" class="icon" alt="delete">',
         title: translations[getLanguage()].titles.deleteFile,
-        onClick: (): void => deleteFiles([file.name]),
+        onClick: (): Promise<void> => deleteFiles([file.name]),
       });
       buttonContainer.append(downloadBtn, renameBtn, deleteBtn);
       td.appendChild(buttonContainer);

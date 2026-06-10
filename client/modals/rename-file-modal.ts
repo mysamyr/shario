@@ -7,24 +7,24 @@ export default (
   filename: string,
   onSubmit: (inputs: HTMLInputElement, originFilename: string) => void,
 ): HTMLDivElement => {
-  const container: HTMLDivElement = Div({
+  const container = Div({
     className: 'modal-container',
   });
 
-  const header: HTMLHeadingElement = Header({
+  const header = Header({
     lvl: 2,
     text: translations[getLanguage()].modals.renameFile.title,
   });
 
-  const buttons: HTMLDivElement = Div({
+  const buttons = Div({
     className: 'buttons',
   });
-  const input: HTMLInputElement = Input({
+  const input = Input({
     type: 'text',
     value: filename,
     className: 'upload-input',
   });
-  const wrappedInput: HTMLDivElement = Div({
+  const wrappedInput = Div({
     className: 'input-wrapper',
   });
   wrappedInput.appendChild(input);

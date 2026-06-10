@@ -36,8 +36,8 @@ type FileListItem = {
 };
 
 const download = (blob: Blob, filename: string): void => {
-  const url: string = globalThis.URL.createObjectURL(blob);
-  const a: HTMLAnchorElement = Link({
+  const url = globalThis.URL.createObjectURL(blob);
+  const a = Link({
     href: url,
     download: filename,
   });
@@ -51,7 +51,7 @@ const uploadFile = async (
   file: FormDataEntryValue,
   input: HTMLInputElement,
 ): Promise<void> => {
-  const formData: FormData = new FormData();
+  const formData = new FormData();
   formData.append('file', file);
 
   const progress = Paragraph({
@@ -61,11 +61,11 @@ const uploadFile = async (
 
   try {
     await new Promise<void>((resolve, reject): void => {
-      const xhr: XMLHttpRequest = new XMLHttpRequest();
+      const xhr = new XMLHttpRequest();
       xhr.open('POST', '/');
       xhr.upload.onprogress = (event: ProgressEvent): void => {
         if (event.lengthComputable) {
-          const percent: number = (event.loaded / event.total) * 100;
+          const percent = (event.loaded / event.total) * 100;
           progress.innerText = Math.round(percent) + '%';
         }
       };
@@ -75,7 +75,7 @@ const uploadFile = async (
           input.disabled = true;
           resolve();
         } else {
-          const { status, message }: ApiError = JSON.parse(xhr.responseText);
+          const { status, message } = JSON.parse(xhr.responseText) as ApiError;
           console.warn(API_ERROR_$(status, message));
           snackbar.displayMsg(message);
           reject(new Error(message));
@@ -99,7 +99,7 @@ const renameFile = async (
   oldValue: string,
   newValue: string,
 ): Promise<void> => {
-  const res: Response = await fetch(`/${oldValue}`, {
+  const res = await fetch(`/${oldValue}`, {
     method: 'PUT',
     body: JSON.stringify({ name: newValue }),
   });
@@ -107,8 +107,7 @@ const renameFile = async (
     snackbar.displayMsg(FILE_RENAMED());
     modal.hideModal();
   } else {
-    const { status, message }: ApiError = await res
-      .json();
+    const { status, message } = await res.json() as ApiError;
     snackbar.displayMsg(API_ERROR_$(status, message));
   }
 };
@@ -117,24 +116,23 @@ const downloadFiles = async (filenames: string[]): Promise<void> => {
   const queryParams: string = new URLSearchParams({
     file: filenames.join(','),
   }).toString();
-  const res: Response = await fetch(`/files?${queryParams}`, {
+  const res = await fetch(`/files?${queryParams}`, {
     method: 'GET',
   });
   if (res.ok) {
-    const blob: Blob = await res.blob();
+    const blob = await res.blob();
     download(blob, 'files.zip');
   } else {
-    const { status, message }: ApiError = await res
-      .json();
+    const { status, message } = await res.json() as ApiError;
     snackbar.displayMsg(API_ERROR_$(status, message));
   }
 };
 
 export const deleteFiles = async (filenames: string[]): Promise<void> => {
-  const queryParams: string = new URLSearchParams({
+  const queryParams = new URLSearchParams({
     file: filenames.join(','),
   }).toString();
-  const res: Response = await fetch(`/?${queryParams}`, {
+  const res = await fetch(`/?${queryParams}`, {
     method: 'DELETE',
   });
   if (res.ok) {
@@ -142,16 +140,15 @@ export const deleteFiles = async (filenames: string[]): Promise<void> => {
       filenames.length === 1 ? FILE_DELETED() : FILES_DELETED(),
     );
   } else {
-    const { status, message }: ApiError = await res
-      .json();
+    const { status, message } = await res.json() as ApiError;
     snackbar.displayMsg(API_ERROR_$(status, message));
   }
 };
 
 const onRenameSubmit =
   (oldValue: string) => (input: HTMLInputElement): void => {
-    const newValue: string = input.value.trim();
-    const error: string | undefined = validateFilename(newValue);
+    const newValue = input.value.trim();
+    const error = validateFilename(newValue);
     if (error) {
       showInputError(input, error);
       return;
@@ -167,9 +164,9 @@ const onRenameSubmit =
 
 const onUploadSubmit =
   (files: File[]) => async (inputs: HTMLInputElement[]): Promise<void> => {
-    const fileList: FileListItem[] = inputs.map(
+    const fileList = inputs.map(
       (input: HTMLInputElement, idx: number): FileListItem => {
-        const name: string = input.value.trim();
+        const name = input.value.trim();
         return {
           name,
           input,
@@ -177,10 +174,10 @@ const onUploadSubmit =
           error: validateFilename(name),
         };
       },
-    );
+    ) satisfies FileListItem[];
 
-    const filesToUpload: FileListItem[] = fileList.filter(
-      ({ error, input }: FileListItem): boolean => {
+    const filesToUpload = fileList.filter(
+      ({ error, input }: FileListItem) => {
         if (error) {
           showInputError(input, error);
         } else {
@@ -203,7 +200,7 @@ const onUploadSubmit =
         )
       ),
     );
-    if (inputs.every((input: HTMLInputElement): boolean => input.disabled)) {
+    if (inputs.every((input: HTMLInputElement) => input.disabled)) {
       snackbar.displayMsg(
         files.length > 1 ? FILES_UPLOADED() : FILE_UPLOADED(),
       );
@@ -212,21 +209,20 @@ const onUploadSubmit =
   };
 
 export const downloadFile = async (file: string): Promise<void> => {
-  const res: Response = await fetch(`/files/${file}`, {
+  const res = await fetch(`/files/${file}`, {
     method: 'GET',
   });
   if (res.ok) {
-    const blob: Blob = await res.blob();
+    const blob = await res.blob();
     download(blob, file);
   } else {
-    const { status, message }: ApiError = await res
-      .json();
+    const { status, message } = await res.json() as ApiError;
     snackbar.displayMsg(API_ERROR_$(status, message));
   }
 };
 
 export const handleFilesDownload = (): void => {
-  const selectedFiles: string[] = getSelectedFiles();
+  const selectedFiles = getSelectedFiles();
   if (!selectedFiles.length) {
     snackbar.displayMsg(NO_FILES_SELECTED());
     return;
@@ -236,12 +232,10 @@ export const handleFilesDownload = (): void => {
 };
 
 export const handleFilesUpload = (files: File[]): void => {
-  const bigFiles: File[] = files.filter((file: File): boolean =>
-    file.size > MAX_FILE_SIZE
-  );
+  const bigFiles = files.filter((file: File) => file.size > MAX_FILE_SIZE);
   if (bigFiles.length) {
     snackbar.displayMsg(
-      FILES_TOO_BIG(bigFiles.map((file: File): string => file.name).join(', ')),
+      FILES_TOO_BIG(bigFiles.map((file: File) => file.name).join(', ')),
     );
     return;
   }
@@ -254,7 +248,7 @@ export const handleRenameFile = (filename: string): void => {
 };
 
 export const handleDeleteFiles = async (): Promise<void> => {
-  const filenames: string[] = getSelectedFiles();
+  const filenames = getSelectedFiles();
   if (!filenames.length) {
     snackbar.displayMsg(NO_FILES_SELECTED());
     return;

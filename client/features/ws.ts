@@ -41,8 +41,8 @@ const connect = (): void => {
 };
 
 export const initWs = async (): Promise<void> => {
-  const data: Response = await fetch('/info');
-  const info: Info = await data.json();
+  const data = await fetch('/info');
+  const info = await data.json() as Info;
 
   setQRs(info.locations);
   setFiles(info.files);

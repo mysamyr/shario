@@ -1,4 +1,4 @@
-export function getAddresses(): string[] {
+export const getAddresses = (): string[] => {
   const interfaces: Deno.NetworkInterfaceInfo[] = Deno.networkInterfaces();
 
   return interfaces.reduce((acc: string[], i: Deno.NetworkInterfaceInfo) => {
@@ -7,4 +7,4 @@ export function getAddresses(): string[] {
     }
     return acc;
   }, []);
-}
+};

@@ -6,55 +6,55 @@ import { ENV, PORT } from '../config.ts';
 import { SHARED_TEXT_FILENAME } from '../constants/index.ts';
 import { FileEntry } from '../types.ts';
 
-export function getRootPath(): string {
+export const getRootPath = (): string => {
   if (ENV !== 'production') return Deno.cwd();
   const execPath: string = Deno.execPath(); // application file path or deno executable path
   return dirname(execPath);
-}
+};
 
-export function getFilesFolderPath(): string {
+export const getFilesFolderPath = (): string => {
   const filesDir: string = join(getRootPath(), 'files');
   ensureDirSync(filesDir);
   return filesDir;
-}
+};
 
-export function getQRCodesFolderPath(): string {
+export const getQRCodesFolderPath = (): string => {
   const filesDir: string = join(getRootPath(), 'qrcodes');
   ensureDirSync(filesDir);
   return filesDir;
-}
+};
 
-export function getSharedContentFilePath(): string {
+export const getSharedContentFilePath = (): string => {
   return join(getRootPath(), SHARED_TEXT_FILENAME);
-}
+};
 
-export function isFileExists(name: string): boolean {
+export const isFileExists = (name: string): boolean => {
   return existsSync(join(getFilesFolderPath(), name));
-}
+};
 
-export function getSharedContent(): string {
+export const getSharedContent = (): string => {
   const sharedContentFile: string = getSharedContentFilePath();
   ensureFileSync(sharedContentFile);
   const decoder: TextDecoder = new TextDecoder('utf-8');
   const data: Uint8Array = Deno.readFileSync(sharedContentFile);
   return decoder.decode(data);
-}
+};
 
-export function setSharedContent(content: string): void {
+export const setSharedContent = async (content: string): void => {
   const sharedContentFile: string = getSharedContentFilePath();
   const encoder: TextEncoder = new TextEncoder();
-  writeFile(sharedContentFile, encoder.encode(content));
-}
+  await writeFile(sharedContentFile, encoder.encode(content));
+};
 
-export function readFile(name: string): Uint8Array {
+export const readFile = (name: string): Uint8Array => {
   return Deno.readFileSync(join(getFilesFolderPath(), name));
-}
+};
 
-export function readQRCode(name: string): Uint8Array {
+export const readQRCode = (name: string): Uint8Array => {
   return Deno.readFileSync(join(getQRCodesFolderPath(), name));
-}
+};
 
-export function getFiles(): FileEntry[] {
+export const getFiles = (): FileEntry[] => {
   const entries: IteratorObject<Deno.DirEntry> = Deno.readDirSync(
     getFilesFolderPath(),
   );
@@ -67,18 +67,17 @@ export function getFiles(): FileEntry[] {
       files.push({
         name: entry.name,
         size: info.size,
-        type: 'todo',
+        type: entry.name.split('.').pop() || null,
         created: info.birthtime
           ? Date.parse(info.birthtime.toUTCString())
           : null,
-        modified: info.mtime ? Date.parse(info.mtime.toUTCString()) : null,
       });
     }
   }
   return files;
-}
+};
 
-export function generateQRCodes(): void {
+export const generateQRCodes = (): void => {
   const addresses: string[] = getAddresses();
   for (const ip of addresses) {
     const filePath: string = join(
@@ -91,22 +90,22 @@ export function generateQRCodes(): void {
       Deno.writeFileSync(filePath, qrCodePng);
     }
   }
-}
+};
 
-export async function writeFile(
+export const writeFile = async (
   path: string,
   content: Uint8Array | ReadableStream<Uint8Array>,
-): Promise<void> {
+): Promise<void> => {
   await Deno.writeFile(path, content);
-}
+};
 
-export async function moveFile(
+export const moveFile = async (
   originalPath: string,
   newPath: string,
-): Promise<void> {
+): Promise<void> => {
   await Deno.rename(originalPath, newPath);
-}
+};
 
-export async function removeFile(path: string): Promise<void> {
+export const removeFile = async (path: string): Promise<void> => {
   await Deno.remove(path);
-}
+};

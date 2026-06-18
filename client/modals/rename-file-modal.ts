@@ -1,29 +1,30 @@
 import { Div, Header, Input } from '../components.ts';
 import modal from '../features/modal.ts';
-import { getLanguage, translations } from '../features/language.ts';
+import { getLanguage } from '../features/language.ts';
+import translations from '../constants/language.ts';
 
-export default function renameFileModal(
+export default (
   filename: string,
   onSubmit: (inputs: HTMLInputElement, originFilename: string) => void,
-): HTMLDivElement {
-  const container: HTMLDivElement = Div({
-    className: 'container modal-container',
+): HTMLDivElement => {
+  const container = Div({
+    className: 'modal-container',
   });
 
-  const header: HTMLHeadingElement = Header({
+  const header = Header({
     lvl: 2,
     text: translations[getLanguage()].modals.renameFile.title,
   });
 
-  const buttons: HTMLDivElement = Div({
+  const buttons = Div({
     className: 'buttons',
   });
-  const input: HTMLInputElement = Input({
+  const input = Input({
     type: 'text',
     value: filename,
     className: 'upload-input',
   });
-  const wrappedInput: HTMLDivElement = Div({
+  const wrappedInput = Div({
     className: 'input-wrapper',
   });
   wrappedInput.appendChild(input);
@@ -55,4 +56,4 @@ export default function renameFileModal(
     }
   });
   return container;
-}
+};

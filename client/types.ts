@@ -1,9 +1,23 @@
+import type { LanguageCode } from './constants/language.ts';
+import type { COLUMN_KEYS } from './constants/table.ts';
+import type { ThemeColor, ThemeMode } from './constants/theme.ts';
+
 export type FileEntry = {
   name: string;
   size: number;
-  type: string;
+  type: string | null;
   created: number | null;
-  modified: number | null;
+};
+
+export type TableColumnConfig = {
+  key: COLUMN_KEYS;
+  minWidth?: string;
+  sortable?: boolean;
+  grow?: boolean;
+  headerCellClassName?: string;
+  bodyCellClassName?: string;
+  renderColumnData: (file: FileEntry) => HTMLTableCellElement;
+  renderHeaderData?: () => HTMLElement;
 };
 
 export type Info = {
@@ -15,23 +29,37 @@ export type Info = {
 
 export type ApiError = { status: number; message: string };
 
-export type FileListItem = {
-  name: string;
-  input: HTMLInputElement;
-  file: File;
-  error?: string;
-};
-
 export type Language = {
   name: string;
-  code: string;
+  code: LanguageCode;
 };
 
-type Titles = {
-  upload: string;
-  clearText: string;
+export type ThemeLabels = {
+  theme: string;
+  color: string;
+  light: string;
+  dark: string;
+  green: string;
+  blue: string;
+  red: string;
+};
+
+export type ThemeConfig = {
+  mode: ThemeMode;
+  color: ThemeColor;
+};
+
+export type Titles = {
+  changeLanguage: string;
+  changeTheme: string;
+  showQRs: string;
+  showHelp: string;
+  uploadFiles: string;
+  downloadFiles: string;
+  deleteFiles: string;
+  saveNote: string;
   copyText: string;
-  clearFiles: string;
+  clearText: string;
   openFile: string;
   downloadFile: string;
   renameFile: string;
@@ -65,7 +93,8 @@ type ErrorMessages = {
   filesTooBig: (files: string) => string;
   uploadError: string;
   noFilesToUpload: string;
-  noFilesToClear: string;
+  noFilesSelected: string;
+  nothingToSave: string;
   apiError: (status: number, message: string) => string;
 };
 
@@ -79,22 +108,30 @@ type Modal = {
 };
 
 type Modals = {
-  clearFiles: Modal;
   renameFile: Modal;
   uploadFiles: Modal;
 };
 
+type HelpSection = {
+  title: string;
+  items: string[];
+};
+
+type Help = {
+  title: string;
+  sections: HelpSection[];
+};
+
 export type Translation = {
-  uploadBtnTitle: string;
-  uploadBtn: string;
-  sharedTextTitle: string;
+  filesHeader: string;
+  noteHeader: string;
   sharedTextPlaceholder: string;
-  filesTitle: string;
-  releaseToUpload: string;
   noLocations: string;
-  noFilesUploaded: string;
   titles: Titles;
+  table: Record<COLUMN_KEYS, string>;
   messages: Messages;
   errorMessages: ErrorMessages;
   modals: Modals;
+  help: Help;
+  themeLabels: ThemeLabels;
 };
